@@ -373,6 +373,7 @@ namespace UBAzir
             var useW = Config.MiscMenu["Wks"].Cast<CheckBox>().CurrentValue;
             var useE = Config.MiscMenu["Eks"].Cast<CheckBox>().CurrentValue;
             var useR = Config.MiscMenu["Rks"].Cast<CheckBox>().CurrentValue;
+            var useIg = Config.ComboMenu["ig"].Cast<CheckBox>().CurrentValue;
             if (Spells.Q.IsReady() && useQ)
             {
                 var target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(t => t != null
@@ -425,7 +426,7 @@ namespace UBAzir
             {
                 var target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(t => t != null
                     && t.IsValidTarget()
-                    && Spells.W.IsInRange(t)
+                    && Spells.R.IsInRange(t)
                     && t.Health <= Damages.RDamage(t)), DamageType.Magical);
 
                 if (target != null)
@@ -433,11 +434,23 @@ namespace UBAzir
                     Spells.R.Cast(target);
                 }
             }
+            if (Spells.Ignite != null && Spells.Ignite.IsReady() && useIg)
+            {
+                var target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(t => t != null
+                    && t.IsValidTarget()
+                    && Spells.Ignite.IsInRange(t)
+                    && t.Health <= Player.Instance.GetSummonerSpellDamage(t, DamageLibrary.SummonerSpells.Ignite)), DamageType.True);
+
+                if (target != null)
+                {
+                    Spells.Ignite.Cast(target);
+                }
+            }
         }
         #endregion
 
         #region Auto Harass
-        public static void Auto_Harass(EventArgs args)
+        public static void Auto_Harass()
         {
             if (Config.HarassMenu["autokey"].Cast<KeyBind>().CurrentValue && Player.Instance.ManaPercent >= Config.HarassMenu["automng"].Cast<Slider>().CurrentValue)
             {

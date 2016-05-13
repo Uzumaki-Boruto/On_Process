@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Drawing;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Events;
@@ -143,6 +144,8 @@ namespace UBAzir
                 //DrawMenu.Add("timer", new CheckBox("Draw time on Sand Soldier"));
                 DrawMenu.Add("Edr", new CheckBox("Draw E"));
                 DrawMenu.Add("Rdr", new CheckBox("Draw R"));
+                DrawMenu.Add("drawdamage", new CheckBox("Draw Damage Indicator"));
+                DrawMenu.Add("Color", new ColorPicker("Damage Indicator Color", Color.OrangeRed));
             }
 
             //MiscMenu          

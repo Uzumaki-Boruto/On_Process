@@ -22,12 +22,12 @@ namespace UBAzir
             target = TargetSelector.GetTarget(Spells.R.Range - 20, DamageType.Magical, ObjManager.Soldier_Nearest_Enemy);
             if (target != null)
             {
-                if (Spells.flash.IsInRange(target) && Spells.flash.IsReady() && Config.Insec["allowfl"].Cast<CheckBox>().CurrentValue)
+                if (Spells.Flash.IsInRange(target) && Spells.Flash.IsReady() && Config.Insec["allowfl"].Cast<CheckBox>().CurrentValue)
                 {
                     var PosAndHits = SpecialVector.GetBestRPos(target.ServerPosition.To2D());
                     if (PosAndHits.First().Value >= Config.Insec["flvalue"].Cast<Slider>().CurrentValue)
                     {
-                        Spells.flash.Cast(PosAndHits.First().Key.To3D());
+                        Spells.Flash.Cast(PosAndHits.First().Key.To3D());
                         switch (normal)
                         {
                             case 0:

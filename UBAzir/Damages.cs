@@ -2,6 +2,8 @@
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
+using EloBuddy.SDK.Menu.Values;
+using SharpDX;
 
 namespace UBAzir
 {
@@ -60,6 +62,39 @@ namespace UBAzir
                 damage = damage + RDamage(target);
             }
             return damage;
+        }
+        public static void Damage_Indicator(EventArgs args)
+        {
+            if (Config.DrawMenu["drawdamage"].Cast<CheckBox>().CurrentValue)
+            {
+                foreach (var unit in EntityManager.Heroes.Enemies.Where(u => u.IsValidTarget() && u.IsHPBarRendered && !Event.Unkillable(u))
+                    )
+                {
+                    var Q = Spells.Q.IsLearned ? Spells.Q.IsReady() : false;
+                    var W = Spells.W.IsLearned ? Spells.W.IsReady() : false;
+                    var E = Spells.E.IsLearned ? Spells.E.IsReady() : false;
+                    var R = Spells.R.IsLearned ? Spells.R.IsReady() : false;
+
+                    var damage = Damagefromspell(unit, Q, W, E, R);
+
+                    if (damage <= 0)
+                    {
+                        continue;
+                    }
+                    var damagePercentinHuman = ((unit.TotalShieldHealth() - damage) > 0
+                        ? (unit.TotalShieldHealth() - damage)
+                        : 0) / (unit.MaxHealth + unit.AllShield + unit.AttackShield + unit.MagicShield);
+                    var currentHealthPercent = unit.TotalShieldHealth() / (unit.MaxHealth + unit.AllShield + unit.AttackShield + unit.MagicShield);
+
+                    var StartPoint = new Vector2((int)(unit.HPBarPosition.X + damagePercentinHuman * 106) + 1,
+                        (int)unit.HPBarPosition.Y + 9);
+                    var EndPoint = new Vector2((int)(unit.HPBarPosition.X + currentHealthPercent * 106) + 1,
+                        (int)unit.HPBarPosition.Y + 9);
+                    var Color = Config.DrawMenu["Color"].Cast<ColorPicker>().CurrentValue;
+                    Drawing.DrawLine(StartPoint, EndPoint, 10f, Color);
+
+                }
+            }
         }
     }
 }

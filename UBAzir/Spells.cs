@@ -15,8 +15,8 @@ namespace UBAzir
         public static Spell.Skillshot E { get; private set; }
         public static Spell.Active RFake { get; private set; }
         public static Spell.Skillshot R { get; private set; }
-        public static Spell.Targeted ignite { get; private set; }
-        public static Spell.Skillshot flash { get; private set; }
+        public static Spell.Targeted Ignite { get; private set; }
+        public static Spell.Skillshot Flash { get; private set; }
 
         public static bool HasSpell(string s)
         {
@@ -38,15 +38,15 @@ namespace UBAzir
             WFocus = new Spell.Targeted(SpellSlot.W, 375);
             E = new Spell.Skillshot(SpellSlot.E, 1100, SkillShotType.Linear, 250, 1600, 150);
             RFake = new Spell.Active(SpellSlot.R);
-            R = new Spell.Skillshot(SpellSlot.R, 250, SkillShotType.Linear, 450, 1000, (new int[] { 0, 532, 665, 798 }[RFake.Level]))
+            R = new Spell.Skillshot(SpellSlot.R, 250, SkillShotType.Linear, 430, 1000, (new int[] { 0, 532, 665, 798 }[RFake.Level]))
             {
                 AllowedCollisionCount = int.MaxValue
             };
             //(int)
             if (HasSpell("summonerdot"))
-                ignite = new Spell.Targeted(ObjectManager.Player.GetSpellSlotFromName("summonerdot"), 600);
+                Ignite = new Spell.Targeted(ObjectManager.Player.GetSpellSlotFromName("summonerdot"), 600);
             if (HasSpell("summonerflash"))
-                flash = new Spell.Skillshot(ObjectManager.Player.GetSpellSlotFromName("summonerflash"), 425, SkillShotType.Circular, 0, int.MaxValue, 1);
+                Flash = new Spell.Skillshot(ObjectManager.Player.GetSpellSlotFromName("summonerflash"), 425, SkillShotType.Circular, 0, int.MaxValue, 1);
         }
     }
 }

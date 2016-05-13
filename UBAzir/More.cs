@@ -32,7 +32,6 @@ namespace UBAzir
             Drawing.OnDraw += OnDraw;
             Game.OnTick += ObjManager.GetMyPosBefore;
             Game.OnUpdate += Mode.KillSteal;
-            Game.OnUpdate += Mode.Auto_Harass;
             Orbwalker.OnUnkillableMinion += Mode.On_Unkillable_Minion;
         }
         private static void GameOnTick(EventArgs args)
@@ -52,6 +51,9 @@ namespace UBAzir
             { Mode.JungleClear(); }
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
             { Mode.Flee(); }
+            if (!Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && !Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass))
+            { Mode.Auto_Harass(); }
+
 
             if (Config.Insec["normalInsec"].Cast<KeyBind>().CurrentValue)
             { Insec.Do_Normal_Insec(); }
