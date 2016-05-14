@@ -62,7 +62,7 @@ namespace UBAzir
                             {
                                 foreach (var soldier in Orbwalker.AzirSoldiers.Where(s => s.Distance(Player.Instance) <= Spells.E.Range))
                                 {
-                                    if (SpecialVector.IsBetween(target))
+                                    if (SpecialVector.Between(target.Position, Player.Instance.Position, soldier.Position))
                                     {
                                         Spells.E.Cast(soldier);
                                     }
@@ -87,7 +87,7 @@ namespace UBAzir
                             {
                                 foreach (var soldier in Orbwalker.AzirSoldiers.Where(s => s.Distance(Player.Instance) <= Spells.E.Range))
                                 {
-                                    if (SpecialVector.IsBetween(target))
+                                    if (SpecialVector.Between(target.Position, Player.Instance.Position, soldier.Position))
                                     {
                                         Spells.E.Cast(soldier);
                                     }
@@ -116,7 +116,7 @@ namespace UBAzir
                 {
                     var target = TargetSelector.GetTarget(Spells.R.Range - 20, DamageType.Magical);
                     var Force = Orbwalker.ForcedTarget != null ? true : false;
-                    if (target != null && target.IsValidTarget())
+                    if (target != null && target.IsValidTarget() && target.HealthPercent <= 70)
                     {
                         SpecialVector.WhereCastR(target, SpecialVector.I_want.All);
                     }
@@ -174,45 +174,12 @@ namespace UBAzir
                     SpecialVector.AttackOtherObject();
                 }
             }
-            /*if (Player.Instance.Level <= 12 && ObjManager.CountAzirSoldier > 0 && ObjManager.Soldier_Nearest_Enemy != Vector3.Zero)
-            {
-                var minion = EntityManager.MinionsAndMonsters.Minions.Where(m => m.IsEnemy
-                    && m.Distance(ObjManager.Soldier_Nearest_Enemy) <= 375
-                    && m.Health <= Damages.WDamage(m) + 20).FirstOrDefault();
-                if (minion != null)
-                {
-                    Orbwalker.DisableAttacking = true;
-                    if (minion.Health <= Damages.WDamage(minion))
-                    {
-                        Player.IssueOrder(GameObjectOrder.AttackTo, minion);
-                    }
-                }
-                else { Orbwalker.DisableAttacking = false; }
-            }*/
         }
         #endregion
 
         #region LaneClear
         public static void LaneClear()
         {
-            /*if (Player.Instance.Level <= 12 && ObjManager.CountAzirSoldier > 0)
-            {
-                if (ObjManager.Soldier_Nearest_Enemy != Vector3.Zero)
-                {
-                    var minion = EntityManager.MinionsAndMonsters.Minions.Where(m => m.IsEnemy
-                        && m.Distance(ObjManager.Soldier_Nearest_Enemy) <= 380
-                        && m.Health <= Damages.WDamage(m) + 20).FirstOrDefault();
-                    if (minion != null)
-                    {
-                        Orbwalker.DisableAttacking = true;
-                        if (minion.Health <= Damages.WDamage(minion))
-                        {
-                            Player.IssueOrder(GameObjectOrder.AttackTo, minion);
-                        }
-                    }
-                    else { Orbwalker.DisableAttacking = false; }
-                }
-            }*/
             if (Player.Instance.ManaPercent >= Config.LaneClear["LcManager"].Cast<Slider>().CurrentValue)
             {
                 if (Config.LaneClear["Qlc"].Cast<CheckBox>().CurrentValue)
@@ -220,13 +187,14 @@ namespace UBAzir
                     var Soldier = ObjManager.SoldierPos;
                     if (Soldier != Vector3.Zero)
                     {
-                        //var minion = EntityManager.MinionsAndMonsters.Minions.Where(m => m.Distance(Player.Instance) <= Spells.Q.Range).OrderBy(m => m.Health).LastOrDefault();
-                        var minion = EntityManager.MinionsAndMonsters.GetLineFarmLocation(
+                        var minion = EntityManager.MinionsAndMonsters.GetCircularFarmLocation(
                             EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy),
-                            (float)Spells.Q.Width,
-                            (int)Spells.Q.Range,
-                            (Vector2)Soldier);
-                        Spells.Q.Cast(minion.CastPosition);
+                            (float)Spells.W.Width,
+                            (int)Spells.Q.Range);
+                        if (minion.HitNumber >= 3)
+                        {
+                            Spells.Q.Cast(minion.CastPosition);
+                        }
                     }
                 }
                 if (Config.LaneClear["Wlc"].Cast<CheckBox>().CurrentValue)
@@ -235,7 +203,7 @@ namespace UBAzir
                         EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy),
                         (float)Spells.W.Width,
                         (int)Spells.W.Range);
-                    if (ObjManager.CountAzirSoldier < Config.LaneClear["Wunitlc"].Cast<Slider>().CurrentValue)
+                    if (ObjManager.CountAzirSoldier < Config.LaneClear["Wunitlc"].Cast<Slider>().CurrentValue && minion.HitNumber >= 3)
                     {
                         Spells.W.Cast(minion.CastPosition);
                     }
@@ -247,25 +215,27 @@ namespace UBAzir
         #region JungleClear
         public static void JungleClear()
         {
-            var monster = EntityManager.MinionsAndMonsters.Monsters.OrderBy(m => m.Health).LastOrDefault();
-            if (Player.Instance.ManaPercent >= Config.JungleClear["JcManager"].Cast<Slider>().CurrentValue && monster != null)
+            var monster = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsMonster && x.IsValidTarget(Spells.Q.Range)).OrderBy(x => x.MaxHealth).LastOrDefault();
+            if (monster == null || !monster.IsValid) return;
+            if (Orbwalker.IsAutoAttacking) return;
+            Orbwalker.ForcedTarget = null;
+            if (Config.JungleClear["Qjc"].Cast<CheckBox>().CurrentValue
+                && Player.Instance.ManaPercent >= Config.JungleClear["JcManager"].Cast<Slider>().CurrentValue
+                && Spells.Q.IsReady())
             {
-                if (Config.LaneClear["Qjc"].Cast<CheckBox>().CurrentValue && Spells.Q.IsReady())
-                {
-                    var Soldier = ObjManager.SoldierPos;
-                    if (Soldier != Vector3.Zero)
-                    {
-                        Spells.Q.Cast(monster);
-                    }
-                }
-                if (Config.LaneClear["Wjc"].Cast<CheckBox>().CurrentValue && Spells.W.IsReady())
-                {
-                    if (ObjManager.CountAzirSoldier < Config.LaneClear["Wunitlc"].Cast<Slider>().CurrentValue)
-                    {
-                        Spells.W.Cast(monster);
-                    }
-                }
+                Spells.Q.Cast(monster);
             }
+
+            var wmonster = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsMonster && x.IsValidTarget(Spells.W.Range)).OrderBy(x => x.MaxHealth).LastOrDefault();
+            if (wmonster == null || !wmonster.IsValid) return;
+            if (Orbwalker.IsAutoAttacking) return;
+            Orbwalker.ForcedTarget = null;
+            if (Config.JungleClear["Wjc"].Cast<CheckBox>().CurrentValue && Spells.W.IsReady()
+                && Player.Instance.ManaPercent >= Config.JungleClear["JcManager"].Cast<Slider>().CurrentValue
+                && Spells.W.IsReady())
+            {
+                Spells.W.Cast(wmonster.ServerPosition);
+            }           
         }
         #endregion
 
@@ -341,9 +311,8 @@ namespace UBAzir
                     Spells.W.Cast(WCast);
                 }
                 if (ObjManager.CountAzirSoldier > 0)
-                {
-                    Spells.E.Cast(ECast);
-                    if (Player.Instance.Distance(ObjManager.Soldier_Nearest_Azir) <= 100)
+                {                   
+                    if ( Spells.E.Cast(ECast) && Player.Instance.Distance(ObjManager.Soldier_Nearest_Azir) <= 100)
                     {
                         Spells.Q.Cast(QCast);
                     }
@@ -416,9 +385,12 @@ namespace UBAzir
 
                 if (target != null && ObjManager.CountAzirSoldier > 0)
                 {
-                    if (SpecialVector.IsBetween(target))
+                    foreach (var soldier in Orbwalker.AzirSoldiers.Where(s => s.Distance(Player.Instance) <= Spells.E.Range))
                     {
-                        Spells.E.Cast(ObjManager.Soldier_Nearest_Enemy);
+                        if (SpecialVector.Between(target.Position, Player.Instance.Position, soldier.Position))
+                        {
+                            Spells.E.Cast(soldier);
+                        }
                     }
                 }
             }

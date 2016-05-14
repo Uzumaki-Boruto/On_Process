@@ -26,45 +26,29 @@ namespace UBAzir
             var QBonusCombo = Config.ComboMenu["Qcbbonus"].Cast<Slider>().CurrentValue;
             var QBonusHarrass = Config.HarassMenu["Qhrbonus"].Cast<Slider>().CurrentValue;
             var Bonus = Combo ? QBonusCombo : Harass ? QBonusHarrass : QBonusCombo;
-            var Path = Prediction.Position.GetRealPath(enemy).LastOrDefault();
-            if (forcedEnemy)
-                if (Spells.Q.Range <= Player.Instance.Distance(enemy.ServerPosition))
-                    return;
-            if (ObjManager.Soldier_Nearest_Enemy != Vector3.Zero)
-            if (Player.Instance.Distance(ObjManager.Soldier_Nearest_Azir) <= Player.Instance.Distance(Path))
+            var Path = enemy.Path.LastOrDefault();
+            var Soldier = Orbwalker.AzirSoldiers.LastOrDefault(s => s.IsAlly);
+            if (Path != null)
             {
-                if (Player.Instance.Distance(EnemyPos) <= Player.Instance.Distance(ObjManager.Soldier_Nearest_Enemy))
+                if (MyPos.Distance(Path) >= MyPos.Distance(Soldier))
                 {
                     if (enemy != null && enemy.IsValid && !enemy.IsInRange(ObjManager.Soldier_Nearest_Enemy, 375))
                     {
-                        var Pos = MyPos.Extend(EnemyPos, MyPos.Distance(EnemyPos) + (float)Bonus).To3D();
+                        var Pos = MyPos.Extend(Path, MyPos.Distance(EnemyPos) + (float)Bonus).To3D();
                         Spells.Q.Cast(Pos);
                     }
                     if (enemy != null && enemy.IsValid && !enemy.IsInRange(ObjManager.Soldier_Nearest_Enemy, 375) && !enemy.IsInRange(Player.Instance, Spells.Q.Range - Bonus))
                     {
-                        var Pos = MyPos.Extend(EnemyPos, Spells.Q.Range).To3D();
+                        var Pos = MyPos.Extend(Path, Spells.Q.Range).To3D();
                         Spells.Q.Cast(Pos);
                     }
                 }
-                if (Player.Instance.Distance(EnemyPos) > Player.Instance.Distance(ObjManager.Soldier_Nearest_Enemy))
+                if (MyPos.Distance(Path) < MyPos.Distance(Soldier))
                 {
-                    if (enemy != null && enemy.IsValid && !enemy.IsInRange(ObjManager.Soldier_Nearest_Enemy, 375))
+                    if (enemy != null && enemy.IsValid && !enemy.IsInRange(ObjManager.Soldier_Nearest_Enemy, 375) && enemy.IsInRange(Player.Instance, Spells.Q.Range))
                     {
                         Spells.Q.Cast(enemy);
                     }
-                }
-            }
-            if (Player.Instance.Distance(ObjManager.Soldier_Nearest_Azir) > Player.Instance.Distance(Path))
-            {
-                if (enemy != null && enemy.IsValid && !enemy.IsInRange(ObjManager.Soldier_Nearest_Enemy, 375))
-                {
-                    var Pos = MyPos.Extend(EnemyPos, MyPos.Distance(EnemyPos) - (float)Bonus).To3D();
-                    Spells.Q.Cast(Pos);
-                }
-                if (enemy != null && enemy.IsValid && !enemy.IsInRange(ObjManager.Soldier_Nearest_Enemy, 375) && !enemy.IsInRange(Player.Instance, Spells.Q.Range - Bonus))
-                {
-                    var Pos = MyPos.Extend(EnemyPos, Spells.Q.Range).To3D();
-                    Spells.Q.Cast(Pos);
                 }
             }
         }
@@ -154,7 +138,7 @@ namespace UBAzir
                     }
                 }
             }
-            else
+            if (!enemy.IsInRange(Player.Instance, 300) && enemy.IsInRange(Player.Instance, Spells.R.Range))
             {
                 Spells.R.Cast(enemy);
             }
@@ -211,14 +195,12 @@ namespace UBAzir
                 }
             }
         }
-        public static bool IsBetween(AIHeroClient target)
+        public static bool Between(Vector3 checkPos, Vector3 source, Vector3 destination)
         {
-            return
-                Orbwalker.AzirSoldiers.Select(soldier => new Geometry.Polygon.Rectangle(Player.Instance.Position, soldier.Position, target.BoundingRadius))
-                    .Any(rectangle => rectangle.IsInside(target));
+            return Math.Abs(((source.X * checkPos.Y) + (source.Y * destination.X) + (checkPos.X * destination.Y)) - ((checkPos.Y * destination.X) + (source.X * destination.Y) + (source.Y * checkPos.X))) < 5;
         }
 
-        #region Field
+        #region Flash Logic
 
         public static int CountRHits(Vector2 CastPosition)
         {

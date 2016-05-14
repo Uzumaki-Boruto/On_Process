@@ -218,7 +218,7 @@ namespace UBAzir
                                 }
 
                                 if (Spells.E.Cast(Player.Instance.Position.Extend(target, Spells.E.Range).To3D())
-                                    && SoldierPos.IsInRange(target.ServerPosition, Spells.R.Width) && !SpecialVector.IsBetween(target))
+                                    && SoldierPos.IsInRange(target.ServerPosition, Spells.R.Width) && !SpecialVector.Between(target.Position, Player.Instance.Position, SoldierPos))
                                 {
                                     var time = (Player.Instance.ServerPosition.Distance(SoldierPos) / Spells.E.Speed) * (1000 - (Game.Ping + 250));
                                     Core.DelayAction(() => Spells.Q.Cast(Player.Instance.Position.Extend(CastQTo, Spells.Q.Range).To3D()),(int)time);

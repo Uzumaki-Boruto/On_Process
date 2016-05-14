@@ -26,6 +26,7 @@ namespace UBAzir
                 return Orbwalker.AzirSoldiers.Count(s => s.IsAlly);
             }
         }
+        public static Vector3 Soldier_Can_Cast_E { get; set; }
         public static Vector3 Soldier_Nearest_Enemy
         {
             get
@@ -61,7 +62,7 @@ namespace UBAzir
             {
                 if (CountAzirSoldier < 1)
                     return Vector3.Zero;
-                else return AzirSoldiers.LastOrDefault().Position;
+                else return Orbwalker.AzirSoldiers.LastOrDefault().Position;
             }
         }
         public static List<Obj_AI_Minion> AzirSoldiers = new List<Obj_AI_Minion>();

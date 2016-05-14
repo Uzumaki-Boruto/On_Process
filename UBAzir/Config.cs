@@ -63,8 +63,8 @@ namespace UBAzir
             Insec = Menu.AddSubMenu("Insec Settings");
             {
                 Insec.AddGroupLabel("Hotkeys");
-                Insec.Add("normalInsec", new KeyBind("Do Normal Insec", false, KeyBind.BindTypes.HoldActive, 'G'));
-                Insec.Add("godInsec", new KeyBind("Do God Insec", false, KeyBind.BindTypes.HoldActive, 'H'));
+                Insec.Add("normalInsec", new KeyBind("Do Normal Insec", false, KeyBind.BindTypes.HoldActive, 'H'));
+                Insec.Add("godInsec", new KeyBind("Do God Insec", false, KeyBind.BindTypes.HoldActive, 'G'));
                 Insec.AddGroupLabel("Settings");
                 Insec.AddLabel("Normal Insec");
                 Insec.Add("normal.1", new ComboBox("I want to insec target to", 0, "My Cursor", "My Ally", "My Turret", "My Last Postion"));
@@ -145,7 +145,7 @@ namespace UBAzir
                 DrawMenu.Add("Edr", new CheckBox("Draw E"));
                 DrawMenu.Add("Rdr", new CheckBox("Draw R"));
                 DrawMenu.Add("drawdamage", new CheckBox("Draw Damage Indicator"));
-                DrawMenu.Add("Color", new ColorPicker("Damage Indicator Color", Color.OrangeRed));
+                DrawMenu.Add("Color", new ColorPicker("Damage Indicator Color", Color.FromArgb(255, 255, 236, 0)));
             }
 
             //MiscMenu          

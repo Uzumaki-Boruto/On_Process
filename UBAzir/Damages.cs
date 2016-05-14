@@ -81,17 +81,17 @@ namespace UBAzir
                     {
                         continue;
                     }
-                    var damagePercentinHuman = ((unit.TotalShieldHealth() - damage) > 0
+                    var DamagePercent = ((unit.TotalShieldHealth() - damage) > 0
                         ? (unit.TotalShieldHealth() - damage)
                         : 0) / (unit.MaxHealth + unit.AllShield + unit.AttackShield + unit.MagicShield);
                     var currentHealthPercent = unit.TotalShieldHealth() / (unit.MaxHealth + unit.AllShield + unit.AttackShield + unit.MagicShield);
 
-                    var StartPoint = new Vector2((int)(unit.HPBarPosition.X + damagePercentinHuman * 106) + 1,
+                    var StartPoint = new Vector2((int)(unit.HPBarPosition.X + DamagePercent * 107) + 1,
                         (int)unit.HPBarPosition.Y + 9);
-                    var EndPoint = new Vector2((int)(unit.HPBarPosition.X + currentHealthPercent * 106) + 1,
+                    var EndPoint = new Vector2((int)(unit.HPBarPosition.X + currentHealthPercent * 107) + 1,
                         (int)unit.HPBarPosition.Y + 9);
                     var Color = Config.DrawMenu["Color"].Cast<ColorPicker>().CurrentValue;
-                    Drawing.DrawLine(StartPoint, EndPoint, 10f, Color);
+                    Drawing.DrawLine(StartPoint, EndPoint, 9.82f, Color);
 
                 }
             }

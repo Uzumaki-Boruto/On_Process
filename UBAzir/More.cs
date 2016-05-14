@@ -19,7 +19,7 @@ namespace UBAzir
             if (Player.Instance.ChampionName != "Azir") return;
 
             var notStart = new SimpleNotification("UBAzir Load Status", "UBAzir sucessfully loaded.");
-            Notifications.Show(notStart, 5000);
+            Notifications.Show(notStart, 7500);
 
             Config.Dattenosa();
             Spells.InitSpells();
@@ -29,9 +29,10 @@ namespace UBAzir
         private static void InitEvents()
         {
             Game.OnTick += GameOnTick;
-            Drawing.OnDraw += OnDraw;
             Game.OnTick += ObjManager.GetMyPosBefore;
             Game.OnUpdate += Mode.KillSteal;
+            Drawing.OnDraw += OnDraw;
+            Drawing.OnEndScene += Damages.Damage_Indicator;
             Orbwalker.OnUnkillableMinion += Mode.On_Unkillable_Minion;
         }
         private static void GameOnTick(EventArgs args)
@@ -51,7 +52,8 @@ namespace UBAzir
             { Mode.JungleClear(); }
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
             { Mode.Flee(); }
-            if (!Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && !Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass))
+            if (!Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && !Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)
+                && !Config.Insec["normalInsec"].Cast<KeyBind>().CurrentValue && !Config.Insec["godInsec"].Cast<KeyBind>().CurrentValue)
             { Mode.Auto_Harass(); }
 
 
