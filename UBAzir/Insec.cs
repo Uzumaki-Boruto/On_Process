@@ -2,7 +2,7 @@
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Notifications;
+//using EloBuddy.SDK.Notifications;
 using EloBuddy.SDK.Menu.Values;
 using SharpDX;
 
@@ -18,7 +18,7 @@ namespace UBAzir
         {
             var normal = Config.Insec["normal.1"].Cast<ComboBox>().CurrentValue;
             var Force = Orbwalker.ForcedTarget != null ? true : false;
-            var incapability = new SimpleNotification("UBAzir Normal Insec", "It isn't qualified to perform");
+            //var incapability = new SimpleNotification("UBAzir Normal Insec", "It isn't qualified to perform");
             target = TargetSelector.GetTarget(Spells.R.Range - 20, DamageType.Magical, ObjManager.Soldier_Nearest_Enemy);
             if (target != null)
             {
@@ -75,7 +75,6 @@ namespace UBAzir
                 else
                 {
                     Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                    Notifications.Show(incapability, 1750);
                 }
                 if (target.IsValidTarget(1100))
                 {
@@ -114,25 +113,21 @@ namespace UBAzir
                         else
                         {
                             Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                            Notifications.Show(incapability, 1750);
                         }
                     }
                     else
                     {
                         Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos); 
-                        Notifications.Show(incapability, 1750);
                     }
                 }
                 else
                 {
                     Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                    Notifications.Show(incapability, 1750);
                 }
             }
             else
             {
                 Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                Notifications.Show(incapability, 1750);
             }
         }
 
@@ -143,16 +138,16 @@ namespace UBAzir
             var CastRTo = SpecialVector.I_want.Cursor;
             var CastQTo = Vector3.Zero;
             var SoldierPos = Vector3.Zero;
-            var incapability = new SimpleNotification("UBAzir God Insec", "It isn't qualified to perform");
-            target = TargetSelector.GetTarget(Spells.R.Range - 20, DamageType.Magical, ObjManager.Soldier_Nearest_Enemy);
+            //var incapability = new SimpleNotification("UBAzir God Insec", "It isn't qualified to perform");
+            target = TargetSelector.GetTarget(300, DamageType.Magical, ObjManager.Soldier_Nearest_Enemy);
             if (target != null)
             {
-                if (target.IsValidTarget(925))
+                if (target.IsValidTarget())
                 {
                     if (Spells.Q.IsReady())
                     {
                         if (Spells.R.IsReady())
-                        {
+                        {                                                      
                             switch (god1)
                             {
                                 case 0:
@@ -183,7 +178,6 @@ namespace UBAzir
                                     }
                                     break;
                             }
-
                             switch (god2)
                             {
                                 case 0:
@@ -193,7 +187,7 @@ namespace UBAzir
                                     break;
 
                                 case 1:
-                                     {
+                                    {
                                         var Ally = EntityManager.Heroes.Allies.OrderByDescending(a => a.CountEnemiesInRange(Spells.R.Range)).FirstOrDefault();
                                         CastQTo = Ally != null ? Ally.ServerPosition : Game.CursorPos;
                                     }
@@ -203,7 +197,7 @@ namespace UBAzir
                                         var Turret = EntityManager.Turrets.Allies.FirstOrDefault(t => t.IsValidTarget(1250));
                                         CastQTo = Turret != null ? Turret.ServerPosition : Game.CursorPos;
                                     }
-                                    break;                                 
+                                    break;
                             }
                             if (ObjManager.CountAzirSoldier < 1 && ObjManager.All_Basic_Is_Ready && Player.Instance.Mana > 370)
                             {
@@ -217,46 +211,40 @@ namespace UBAzir
                                     SoldierPos = ObjManager.Soldier_Nearest_Enemy;
                                 }
 
-                                if (Spells.E.Cast(Player.Instance.Position.Extend(target, Spells.E.Range).To3D())
-                                    && SoldierPos.IsInRange(target.ServerPosition, Spells.R.Width) && !SpecialVector.Between(target.Position, Player.Instance.Position, SoldierPos))
+                                if (target.Position.IsInRange(SoldierPos, Spells.R.Width))
                                 {
-                                    var time = (Player.Instance.ServerPosition.Distance(SoldierPos) / Spells.E.Speed) * (1000 - (Game.Ping + 250));
-                                    Core.DelayAction(() => Spells.Q.Cast(Player.Instance.Position.Extend(CastQTo, Spells.Q.Range).To3D()),(int)time);
+                                    var time = (Player.Instance.ServerPosition.Distance(ObjManager.Soldier_Nearest_Azir) / Spells.E.Speed) * (500 + Game.Ping);
+                                    Spells.E.Cast(Player.Instance.Position.Extend(target, Spells.E.Range).To3D());
+                                    Core.DelayAction(() => Spells.Q.Cast(Player.Instance.Position.Extend(CastQTo, Spells.Q.Range).To3D()), (int)time);
                                 }
                                 else
                                 {
                                     Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                                    Notifications.Show(incapability, 1750);
                                 }
                             }
                             else
                             {
                                 Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                                Notifications.Show(incapability, 1750);
-                            }
+                            } 
                         }
                         else
                         {
                             Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                            Notifications.Show(incapability, 1750);
                         }
                     }
                     else
                     {
                         Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                        Notifications.Show(incapability, 1750);
                     }
                 }
                 else
                 {
                     Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                    Notifications.Show(incapability, 1750);
                 }
             }
             else
             {
                 Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                Notifications.Show(incapability, 1750);
             }
         }
     }

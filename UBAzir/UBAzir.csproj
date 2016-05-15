@@ -67,7 +67,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpecialVector.cs" />
     <Compile Include="Spells.cs" />
-    <Compile Include="_Insec.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

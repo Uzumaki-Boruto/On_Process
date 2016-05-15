@@ -32,7 +32,7 @@ namespace UBAzir
             Game.OnTick += GameOnTick;
             Game.OnTick += ObjManager.GetMyPosBefore;
             Game.OnUpdate += Mode.KillSteal;
-            Game.OnNotify += _Insec.Notification;
+            //Game.OnNotify += _Insec.Notification;
             Drawing.OnDraw += OnDraw;
             Drawing.OnEndScene += Damages.Damage_Indicator;
             Orbwalker.OnUnkillableMinion += Mode.On_Unkillable_Minion;

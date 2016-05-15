@@ -43,7 +43,7 @@ namespace UBAzir
             WFocus = new Spell.Targeted(SpellSlot.W, 375);
             E = new Spell.Skillshot(SpellSlot.E, 1100, SkillShotType.Linear, 250, 1000, 150);
             RFake = new Spell.Active(SpellSlot.R);
-            R = new Spell.Skillshot(SpellSlot.R, 430, SkillShotType.Linear, 250, 1000, (new int[] { 0, 532, 665, 798 }[RFake.Level]))
+            R = new Spell.Skillshot(SpellSlot.R, 400, SkillShotType.Linear, 250, 1000, (new int[] { 0, 532, 665, 798 }[RFake.Level]))
             {
                 AllowedCollisionCount = int.MaxValue
             };

@@ -71,7 +71,7 @@ namespace UBAzir
                     )
                 {
                     var Q = Spells.Q.IsLearned ? Spells.Q.IsReady() : false;
-                    var W = Spells.W.IsLearned ? Spells.W.IsReady() : false;
+                    var W = Spells.W.IsLearned ? Spells.W.IsReady() || ObjManager.CountAzirSoldier != 0 : false;
                     var E = Spells.E.IsLearned ? Spells.E.IsReady() : false;
                     var R = Spells.R.IsLearned ? Spells.R.IsReady() : false;
 

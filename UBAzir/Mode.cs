@@ -38,7 +38,7 @@ namespace UBAzir
             {
                 var target = TargetSelector.GetTarget(Spells.E.Range, DamageType.Magical);
                 var priority = TargetSelector.GetPriority(target);
-                if (target != null && Config.ComboMenu[target.ChampionName].Cast<CheckBox>().CurrentValue)
+                if (target != null && !target.IsUnderTurret() && Config.ComboMenu[target.ChampionName].Cast<CheckBox>().CurrentValue)
                 {
                     if (priority >= 4
                     && target.IsValidTarget()
@@ -215,26 +215,33 @@ namespace UBAzir
         public static void JungleClear()
         {
             var monster = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsMonster && x.IsValidTarget(Spells.Q.Range)).OrderBy(x => x.MaxHealth).LastOrDefault();
-            if (monster == null || !monster.IsValid) return;
-            if (Orbwalker.IsAutoAttacking) return;
-            Orbwalker.ForcedTarget = null;
-            if (Config.JungleClear["Qjc"].Cast<CheckBox>().CurrentValue
-                && Player.Instance.ManaPercent >= Config.JungleClear["JcManager"].Cast<Slider>().CurrentValue
-                && Spells.Q.IsReady())
+            if (monster != null && monster.IsValid)
             {
-                Spells.Q.Cast(monster);
+                var qpred = Spells.Q.GetPrediction(monster);
+                if (Orbwalker.IsAutoAttacking) return;
+                Orbwalker.ForcedTarget = null;
+                if (Config.JungleClear["Qjc"].Cast<CheckBox>().CurrentValue
+                    && Player.Instance.ManaPercent >= Config.JungleClear["JcManager"].Cast<Slider>().CurrentValue
+                    && Spells.Q.IsReady())
+                {
+                    Spells.Q.Cast(qpred.CastPosition);
+                }
             }
 
             var wmonster = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsMonster && x.IsValidTarget(Spells.W.Range)).OrderBy(x => x.MaxHealth).LastOrDefault();
-            if (wmonster == null || !wmonster.IsValid) return;
-            if (Orbwalker.IsAutoAttacking) return;
-            Orbwalker.ForcedTarget = null;
-            if (Config.JungleClear["Wjc"].Cast<CheckBox>().CurrentValue && Spells.W.IsReady()
-                && Player.Instance.ManaPercent >= Config.JungleClear["JcManager"].Cast<Slider>().CurrentValue
-                && Spells.W.IsReady())
+            if (wmonster != null && wmonster.IsValid)
             {
-                Spells.W.Cast(wmonster.ServerPosition);
-            }           
+                var wpred = Spells.W.GetPrediction(wmonster);
+                if (Orbwalker.IsAutoAttacking) return;
+                Orbwalker.ForcedTarget = null;
+                if (Config.JungleClear["Wjc"].Cast<CheckBox>().CurrentValue && Spells.W.IsReady()
+                    && Player.Instance.ManaPercent >= Config.JungleClear["JcManager"].Cast<Slider>().CurrentValue
+                    && Spells.W.IsReady()
+                    && wmonster.IsInRange(Player.Instance, Spells.W.Radius + Spells.W.Range))
+                {
+                    Spells.W.Cast(wpred.CastPosition);
+                }
+            }
         }
         #endregion
 
@@ -280,6 +287,11 @@ namespace UBAzir
             var ECast = Player.Instance.Position.Extend(destination, Spells.E.Range).To3D();
             var value = Config.Flee["flee"].Cast<ComboBox>().CurrentValue;
             if (ObjManager.CountAzirSoldier == 0)
+            {
+                Spells.W.Cast(WCast);
+            }
+            if (Player.Instance.Position.Distance(destination) > ObjManager.Soldier_Nearest_Azir.Distance(destination)
+                && !Spells.E.IsReady())
             {
                 Spells.W.Cast(WCast);
             }
@@ -468,15 +480,12 @@ namespace UBAzir
                     && ObjManager.Soldier_Nearest_Enemy != Vector3.Zero
                     && Config.HarassMenu["a.auto"].Cast<CheckBox>().CurrentValue)
                 {
-                    var Unit = TargetSelector.SelectedTarget != null &&
-                                    TargetSelector.SelectedTarget.Distance(ObjManager.Soldier_Nearest_Enemy) < 375
-                           ? TargetSelector.SelectedTarget
-                           : TargetSelector.GetTarget(Spells.WLine.Range, DamageType.Magical, ObjManager.Soldier_Nearest_Enemy);
+                    var Unit = TargetSelector.GetTarget(Spells.WLine.Range, DamageType.Magical, ObjManager.Soldier_Nearest_Enemy);
                     var Minion = Orbwalker.PriorityLastHitWaitingMinion;
                     if (Unit.IsValid() && Minion == null && Unit.IsInRange(ObjManager.Soldier_Nearest_Enemy, Spells.WFocus.Range))
                     {
                         Player.IssueOrder(GameObjectOrder.AttackUnit, Unit);
-                        Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                        //Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
                     }
                 }
             }
