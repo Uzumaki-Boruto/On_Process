@@ -29,6 +29,7 @@ namespace UBAzir
             Menu = MainMenu.AddMenu("UB Azir", "UBAzir");
             Menu.AddGroupLabel("Made by Uzumaki Boruto");
             Menu.AddLabel("Dattenosa");
+            Menu.Add("mastery", new ComboBox("What is keystones that you're using in mastery?", 0, "None", "Thunderlord's Decree", "Deathfire Touch"));
 
             //ComboMenu
             ComboMenu = Menu.AddSubMenu("Combo");
@@ -67,12 +68,12 @@ namespace UBAzir
                 Insec.Add("godInsec", new KeyBind("Do God Insec", false, KeyBind.BindTypes.HoldActive, 'G'));
                 Insec.AddGroupLabel("Settings");
                 Insec.AddLabel("Normal Insec");
-                Insec.Add("normal.1", new ComboBox("I want to insec target to", 0, "My Cursor", "My Ally", "My Turret", "My Last Postion"));
+                Insec.Add("normal.1", new ComboBox("I want to insec target to", 4, "My Cursor", "My Ally", "My Turret", "My Last Postion", "Smart"));
                 Insec.Add("allowfl", new CheckBox("Allow using Flash in Insec"));
                 Insec.Add("flvalue", new Slider("Only flash if can be insec {0} enemies", 4, 2, 5));
                 Insec.AddSeparator();
                 Insec.AddLabel("God Insec");
-                Insec.Add("god.1", new ComboBox("I want to insec target to", 0, "My Cursor", "My Ally", "My Turret", "My Last Postion"));
+                Insec.Add("god.1", new ComboBox("I want to insec target to", 4, "My Cursor", "My Ally", "My Turret", "My Last Postion", "Smart"));
                 Insec.Add("god.2", new ComboBox("I want to move to", 0, "My Cursor", "My Ally", "My Turret"));
             }
             //HarassMenu
@@ -174,7 +175,7 @@ namespace UBAzir
                             MiscMenu.Add("gap" + a.ChampName, new CheckBox("R when " + a.ChampName + " using " + a.SpellSlot + " to gapclose me"));
                     }
                 }
-                MiscMenu.Add("gap.1", new ComboBox("Use R when", 0, "Gapclose spell is targeted", "Both Skillshot & Targeted"));
+                MiscMenu.Add("gap.1", new ComboBox("Use R when", 1, "Gapclose spell is targeted", "Both Skillshot & Targeted"));
                 /*MiscMenu.AddLabel("Activator Item");
                 MiscMenu.Add("item.1", new CheckBox("Auto use Bilgewater Cutlass"));
                 MiscMenu.Add("item.1MyHp", new Slider("My HP less than {0}%", 95));

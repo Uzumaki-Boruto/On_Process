@@ -6,23 +6,62 @@ using EloBuddy.SDK;
 using EloBuddy.SDK.Menu.Values;
 using SharpDX;
 
-
 namespace UBAzir
 {
     class Insec
     {
-        private static AIHeroClient target;
-        private static Obj_AI_Turret Turret = EntityManager.Turrets.Allies.FirstOrDefault(t => t.IsValidTarget(1250));
-        private static AIHeroClient Ally = EntityManager.Heroes.Allies.OrderByDescending(a => a.CountEnemiesInRange(Spells.R.Range)).FirstOrDefault();
+        //public static AIHeroClient target;
+        public static Obj_AI_Turret Turret = EntityManager.Turrets.Allies.FirstOrDefault(t => t.IsValidTarget(1250));
+        public static AIHeroClient Ally = EntityManager.Heroes.Allies.FirstOrDefault(a => a.IsValidTarget(1000));
         public static void Do_Normal_Insec()
         {
             var normal = Config.Insec["normal.1"].Cast<ComboBox>().CurrentValue;
             var Force = Orbwalker.ForcedTarget != null ? true : false;
             //var incapability = new SimpleNotification("UBAzir Normal Insec", "It isn't qualified to perform");
-            target = TargetSelector.GetTarget(Spells.R.Range - 20, DamageType.Magical, ObjManager.Soldier_Nearest_Enemy);
+            var target = TargetSelector.GetTarget(1100, DamageType.Magical);
             if (target != null)
             {
-                if (Spells.Flash.IsInRange(target) && Spells.Flash.IsReady() && Config.Insec["allowfl"].Cast<CheckBox>().CurrentValue)
+                if (target.IsValidTarget(300) && Spells.R.IsReady())
+                {
+                    switch (normal)
+                    {
+                        case 0:
+                            {
+                                SpecialVector.WhereCastR(target, SpecialVector.I_want.Cursor);
+                            }
+                            break;
+                        case 1:
+                            {
+                                SpecialVector.WhereCastR(target, SpecialVector.I_want.Turret);
+                            }
+                            break;
+                        case 2:
+                            {
+                                SpecialVector.WhereCastR(target, SpecialVector.I_want.Ally);
+                            }
+                            break;
+                        case 3:
+                            {
+                                SpecialVector.WhereCastR(target, SpecialVector.I_want.LastPostion);
+                            }
+                            break;
+                        case 4:
+                            {
+                                SpecialVector.WhereCastR(target, SpecialVector.I_want.All);
+                            }
+                            break;
+                    }
+                }
+                if (target.IsValidTarget(1100))
+                {
+                    if (ObjManager.All_Basic_Is_Ready)
+                    {
+                        var pred = Prediction.Position.PredictUnitPosition(target, 400);
+                        Mode.Flee(pred.To3D(), true);
+                    }
+                }
+                #region Rework
+                /*if (Spells.Flash.IsInRange(target) && Spells.Flash.IsReady() && Config.Insec["allowfl"].Cast<CheckBox>().CurrentValue)
                 {
                     var PosAndHits = SpecialVector.GetBestRPos(target.ServerPosition.To2D());
                     if (PosAndHits.First().Value >= Config.Insec["flvalue"].Cast<Slider>().CurrentValue)
@@ -123,7 +162,8 @@ namespace UBAzir
                 else
                 {
                     Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                }
+                }*/
+                #endregion
             }
             else
             {
@@ -139,7 +179,7 @@ namespace UBAzir
             var CastQTo = Vector3.Zero;
             var SoldierPos = Vector3.Zero;
             //var incapability = new SimpleNotification("UBAzir God Insec", "It isn't qualified to perform");
-            target = TargetSelector.GetTarget(300, DamageType.Magical, ObjManager.Soldier_Nearest_Enemy);
+            var target = TargetSelector.GetTarget(300, DamageType.Magical, ObjManager.Soldier_Nearest_Enemy);
             if (target != null)
             {
                 if (target.IsValidTarget())

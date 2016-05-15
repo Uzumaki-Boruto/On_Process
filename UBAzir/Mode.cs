@@ -279,13 +279,13 @@ namespace UBAzir
         #endregion
 
         #region Flee
-        public static void Flee(Vector3 destination)
+        public static void Flee(Vector3 destination, bool Insec = false)
         {
             var WCast = Player.Instance.Position.Extend(destination, Spells.W.Range).To3D();
             var Qcast = Player.Instance.Position.Extend(destination, Spells.Q.Range).To3D();
             var QCast2 = Player.Instance.Position.Extend(destination, Spells.Q.Range + Player.Instance.Position.Distance(ObjManager.Soldier_Nearest_Azir) - 20).To3D();
             var ECast = Player.Instance.Position.Extend(destination, Spells.E.Range).To3D();
-            var value = Config.Flee["flee"].Cast<ComboBox>().CurrentValue;
+            var value = Insec ? 2 : Config.Flee["flee"].Cast<ComboBox>().CurrentValue;
             if (ObjManager.CountAzirSoldier == 0)
             {
                 Spells.W.Cast(WCast);

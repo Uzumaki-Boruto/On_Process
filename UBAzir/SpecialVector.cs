@@ -80,10 +80,10 @@ namespace UBAzir
         public static void WhereCastR(Obj_AI_Base enemy, I_want want)
         {
             var MyPos = Player.Instance.Position;
-            var Turret = EntityManager.Turrets.Allies.Where(t => t.Distance(MyPos) <= 1000).FirstOrDefault();
-            var Allies = EntityManager.Heroes.Allies.Where(a => a.Distance(MyPos) <= 1000).FirstOrDefault();
+            var Turret = Insec.Turret;
+            var Allies = Insec.Ally;
             var MyPosBefore = ObjManager.LastMyPos;
-            if (enemy.IsInRange(Player.Instance, 300))
+            if (enemy.IsInRange(Player.Instance, 300) && enemy.IsValid)
             {
                 if (want == I_want.Cursor)
                 {
@@ -125,6 +125,7 @@ namespace UBAzir
                     if (Turret != null && !Turret.IsDead && Turret.IsValid)
                     {
                         var Pos = MyPos.Extend(Turret.Position, 400).To3D();
+                        Spells.R.Cast(Pos);
                     }
                     if (Turret == null || Turret.IsDead || !Turret.IsValid)
                     {

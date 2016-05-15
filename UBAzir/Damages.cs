@@ -38,6 +38,27 @@ namespace UBAzir
             else return Player.Instance.CalculateDamageOnUnit(target, DamageType.Magical, ((new[] { 0f, 150f, 225f, 300f }[Spells.R.Level]) + 0.6f * Player.Instance.TotalMagicalDamage) * 0.6f);
         }
 
+        public static float Mastery_Damage(Obj_AI_Base target)
+        {
+            var Value = Config.Menu["mastery"].Cast<ComboBox>().CurrentValue;
+            var Thunder = Value == 1;
+            var Fire = Value == 2;
+            if (Thunder)
+            {
+                if (Player.Instance.HasBuff("masterylordsdecreecooldown")) return 0f;
+                if (!Player.Instance.HasBuff("SummonerExhaust"))
+                   return Player.Instance.CalculateDamageOnUnit(target, DamageType.Magical, 10 * Player.Instance.Level + 0.3f * Player.Instance.FlatPhysicalDamageMod + 0.1f * Player.Instance.TotalMagicalDamage);
+                else return Player.Instance.CalculateDamageOnUnit(target, DamageType.Magical, (10 * Player.Instance.Level + 0.3f * Player.Instance.FlatPhysicalDamageMod + 0.1f * Player.Instance.TotalMagicalDamage) * 0.6f);
+            }
+            if (Fire)
+            {
+                if (!Player.Instance.HasBuff("SummonerExhaust"))
+                    return Player.Instance.CalculateDamageOnUnit(target, DamageType.Magical, 4 + 0.3f * Player.Instance.FlatPhysicalDamageMod + 0.125f * Player.Instance.TotalMagicalDamage);
+                else return Player.Instance.CalculateDamageOnUnit(target, DamageType.Magical, (4 + 0.3f * Player.Instance.FlatPhysicalDamageMod + 0.125f * Player.Instance.TotalMagicalDamage) * 0.6f);
+            }
+            else return 0f;
+        }
+
         public static float Damagefromspell(Obj_AI_Base target, bool Q, bool W, bool E, bool R)
         {
             if (target == null)
@@ -61,7 +82,7 @@ namespace UBAzir
             {
                 damage = damage + RDamage(target);
             }
-            return damage;
+            return damage + Mastery_Damage(target);
         }
         public static void Damage_Indicator(EventArgs args)
         {

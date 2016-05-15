@@ -64,8 +64,8 @@ namespace UBAzir
         public static void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
         {
             if (Spells.R.IsReady() 
-                && !sender.IsMe
-                && (sender.IsAttackingPlayer || Player.Instance.Distance(e.End) < 70) 
+                && !sender.IsAlly
+                && (sender.IsAttackingPlayer || Player.Instance.Distance(e.End) < 100) 
                 && Config.MiscMenu["gap"].Cast<CheckBox>().CurrentValue
                 && Config.MiscMenu["gap" + sender.ChampionName].Cast<CheckBox>().CurrentValue)
             {
