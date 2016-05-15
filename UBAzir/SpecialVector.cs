@@ -34,13 +34,15 @@ namespace UBAzir
                 {
                     if (enemy != null && enemy.IsValid && !enemy.IsInRange(ObjManager.Soldier_Nearest_Enemy, 375))
                     {
-                        var Pos = MyPos.Extend(Path, MyPos.Distance(EnemyPos) + (float)Bonus).To3D();
+                        var Pos = MyPos.Extend(EnemyPos.Extend(Path, 100).To3D(), MyPos.Distance(EnemyPos) + (float)Bonus).To3D();
                         Spells.Q.Cast(Pos);
+                        Orbwalker.ResetAutoAttack();
                     }
                     if (enemy != null && enemy.IsValid && !enemy.IsInRange(ObjManager.Soldier_Nearest_Enemy, 375) && !enemy.IsInRange(Player.Instance, Spells.Q.Range - Bonus))
                     {
-                        var Pos = MyPos.Extend(Path, Spells.Q.Range).To3D();
+                        var Pos = MyPos.Extend(EnemyPos.Extend(Path, 100).To3D() , Spells.Q.Range).To3D();
                         Spells.Q.Cast(Pos);
+                        Orbwalker.ResetAutoAttack();
                     }
                 }
                 if (MyPos.Distance(Path) < MyPos.Distance(Soldier))
@@ -48,6 +50,7 @@ namespace UBAzir
                     if (enemy != null && enemy.IsValid && !enemy.IsInRange(ObjManager.Soldier_Nearest_Enemy, 375) && enemy.IsInRange(Player.Instance, Spells.Q.Range))
                     {
                         Spells.Q.Cast(enemy);
+                        Orbwalker.ResetAutoAttack();
                     }
                 }
             }
@@ -190,7 +193,14 @@ namespace UBAzir
                                           where polygon.IsInside(TargetPos)
                                           select champ)
                     {
-                        Player.IssueOrder(GameObjectOrder.AttackUnit, champ);
+                        if (!Orbwalker.CanAutoAttack)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            Player.IssueOrder(GameObjectOrder.AttackUnit, champ);
+                        }
                     }
                 }
             }

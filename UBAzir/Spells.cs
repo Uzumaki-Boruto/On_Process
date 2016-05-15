@@ -9,6 +9,7 @@ namespace UBAzir
     class Spells
     {
         public static Spell.Skillshot Q { get; private set; }
+        public static Spell.Skillshot Q_in_Flee { get; private set; }
         public static Spell.Skillshot W { get; private set; }
         public static Spell.Skillshot WLine { get; private set; }
         public static Spell.Targeted WFocus { get; private set; }
@@ -25,9 +26,13 @@ namespace UBAzir
 
         public static void InitSpells()
         {
-            Q = new Spell.Skillshot(SpellSlot.Q, 875, SkillShotType.Linear, 250, 1700, 70)
+            Q = new Spell.Skillshot(SpellSlot.Q, 875, SkillShotType.Linear, 250, 1200, 70)
             {
-                AllowedCollisionCount = int.MaxValue
+                AllowedCollisionCount = int.MaxValue,
+            };
+            Q_in_Flee = new Spell.Skillshot(SpellSlot.Q, 1500, SkillShotType.Linear, 250, 1200, 70)
+            {
+                AllowedCollisionCount = int.MaxValue,
             };
             W = new Spell.Skillshot(SpellSlot.W, 450, SkillShotType.Circular, 250, int.MaxValue, 375);
 
@@ -36,13 +41,12 @@ namespace UBAzir
                 AllowedCollisionCount = int.MaxValue
             };
             WFocus = new Spell.Targeted(SpellSlot.W, 375);
-            E = new Spell.Skillshot(SpellSlot.E, 1100, SkillShotType.Linear, 250, 1600, 150);
+            E = new Spell.Skillshot(SpellSlot.E, 1100, SkillShotType.Linear, 250, 1000, 150);
             RFake = new Spell.Active(SpellSlot.R);
             R = new Spell.Skillshot(SpellSlot.R, 430, SkillShotType.Linear, 250, 1000, (new int[] { 0, 532, 665, 798 }[RFake.Level]))
             {
                 AllowedCollisionCount = int.MaxValue
             };
-            //(int)
             if (HasSpell("summonerdot"))
                 Ignite = new Spell.Targeted(ObjectManager.Player.GetSpellSlotFromName("summonerdot"), 600);
             if (HasSpell("summonerflash"))

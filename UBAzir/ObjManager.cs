@@ -33,7 +33,7 @@ namespace UBAzir
             {
                 var target = TargetSelector.GetTarget(1300, DamageType.Magical);
                 var Soldier = Orbwalker.ValidAzirSoldiers.OrderBy(s => s.Distance(target)).FirstOrDefault();
-                if (Soldier != null && target.Distance(Soldier.Position) <= 375) return Soldier.Position;
+                if (Soldier != null) return Soldier.Position;
                 else return Vector3.Zero;
             }
         }
@@ -65,7 +65,7 @@ namespace UBAzir
                 else return Orbwalker.AzirSoldiers.LastOrDefault().Position;
             }
         }
-        public static List<Obj_AI_Minion> AzirSoldiers = new List<Obj_AI_Minion>();
+        /*public static List<Obj_AI_Minion> AzirSoldiers = new List<Obj_AI_Minion>();
         static void Obj_AI_Base_OnCreate(GameObject sender, EventArgs args)
         {
             if (sender.Name == "AzirSoldier" && sender.IsAlly)
@@ -77,7 +77,7 @@ namespace UBAzir
             {
                 AzirSoldiers.Remove(AzirSoldiers.Aggregate((curMin, x) => (curMin == null || x.Distance(sender.Position) < curMin.Distance(sender.Position) ? x : curMin)));
             }      
-        }
+        }*/
         public static void GetMyPosBefore(EventArgs args)
         {
             if (Game.Time > Time + 1f)

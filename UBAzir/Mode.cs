@@ -115,7 +115,6 @@ namespace UBAzir
                 if (!Config.ComboMenu["teamfight"].Cast<KeyBind>().CurrentValue)
                 {
                     var target = TargetSelector.GetTarget(Spells.R.Range - 20, DamageType.Magical);
-                    var Force = Orbwalker.ForcedTarget != null ? true : false;
                     if (target != null && target.IsValidTarget() && target.HealthPercent <= 70)
                     {
                         SpecialVector.WhereCastR(target, SpecialVector.I_want.All);
@@ -273,50 +272,49 @@ namespace UBAzir
         #endregion
 
         #region Flee
-        public static void Flee()
+        public static void Flee(Vector3 destination)
         {
-            var WCast = Player.Instance.Position.Extend(Game.CursorPos, Spells.W.Range).To3D();
-            var QCast = Player.Instance.Position.Extend(Game.CursorPos, Spells.Q.Range).To3D();
-            var ECast = Player.Instance.Position.Extend(Game.CursorPos, Spells.E.Range).To3D();
-            if (Config.Flee["flee"].Cast<ComboBox>().CurrentValue == 0)
+            var WCast = Player.Instance.Position.Extend(destination, Spells.W.Range).To3D();
+            var Qcast = Player.Instance.Position.Extend(destination, Spells.Q.Range).To3D();
+            var QCast2 = Player.Instance.Position.Extend(destination, Spells.Q.Range + Player.Instance.Position.Distance(ObjManager.Soldier_Nearest_Azir) - 20).To3D();
+            var ECast = Player.Instance.Position.Extend(destination, Spells.E.Range).To3D();
+            var value = Config.Flee["flee"].Cast<ComboBox>().CurrentValue;
+            if (ObjManager.CountAzirSoldier == 0)
             {
-                if (Spells.W.IsReady() && Spells.E.IsReady())
-                {
-                    Spells.W.Cast(WCast);
-                    Spells.E.Cast(ECast);
-                }
+                Spells.W.Cast(WCast);
             }
+            switch (value)
+            {
+                case 0:
+                    {
+                        if (!Spells.E.IsReady()) return;
+                        if (ObjManager.CountAzirSoldier != 0)
+                        {
+                            Spells.E.Cast(ECast);
+                        }
+                    }
+                    break;
+                case 1:
+                    {
+                        if (!Spells.Q.IsReady() || !Spells.E.IsReady()) return;
+                        if (ObjManager.CountAzirSoldier != 0)
+                        {
+                            Spells.Q.Cast(Qcast);
+                            Spells.E.Cast(ECast);
+                        }
+                    }
+                    break;
+                case 2:
+                    {
+                        if (!Spells.Q.IsReady() || !Spells.E.IsReady()) return;
+                        if (ObjManager.CountAzirSoldier != 0 && Spells.E.Cast(ECast))
+                        {
+                            var time = (Player.Instance.ServerPosition.Distance(ObjManager.Soldier_Nearest_Azir) / Spells.E.Speed) * (500 + Game.Ping);                            
+                            Core.DelayAction(() => Spells.Q_in_Flee.Cast(QCast2), (int)time);
 
-            if (Config.Flee["flee"].Cast<ComboBox>().CurrentValue == 1)
-            {
-                if (Spells.Q.IsReady() && Spells.E.IsReady())
-                {
-                    if (ObjManager.CountAzirSoldier == 0 && Spells.W.IsReady())
-                    {
-                        Spells.W.Cast(WCast);
-                        Spells.Q.Cast(QCast);
-                        Spells.E.Cast(ECast);
+                        }
                     }
-                    if (ObjManager.CountAzirSoldier > 0)
-                    {
-                        Spells.Q.Cast(QCast);
-                        Spells.E.Cast(ECast);
-                    }
-                }
-            }
-            if (Config.Flee["flee"].Cast<ComboBox>().CurrentValue == 2 && ObjManager.All_Basic_Is_Ready)
-            {
-                if (ObjManager.CountAzirSoldier == 0)
-                {
-                    Spells.W.Cast(WCast);
-                }
-                if (ObjManager.CountAzirSoldier > 0)
-                {                   
-                    if ( Spells.E.Cast(ECast) && Player.Instance.Distance(ObjManager.Soldier_Nearest_Azir) <= 100)
-                    {
-                        Spells.Q.Cast(QCast);
-                    }
-                }
+                    break;                
             }
         }
         #endregion
@@ -478,6 +476,7 @@ namespace UBAzir
                     if (Unit.IsValid() && Minion == null && Unit.IsInRange(ObjManager.Soldier_Nearest_Enemy, Spells.WFocus.Range))
                     {
                         Player.IssueOrder(GameObjectOrder.AttackUnit, Unit);
+                        Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
                     }
                 }
             }

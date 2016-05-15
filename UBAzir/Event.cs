@@ -49,7 +49,7 @@ namespace UBAzir
             }
             return target.HasBuffOfType(BuffType.SpellShield) || target.HasBuffOfType(BuffType.SpellImmunity);
         }
-        private static void Interrupter_OnInterruptableSpell(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs e)
+        public static void Interrupter_OnInterruptableSpell(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs e)
         {
             var Value = Config.MiscMenu["interrupt.value"].Cast<ComboBox>().CurrentValue;
             var Danger = Value == 0 ? DangerLevel.High : Value == 1 ? DangerLevel.Medium : Value == 2 ? DangerLevel.Low : DangerLevel.High;
@@ -61,7 +61,7 @@ namespace UBAzir
                 SpecialVector.WhereCastR(sender, SpecialVector.I_want.All);
             }
         }
-        public void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
+        public static void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
         {
             if (Spells.R.IsReady() 
                 && !sender.IsMe
@@ -86,6 +86,39 @@ namespace UBAzir
                         }
                         break;
                 }
+            }
+        }
+        public static void Obj_AI_Base_OnLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs args)
+        {
+            if (!sender.IsMe)
+                return;
+            var delay = Config.MiscMenu["upgradedelay"].Cast<Slider>().CurrentValue * 10;
+            switch (Config.MiscMenu["upgrademode"].Cast<ComboBox>().CurrentValue)
+            {
+                case 0:
+                    {
+                        SpellSlot[] levels =
+                         {
+                             SpellSlot.Unknown, SpellSlot.W, SpellSlot.Q, SpellSlot.E, SpellSlot.Q, SpellSlot.Q,
+                             SpellSlot.R, SpellSlot.Q, SpellSlot.W, SpellSlot.Q, SpellSlot.W, SpellSlot.R,
+                             SpellSlot.W, SpellSlot.W, SpellSlot.E, SpellSlot.E, SpellSlot.R, SpellSlot.E, SpellSlot.E
+                         };
+                        if (Config.MiscMenu["upgrade"].Cast<CheckBox>().CurrentValue)
+                            Core.DelayAction(() => Player.LevelSpell(levels[Player.Instance.Level]), delay);
+                    }
+                    break;
+                case 1:
+                    {
+                        SpellSlot[] levels =
+                         {
+                             SpellSlot.Unknown, SpellSlot.W, SpellSlot.Q, SpellSlot.E, SpellSlot.W, SpellSlot.W,
+                             SpellSlot.R, SpellSlot.W, SpellSlot.Q, SpellSlot.W, SpellSlot.Q, SpellSlot.R,
+                             SpellSlot.Q, SpellSlot.Q, SpellSlot.E, SpellSlot.E, SpellSlot.R, SpellSlot.E, SpellSlot.E
+                         };
+                        if (Config.MiscMenu["upgrade"].Cast<CheckBox>().CurrentValue)
+                            Core.DelayAction(() => Player.LevelSpell(levels[Player.Instance.Level]), delay);
+                    }
+                    break;
             }
         }
     }

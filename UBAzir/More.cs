@@ -24,6 +24,7 @@ namespace UBAzir
             Config.Dattenosa();
             Spells.InitSpells();
             InitEvents();
+            Player.LevelSpell(SpellSlot.W);
         }
 
         private static void InitEvents()
@@ -31,10 +32,14 @@ namespace UBAzir
             Game.OnTick += GameOnTick;
             Game.OnTick += ObjManager.GetMyPosBefore;
             Game.OnUpdate += Mode.KillSteal;
+            Game.OnNotify += _Insec.Notification;
             Drawing.OnDraw += OnDraw;
             Drawing.OnEndScene += Damages.Damage_Indicator;
             Orbwalker.OnUnkillableMinion += Mode.On_Unkillable_Minion;
-        }
+            Gapcloser.OnGapcloser += Event.OnGapCloser;
+            Interrupter.OnInterruptableSpell += Event.Interrupter_OnInterruptableSpell;
+            Obj_AI_Base.OnLevelUp +=  Event.Obj_AI_Base_OnLevelUp;
+        }       
         private static void GameOnTick(EventArgs args)
         {
             Orbwalker.ForcedTarget = null;
@@ -51,7 +56,7 @@ namespace UBAzir
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
             { Mode.JungleClear(); }
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
-            { Mode.Flee(); }
+            { Mode.Flee(Game.CursorPos); }
             if (!Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && !Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)
                 && !Config.Insec["normalInsec"].Cast<KeyBind>().CurrentValue && !Config.Insec["godInsec"].Cast<KeyBind>().CurrentValue)
             { Mode.Auto_Harass(); }

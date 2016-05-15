@@ -189,6 +189,12 @@ namespace UBAzir
                 MiscMenu.AddLabel("Mod Skin");
                 MiscMenu.Add("Modskin", new CheckBox("Enable mod skin", false));
                 MiscMenu.Add("Modskinid", new Slider("Mod Skin", 2, 0, 2));
+                MiscMenu.AddSeparator();
+
+                MiscMenu.AddLabel("Level up auto upgrade spell");
+                MiscMenu.Add("upgrade", new CheckBox("Auto Upgrade when level up"));
+                MiscMenu.Add("upgradedelay", new Slider("Delay {0}0 milisec", 50, 0, 200));
+                MiscMenu.Add("upgrademode", new ComboBox("Upgrade Mode", 0, "R-Q-W-E", "R-W-Q-E"));
             }
         }
     }
