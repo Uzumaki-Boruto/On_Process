@@ -61,11 +61,13 @@ namespace UBAzir
                 SpecialVector.WhereCastR(sender, SpecialVector.I_want.All);
             }
         }
-        public static void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
+        public static void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs args)
         {
-            if (Spells.R.IsReady() 
-                && !sender.IsAlly
-                && (sender.IsAttackingPlayer || Player.Instance.Distance(e.End) < 100) 
+            if (Spells.R.IsReady()
+                && sender != null
+                && sender.IsEnemy
+                && (sender.IsAttackingPlayer || Player.Instance.Distance(args.End) < 100 || args.End.IsInRange(Player.Instance, Spells.R.Range))
+                && sender.Spellbook.CastEndTime <= Spells.R.CastDelay
                 && Config.MiscMenu["gap"].Cast<CheckBox>().CurrentValue
                 && Config.MiscMenu["gap" + sender.ChampionName].Cast<CheckBox>().CurrentValue)
             {
@@ -73,16 +75,15 @@ namespace UBAzir
                 {
                     case 0:
                         {
-                            if (e.Type == Gapcloser.GapcloserType.Targeted)
+                            if (args.Type == Gapcloser.GapcloserType.Targeted)
                             {
-                                SpecialVector.WhereCastR(sender, SpecialVector.I_want.All);
+                                SpecialVector.WhereCastR(sender, SpecialVector.I_want.On_Gapclose, args.End, (int)sender.Spellbook.CastEndTime);
                             }
-                            else return;
                         }
                         break;
                     case 1:
                         {
-                            SpecialVector.WhereCastR(sender, SpecialVector.I_want.All);
+                            SpecialVector.WhereCastR(sender, SpecialVector.I_want.On_Gapclose, args.End, (int)sender.Spellbook.CastEndTime);
                         }
                         break;
                 }

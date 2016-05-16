@@ -74,6 +74,8 @@ namespace UBAzir
                     Player.SetSkinId(Config.MiscMenu["Modskinid"].Cast<Slider>().CurrentValue);
                 }
             }
+
+            //Insec.Do_Flash_Insec();
         }
         private static void OnDraw(EventArgs args)
         {
@@ -94,7 +96,7 @@ namespace UBAzir
 
             if (Config.DrawMenu["Rdr"].Cast<CheckBox>().CurrentValue)
             {
-                Circle.Draw(Spells.R.IsLearned ? Color.Yellow : Color.Zero, Spells.R.Range, Player.Instance.Position);
+                Circle.Draw(Spells.R.IsLearned ? Color.Yellow : Color.Zero, 325, Player.Instance.Position);
             }
             
         }

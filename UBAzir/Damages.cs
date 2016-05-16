@@ -92,7 +92,7 @@ namespace UBAzir
                     )
                 {
                     var Q = Spells.Q.IsLearned ? Spells.Q.IsReady() : false;
-                    var W = Spells.W.IsLearned ? Spells.W.IsReady() || ObjManager.CountAzirSoldier != 0 : false;
+                    var W = Spells.W.IsLearned ? Spells.W.IsReady() || Orbwalker.ValidAzirSoldiers.Any(s => s.CountEnemiesInRange(375) > 1) : false;
                     var E = Spells.E.IsLearned ? Spells.E.IsReady() : false;
                     var R = Spells.R.IsLearned ? Spells.R.IsReady() : false;
 
@@ -102,15 +102,18 @@ namespace UBAzir
                     {
                         continue;
                     }
+                    var Special_X = unit.ChampionName == "Jhin" || unit.ChampionName == "Annie" ? -10 : 9;
+                    var Special_Y = unit.ChampionName == "Jhin" || unit.ChampionName == "Annie" ? -12 : 9;
+
                     var DamagePercent = ((unit.TotalShieldHealth() - damage) > 0
                         ? (unit.TotalShieldHealth() - damage)
                         : 0) / (unit.MaxHealth + unit.AllShield + unit.AttackShield + unit.MagicShield);
                     var currentHealthPercent = unit.TotalShieldHealth() / (unit.MaxHealth + unit.AllShield + unit.AttackShield + unit.MagicShield);
 
-                    var StartPoint = new Vector2((int)(unit.HPBarPosition.X + DamagePercent * 107) + 1,
-                        (int)unit.HPBarPosition.Y + 9);
-                    var EndPoint = new Vector2((int)(unit.HPBarPosition.X + currentHealthPercent * 107) + 1,
-                        (int)unit.HPBarPosition.Y + 9);
+                    var StartPoint = new Vector2((int)(unit.HPBarPosition.X + Special_X + DamagePercent * 107) + 1,
+                        (int)unit.HPBarPosition.Y + Special_Y);
+                    var EndPoint = new Vector2((int)(unit.HPBarPosition.X + Special_X + currentHealthPercent * 107) + 1,
+                        (int)unit.HPBarPosition.Y + Special_Y);
                     var Color = Config.DrawMenu["Color"].Cast<ColorPicker>().CurrentValue;
                     Drawing.DrawLine(StartPoint, EndPoint, 9.82f, Color);
 

@@ -43,14 +43,14 @@ namespace UBAzir
             WFocus = new Spell.Targeted(SpellSlot.W, 375);
             E = new Spell.Skillshot(SpellSlot.E, 1100, SkillShotType.Linear, 250, 1000, 150);
             RFake = new Spell.Active(SpellSlot.R);
-            R = new Spell.Skillshot(SpellSlot.R, 400, SkillShotType.Linear, 250, 1000, (new int[] { 0, 532, 665, 798 }[RFake.Level]))
+            R = new Spell.Skillshot(SpellSlot.R, 450, SkillShotType.Linear, 350, 1000, (new int[] { 0, 532, 665, 798 }[RFake.Level]))
             {
                 AllowedCollisionCount = int.MaxValue
             };
             if (HasSpell("summonerdot"))
                 Ignite = new Spell.Targeted(ObjectManager.Player.GetSpellSlotFromName("summonerdot"), 600);
             if (HasSpell("summonerflash"))
-                Flash = new Spell.Skillshot(ObjectManager.Player.GetSpellSlotFromName("summonerflash"), 425, SkillShotType.Circular, 0, int.MaxValue, 1);
+                Flash = new Spell.Skillshot(ObjectManager.Player.GetSpellSlotFromName("summonerflash"), 425, SkillShotType.Circular, 0, int.MaxValue, 300);
         }
     }
 }

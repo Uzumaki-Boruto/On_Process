@@ -37,7 +37,7 @@ namespace UBAzir
                 else return Vector3.Zero;
             }
         }
-        public static Vector3 Soldier_Nearest_Minion
+        /*public static Vector3 Soldier_Nearest_Minion
         {
             get
             {
@@ -46,7 +46,7 @@ namespace UBAzir
                 if (Soldier != null && minion.Distance(Soldier.Position) <= 375) return Soldier.Position;
                 else return Vector3.Zero;
             }
-        }
+        }*/
         public static Vector3 Soldier_Nearest_Azir
         {
             get
