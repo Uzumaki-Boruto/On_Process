@@ -273,7 +273,6 @@ namespace UBAzir
             var target = TargetSelector.GetTarget(1100, DamageType.Magical);
             var god1 = Config.Insec["god.1"].Cast<ComboBox>().CurrentValue;
             var god2 = Config.Insec["god.2"].Cast<ComboBox>().CurrentValue;
-            var CastRTo = new SpecialVector.I_want();
             var CastQTo = new Vector3();
             var SoldierPos = Vector3.Zero;
             var Objectnumber = Config.Insec["godgoto"].Cast<ComboBox>().CurrentValue;
@@ -282,36 +281,36 @@ namespace UBAzir
                 Game.CursorPos : Objectnumber == 2 ? (target != null ? target.Position : Game.CursorPos) : Vector3.Zero;
 
             //var incapability = new SimpleNotification("UBAzir God Insec", "It isn't qualified to perform");
-            switch (god1)
+            if (target != null && target.IsValidTarget(300) && Spells.R.IsReady())
             {
-                case 0:
-                    {
-                        CastRTo = SpecialVector.I_want.Cursor;
-                    }
-                    break;
-
-                case 1:
-                    {
-                        CastRTo = SpecialVector.I_want.Ally;
-                    }
-                    break;
-
-                case 2:
-                    {
-                        CastRTo = SpecialVector.I_want.Turret;
-                    }
-                    break;
-
-                case 3:
-                    {
-                        CastRTo = SpecialVector.I_want.LastPostion;
-                    }
-                    break;
-                case 4:
-                    {
-                        CastRTo = SpecialVector.I_want.All;
-                    }
-                    break;
+                switch (god1)
+                {
+                    case 0:
+                        {
+                            SpecialVector.WhereCastR(target, SpecialVector.I_want.Cursor);
+                        }
+                        break;
+                    case 1:
+                        {
+                            SpecialVector.WhereCastR(target, SpecialVector.I_want.Turret);
+                        }
+                        break;
+                    case 2:
+                        {
+                            SpecialVector.WhereCastR(target, SpecialVector.I_want.Ally);
+                        }
+                        break;
+                    case 3:
+                        {
+                            SpecialVector.WhereCastR(target, SpecialVector.I_want.LastPostion);
+                        }
+                        break;
+                    case 4:
+                        {
+                            SpecialVector.WhereCastR(target, SpecialVector.I_want.All);
+                        }
+                        break;
+                }
             }
             switch (god2)
             {
@@ -338,7 +337,7 @@ namespace UBAzir
                     }
                     break;
             }
-            if (target != null && target.IsValidTarget())
+            if (target != null && target.IsValidTarget(300, false, ObjManager.Soldier_Nearest_Enemy))
             {
                 if (Spells.R.IsReady())
                 {
@@ -357,8 +356,8 @@ namespace UBAzir
                                 {
                                     if (ObjManager.CountAzirSoldier >= 0 && Spells.E.Cast(ObjManager.Soldier_Nearest_Enemy))
                                     {
-                                        var time = (Player.Instance.ServerPosition.Distance(ObjManager.Soldier_Nearest_Azir) / Spells.E.Speed) * (500 + Game.Ping);
-                                        Core.DelayAction(() => SpecialVector.WhereCastR(target, CastRTo), (int)time / 2);                    
+                                        var delay = Config.Flee["fleedelay"].Cast<Slider>().CurrentValue;
+                                        var time = (Player.Instance.ServerPosition.Distance(ObjManager.Soldier_Nearest_Azir) / Spells.E.Speed) * (450 + delay + Game.Ping);
                                         Core.DelayAction(() => Spells.Q_in_Flee.Cast(CastQTo), (int)time);
                                     }
                                 }

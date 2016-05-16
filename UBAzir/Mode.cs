@@ -286,7 +286,7 @@ namespace UBAzir
                 {
                     Spells.W.Cast(WCast);
                 }
-                if (Player.Instance.Position.Distance(destination) > ObjManager.Soldier_Nearest_Azir.Distance(destination))
+                if (Player.Instance.Position.Distance(destination) < ObjManager.Soldier_Nearest_Azir.Distance(destination))
                 {
                     Spells.W.Cast(WCast);
                 }
