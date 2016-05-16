@@ -277,7 +277,7 @@ namespace UBAzir
         {
             var WCast = Player.Instance.Position.Extend(destination, Spells.W.Range).To3D();
             var Qcast = Player.Instance.Position.Extend(destination, Spells.Q.Range).To3D();
-            var QCast2 = Player.Instance.Position.Extend(destination, Spells.Q.Range + Player.Instance.Position.Distance(ObjManager.Soldier_Nearest_Azir) - 20).To3D();
+            var QCast2 = Player.Instance.Position.Extend(destination, Spells.Q.Range + Player.Instance.Position.Distance(ObjManager.Soldier_Nearest_Azir)).To3D();
             var ECast = Player.Instance.Position.Extend(destination, Spells.E.Range).To3D();
             var value = Insec ? 2 : Config.Flee["flee"].Cast<ComboBox>().CurrentValue;
             if (ObjManager.All_Basic_Is_Ready)
@@ -315,9 +315,11 @@ namespace UBAzir
                 case 2:
                     {
                         if (!Spells.Q.IsReady() || !Spells.E.IsReady()) return;
-                        if (ObjManager.CountAzirSoldier >= 0 && Spells.E.Cast(ECast))
+                        if (ObjManager.CountAzirSoldier >= 0)
                         {
-                            var time = (Player.Instance.ServerPosition.Distance(ObjManager.Soldier_Nearest_Azir) / Spells.E.Speed) * (500 + Game.Ping);                            
+                            Spells.E.Cast(ECast);
+                            var delay = Config.Flee["fleedelay"].Cast<Slider>().CurrentValue;
+                            var time = (Player.Instance.ServerPosition.Distance(ObjManager.Soldier_Nearest_Azir) / Spells.E.Speed) * (450 + delay + Game.Ping);                            
                             Core.DelayAction(() => Spells.Q_in_Flee.Cast(QCast2), (int)time);
                         }
                     }
@@ -434,12 +436,12 @@ namespace UBAzir
                 {
                     var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
                     var Force = Orbwalker.ForcedTarget != null ? true : false;
-                    if (target != null && target.IsValidTarget()
+                    if (target != null && target.IsValidTarget() && !Player.Instance.IsUnderEnemyturret()
                         && Config.HarassMenu["Wauto"].Cast<ComboBox>().CurrentValue == 1)
                     {
                         SpecialVector.WhereCastW(target, true);
                     }
-                    if (target != null && target.IsValidTarget()
+                    if (target != null && target.IsValidTarget() && !Player.Instance.IsUnderEnemyturret()
                         && Config.HarassMenu["Wauto"].Cast<ComboBox>().CurrentValue == 2
                         && Spells.Q.IsReady())
                     {
@@ -450,7 +452,8 @@ namespace UBAzir
                 {
                     var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
                     var Force = Orbwalker.ForcedTarget != null ? true : false;
-                    if (target != null && target.IsValidTarget() && !target.IsInRange(ObjManager.Soldier_Nearest_Enemy, Spells.WFocus.Range))
+                    if (target != null && target.IsValidTarget() && !Player.Instance.IsUnderEnemyturret()
+                        && !target.IsInRange(ObjManager.Soldier_Nearest_Enemy, Spells.WFocus.Range))
                     {
                         SpecialVector.WhereCastQ(target, Force);
                     }
@@ -459,11 +462,11 @@ namespace UBAzir
                     && ObjManager.Soldier_Nearest_Enemy != Vector3.Zero
                     && Config.HarassMenu["aa.auto"].Cast<CheckBox>().CurrentValue)
                 {
-                    var Unit = TargetSelector.SelectedTarget != null &&
+                    var target = TargetSelector.SelectedTarget != null &&
                                     TargetSelector.SelectedTarget.Distance(ObjManager.Soldier_Nearest_Enemy) < 500
                            ? TargetSelector.SelectedTarget
                            : TargetSelector.GetTarget(Spells.WLine.Range, DamageType.Magical, ObjManager.Soldier_Nearest_Enemy);
-                    if (Unit.IsValid())
+                    if (target.IsValid() && !Player.Instance.IsUnderEnemyturret())
                     {
                         SpecialVector.AttackOtherObject();
                     }
@@ -472,12 +475,13 @@ namespace UBAzir
                     && ObjManager.Soldier_Nearest_Enemy != Vector3.Zero
                     && Config.HarassMenu["a.auto"].Cast<CheckBox>().CurrentValue)
                 {
-                    var Unit = TargetSelector.GetTarget(Spells.WLine.Range, DamageType.Magical, ObjManager.Soldier_Nearest_Enemy);
+                    var target = TargetSelector.GetTarget(Spells.WLine.Range, DamageType.Magical, ObjManager.Soldier_Nearest_Enemy);
                     var Minion = Orbwalker.PriorityLastHitWaitingMinion;
-                    if (Unit.IsValid() && Minion == null && Unit.IsInRange(ObjManager.Soldier_Nearest_Enemy, Spells.WFocus.Range))
+                    if (target.IsValid() && Minion == null && !Player.Instance.IsUnderEnemyturret()
+                        && target.IsInRange(ObjManager.Soldier_Nearest_Enemy, Spells.WFocus.Range))
                     {
-                        Player.IssueOrder(GameObjectOrder.AttackUnit, Unit);
-                        //Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                        Player.IssueOrder(GameObjectOrder.AttackUnit, target);
+                        Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
                     }
                 }
             }

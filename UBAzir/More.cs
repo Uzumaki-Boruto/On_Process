@@ -32,6 +32,7 @@ namespace UBAzir
             Game.OnTick += GameOnTick;
             Game.OnTick += ObjManager.GetMyPosBefore;
             Game.OnUpdate += Mode.KillSteal;
+            //Game.OnUpdate += On_Update;
             //Game.OnNotify += _Insec.Notification;
             Drawing.OnDraw += OnDraw;
             Drawing.OnEndScene += Damages.Damage_Indicator;
@@ -57,15 +58,15 @@ namespace UBAzir
             { Mode.JungleClear(); }
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
             { Mode.Flee(Game.CursorPos); }
-            if (!Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && !Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)
-                && !Config.Insec["normalInsec"].Cast<KeyBind>().CurrentValue && !Config.Insec["godInsec"].Cast<KeyBind>().CurrentValue)
-            { Mode.Auto_Harass(); }
-
 
             if (Config.Insec["normalInsec"].Cast<KeyBind>().CurrentValue)
             { Insec.Do_Normal_Insec(); }
             if (Config.Insec["godInsec"].Cast<KeyBind>().CurrentValue)
             { Insec.Do_God_Insec(); }
+
+            if (!Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && !Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)
+                && !Config.Insec["normalInsec"].Cast<KeyBind>().CurrentValue && !Config.Insec["godInsec"].Cast<KeyBind>().CurrentValue)
+            { Mode.Auto_Harass(); }
 
             if (ObjectManager.Player.SkinId != Config.MiscMenu["Modskinid"].Cast<Slider>().CurrentValue)
             {

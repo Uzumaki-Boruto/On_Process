@@ -71,10 +71,12 @@ namespace UBAzir
                 Insec.Add("normal.1", new ComboBox("I want to insec target to", 4, "My Cursor", "My Ally", "My Turret", "My Last Postion", "Smart"));
                 Insec.Add("allowfl", new CheckBox("Allow using Flash in Insec"));
                 Insec.Add("flvalue", new Slider("Only flash if can be insec {0} enemies", 4, 2, 5));
+                Insec.Add("normalgoto", new ComboBox("If can't insec, I want move to", 1, "None", "Cursor", "To enemy"));
                 Insec.AddSeparator();
                 Insec.AddLabel("God Insec");
                 Insec.Add("god.1", new ComboBox("I want to insec target to", 4, "My Cursor", "My Ally", "My Turret", "My Last Postion", "Smart"));
                 Insec.Add("god.2", new ComboBox("I want to move to", 0, "My Cursor", "My Ally", "My Turret"));
+                Insec.Add("godgoto", new ComboBox("If can't insec, I want to move to", 1, "None", "Cursor", "To enemy"));
             }
             //HarassMenu
             HarassMenu = Menu.AddSubMenu("Harass");
@@ -135,6 +137,9 @@ namespace UBAzir
             Flee = Menu.AddSubMenu("Flee");
             {
                 Flee.Add("flee", new ComboBox("Combo Flee (To Mouse)", 2, "W-E", "W-Q-E", "W-E-Q"));
+                Flee.Add("fleedelay", new Slider("Delay", 250, 0, 500));
+                Flee.AddLabel("More for distance");
+                Flee.AddLabel("Lower if you see it cast Q too late");
             }
             //DrawMenu
             DrawMenu = Menu.AddSubMenu("Drawings");

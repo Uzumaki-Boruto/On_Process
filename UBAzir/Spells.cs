@@ -30,7 +30,7 @@ namespace UBAzir
             {
                 AllowedCollisionCount = int.MaxValue,
             };
-            Q_in_Flee = new Spell.Skillshot(SpellSlot.Q, 1500, SkillShotType.Linear, 250, 1200, 70)
+            Q_in_Flee = new Spell.Skillshot(SpellSlot.Q, 1800, SkillShotType.Linear, 250, 1200, 70)
             {
                 AllowedCollisionCount = int.MaxValue,
             };
@@ -49,7 +49,7 @@ namespace UBAzir
             };
             if (HasSpell("summonerdot"))
                 Ignite = new Spell.Targeted(ObjectManager.Player.GetSpellSlotFromName("summonerdot"), 600);
-            if (HasSpell("summonerflash"))
+            if (HasSpell("flash"))
                 Flash = new Spell.Skillshot(ObjectManager.Player.GetSpellSlotFromName("summonerflash"), 425, SkillShotType.Circular, 0, int.MaxValue, 300);
         }
     }

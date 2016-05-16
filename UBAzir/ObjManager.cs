@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Drawing;
-using EloBuddy;
+﻿using EloBuddy;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Menu.Values;
-using EloBuddy.SDK.Rendering;
 using SharpDX;
-using SharpDX.Direct3D9;
-using Colour = System.Drawing.Color;
-using _Line = EloBuddy.SDK.Rendering.Line;
+using System;
+using System.Linq;
 
 namespace UBAzir
 {
@@ -83,7 +76,7 @@ namespace UBAzir
             if (Game.Time > Time + 1f)
             {
                 LastMyPos = Player.Instance.Position;
-                if (Spells.Q.IsReady() && Spells.W.IsReady() && Spells.E.IsReady() && Spells.R.IsReady())
+                if (Spells.Q.IsReady() && Spells.W.IsReady() && Spells.E.IsReady())
                     All_Basic_Is_Ready = true;
                 else All_Basic_Is_Ready = false;
                 Time = Game.Time;

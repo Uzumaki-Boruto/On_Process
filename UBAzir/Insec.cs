@@ -18,9 +18,13 @@ namespace UBAzir
         {
             var normal = Config.Insec["normal.1"].Cast<ComboBox>().CurrentValue;
             var target = TargetSelector.GetTarget(1100, DamageType.Magical);
-            if (target != null)
+            var Objectnumber = Config.Insec["normalgoto"].Cast<ComboBox>().CurrentValue;
+            var Object = Objectnumber == 0 ?
+                Player.Instance.Position : Objectnumber == 1 ?
+                Game.CursorPos : Objectnumber == 2 ? (target != null ? target.Position : Game.CursorPos) : Vector3.Zero;
+            if (target != null && Spells.R.IsReady())
             {
-                if (target.IsValidTarget(300) && Spells.R.IsReady())
+                if (target.IsValidTarget(300))
                 {
                     switch (normal)
                     {
@@ -50,7 +54,7 @@ namespace UBAzir
                             }
                             break;
                     }
-                }
+                }                
                 if (target.IsValidTarget(1100))
                 {
                     if (ObjManager.All_Basic_Is_Ready)
@@ -60,12 +64,55 @@ namespace UBAzir
                     }
                     else
                     {
-                        Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                        Player.IssueOrder(GameObjectOrder.MoveTo, Object);
+                    }
+                }
+                if (Config.Insec["normal"].Cast<KeyBind>().CurrentValue && Config.Insec["allowfl"].Cast<CheckBox>().CurrentValue && Spells.Flash != null)
+                {
+                    var unit = TargetSelector.GetTarget(Spells.Flash.Range, DamageType.Magical);
+                    if (unit != null)
+                    {
+                        if (Spells.Flash.IsReady() && Spells.R.IsReady())
+                        {
+                            var PosAndHits = GetBestRPos(unit.Position.To2D());
+                            if (PosAndHits.First().Value >= Config.Insec["flvalue"].Cast<Slider>().CurrentValue)
+                            {
+                                Spells.Flash.Cast(PosAndHits.First().Key.To3D());
+                                switch (normal)
+                                {
+                                    case 0:
+                                        {
+                                            SpecialVector.WhereCastR(unit, SpecialVector.I_want.Cursor);
+                                        }
+                                        break;
+                                    case 1:
+                                        {
+                                            SpecialVector.WhereCastR(unit, SpecialVector.I_want.Turret);
+                                        }
+                                        break;
+                                    case 2:
+                                        {
+                                            SpecialVector.WhereCastR(unit, SpecialVector.I_want.Ally);
+                                        }
+                                        break;
+                                    case 3:
+                                        {
+                                            SpecialVector.WhereCastR(unit, SpecialVector.I_want.LastPostion);
+                                        }
+                                        break;
+                                    case 4:
+                                        {
+                                            SpecialVector.WhereCastR(unit, SpecialVector.I_want.All);
+                                        }
+                                        break;
+                                }
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                    Player.IssueOrder(GameObjectOrder.MoveTo, Object);
                 }
                 #region Rework
                 /*if (Spells.Flash.IsInRange(target) && Spells.Flash.IsReady() && Config.Insec["allowfl"].Cast<CheckBox>().CurrentValue)
@@ -174,10 +221,11 @@ namespace UBAzir
             }
             else
             {
-                Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                Player.IssueOrder(GameObjectOrder.MoveTo, Object);
             }
         }
-        public static void Do_Flash_Insec()
+        #region Do_Flash
+        /*public static void Do_Flash_Insec()
         {
             if (Config.Insec["normal"].Cast<KeyBind>().CurrentValue && Config.Insec["allowfl"].Cast<CheckBox>().CurrentValue)
             {
@@ -218,16 +266,22 @@ namespace UBAzir
                     }
                 }
             }
-        }
+        }*/
+        #endregion
         public static void Do_God_Insec()
         {
+            var target = TargetSelector.GetTarget(1100, DamageType.Magical);
             var god1 = Config.Insec["god.1"].Cast<ComboBox>().CurrentValue;
             var god2 = Config.Insec["god.2"].Cast<ComboBox>().CurrentValue;
             var CastRTo = new SpecialVector.I_want();
             var CastQTo = new Vector3();
             var SoldierPos = Vector3.Zero;
+            var Objectnumber = Config.Insec["godgoto"].Cast<ComboBox>().CurrentValue;
+            var Object = Objectnumber == 0 ?
+                Player.Instance.Position : Objectnumber == 1 ?
+                Game.CursorPos : Objectnumber == 2 ? (target != null ? target.Position : Game.CursorPos) : Vector3.Zero;
+
             //var incapability = new SimpleNotification("UBAzir God Insec", "It isn't qualified to perform");
-            var target = TargetSelector.GetTarget(1100, DamageType.Magical);
             switch (god1)
             {
                 case 0:
@@ -251,6 +305,11 @@ namespace UBAzir
                 case 3:
                     {
                         CastRTo = SpecialVector.I_want.LastPostion;
+                    }
+                    break;
+                case 4:
+                    {
+                        CastRTo = SpecialVector.I_want.All;
                     }
                     break;
             }
@@ -283,11 +342,7 @@ namespace UBAzir
             {
                 if (Spells.R.IsReady())
                 {
-                    var pred = Spells.R.GetPrediction(target);
-                    if (pred.UnitPosition.Distance(Player.Instance) >= 300)
-                    {
-                        SpecialVector.WhereCastR(target, CastRTo);
-                    }
+                    var pred = Spells.R.GetPrediction(target);                   
                     if (ObjManager.All_Basic_Is_Ready)
                     {
                         if (ObjManager.CountAzirSoldier == 0)
@@ -303,32 +358,33 @@ namespace UBAzir
                                     if (ObjManager.CountAzirSoldier >= 0 && Spells.E.Cast(ObjManager.Soldier_Nearest_Enemy))
                                     {
                                         var time = (Player.Instance.ServerPosition.Distance(ObjManager.Soldier_Nearest_Azir) / Spells.E.Speed) * (500 + Game.Ping);
+                                        Core.DelayAction(() => SpecialVector.WhereCastR(target, CastRTo), (int)time / 2);                    
                                         Core.DelayAction(() => Spells.Q_in_Flee.Cast(CastQTo), (int)time);
                                     }
                                 }
                                 else
                                 {
-                                    Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                                    Player.IssueOrder(GameObjectOrder.MoveTo, Object);
                                 }
                             }
                             else
                             {
-                                Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                                Player.IssueOrder(GameObjectOrder.MoveTo, Object);
                             }
                         }
                         else
                         {
-                            Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                            Player.IssueOrder(GameObjectOrder.MoveTo, Object);
                         }
                     }                    
                     else
                     {
-                        Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                        Player.IssueOrder(GameObjectOrder.MoveTo, Object);
                     }
                 }
                 else
                 {
-                    Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                    Player.IssueOrder(GameObjectOrder.MoveTo, Object);
                 }
                 #region Rework
                 /*if (Spells.Q.IsReady())
@@ -377,7 +433,7 @@ namespace UBAzir
             }
             else
             {
-                Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                Player.IssueOrder(GameObjectOrder.MoveTo, Object);
             }
         }
 
