@@ -49,7 +49,7 @@ namespace UBAzir
             };
             if (HasSpell("summonerdot"))
                 Ignite = new Spell.Targeted(ObjectManager.Player.GetSpellSlotFromName("summonerdot"), 600);
-            if (HasSpell("flash"))
+            if (HasSpell("summonerflash"))
                 Flash = new Spell.Skillshot(ObjectManager.Player.GetSpellSlotFromName("summonerflash"), 425, SkillShotType.Circular, 0, int.MaxValue, 300);
         }
     }

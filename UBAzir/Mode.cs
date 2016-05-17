@@ -95,7 +95,7 @@ namespace UBAzir
             {
                 if (Config.ComboMenu["teamfight"].Cast<KeyBind>().CurrentValue)
                 {
-                    var target = TargetSelector.GetTarget(Spells.R.Range + 200, DamageType.Magical);
+                    var target = TargetSelector.GetTarget(Spells.R.Range, DamageType.Magical);
                     if (target != null)
                     {
                         if ((target.CountEnemiesInRange(1000) >= Config.ComboMenu["Rhitcb"].Cast<Slider>().CurrentValue
@@ -109,7 +109,7 @@ namespace UBAzir
                 if (!Config.ComboMenu["teamfight"].Cast<KeyBind>().CurrentValue)
                 {
                     var target = TargetSelector.GetTarget(Spells.R.Range - 20, DamageType.Magical);
-                    if (target != null && target.IsValidTarget() && target.HealthPercent <= 70)
+                    if (target != null && target.IsValidTarget() && target.HealthPercent <= 70 && Spells.Q.IsReady())
                     {
                         SpecialVector.WhereCastR(target, SpecialVector.I_want.All);
                     }
@@ -117,13 +117,28 @@ namespace UBAzir
             }
             if (ObjManager.Soldier_Nearest_Enemy != Vector3.Zero)
             {
-                var Unit = TargetSelector.SelectedTarget != null &&
+                var target = TargetSelector.SelectedTarget != null &&
                                  TargetSelector.SelectedTarget.Distance(ObjManager.Soldier_Nearest_Enemy) < 500
                         ? TargetSelector.SelectedTarget
                         : TargetSelector.GetTarget(Spells.WLine.Range, DamageType.Magical, ObjManager.Soldier_Nearest_Enemy);
-                if (Unit.IsValid())
+                if (target.IsValid())
                 {
                     SpecialVector.AttackOtherObject();
+                }
+            }
+            if (ObjManager.All_Basic_Is_Ready)
+            {
+                var target = TargetSelector.GetTarget(1000, DamageType.Magical);
+                if (target != null && target.IsValid && target.HealthPercent <= 15
+                    && !target.IsUnderHisturret() && target.CountEnemiesInRange(875) <= 1
+                    && Config.ComboMenu[target.ChampionName].Cast<CheckBox>().CurrentValue
+                    && Config.ComboMenu["Qcb"].Cast<CheckBox>().CurrentValue
+                    && Config.ComboMenu["Wcb"].Cast<CheckBox>().CurrentValue
+                    && Config.ComboMenu["Ecb"].Cast<CheckBox>().CurrentValue)
+                {
+                    var time = (Player.Instance.Distance(target) / Spells.E.Speed) * (750 - Game.Ping);
+                    var pred = Prediction.Position.PredictUnitPosition(target, (int)time).To3D();
+                    Flee(pred);
                 }
             }
         }
@@ -225,7 +240,6 @@ namespace UBAzir
             var wmonster = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsMonster && x.IsValidTarget(Spells.W.Range)).OrderBy(x => x.MaxHealth).LastOrDefault();
             if (wmonster != null && wmonster.IsValid)
             {
-                var wpred = Spells.W.GetPrediction(wmonster);
                 if (Orbwalker.IsAutoAttacking) return;
                 Orbwalker.ForcedTarget = null;
                 if (Config.JungleClear["Wjc"].Cast<CheckBox>().CurrentValue && Spells.W.IsReady()
@@ -233,7 +247,7 @@ namespace UBAzir
                     && Spells.W.IsReady()
                     && wmonster.IsInRange(Player.Instance, Spells.W.Radius + Spells.W.Range))
                 {
-                    Spells.W.Cast(wpred.CastPosition);
+                    Spells.W.Cast(Player.Instance.Position.Extend(wmonster, Spells.W.Range).To3D());
                 }
             }
         }
@@ -319,7 +333,7 @@ namespace UBAzir
                         {
                             Spells.E.Cast(ECast);
                             var delay = Config.Flee["fleedelay"].Cast<Slider>().CurrentValue;
-                            var time = (Player.Instance.ServerPosition.Distance(ObjManager.Soldier_Nearest_Azir) / Spells.E.Speed) * (450 + delay + Game.Ping);                            
+                            var time = (Player.Instance.ServerPosition.Distance(ObjManager.Soldier_Nearest_Azir) / Spells.E.Speed) * (700 + delay - Game.Ping);                            
                             Core.DelayAction(() => Spells.Q_in_Flee.Cast(QCast2), (int)time);
                         }
                     }

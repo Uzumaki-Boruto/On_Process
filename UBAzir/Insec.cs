@@ -357,7 +357,7 @@ namespace UBAzir
                                     if (ObjManager.CountAzirSoldier >= 0 && Spells.E.Cast(ObjManager.Soldier_Nearest_Enemy))
                                     {
                                         var delay = Config.Flee["fleedelay"].Cast<Slider>().CurrentValue;
-                                        var time = (Player.Instance.ServerPosition.Distance(ObjManager.Soldier_Nearest_Azir) / Spells.E.Speed) * (450 + delay + Game.Ping);
+                                        var time = (Player.Instance.ServerPosition.Distance(ObjManager.Soldier_Nearest_Azir) / Spells.E.Speed) * (700 + delay - Game.Ping);
                                         Core.DelayAction(() => Spells.Q_in_Flee.Cast(CastQTo), (int)time);
                                     }
                                 }
@@ -444,7 +444,10 @@ namespace UBAzir
 
             foreach (Vector3 EnemyPos in GetEnemiesPosition())
             {
-                if (CastPosition.Distance(EnemyPos) <= 260) Hits += 1;
+                var start = Player.Instance.Position.Extend(CastPosition, Player.Instance.Distance(CastPosition) - Spells.R.Range);
+                var end = Player.Instance.Position.Extend(CastPosition, Player.Instance.Distance(CastPosition) + 300);
+                var retangle = new Geometry.Polygon.Rectangle(start, end, Spells.R.Width);
+                if (retangle.IsInside(EnemyPos)) Hits += 1;
             }
 
             return Hits;
@@ -518,7 +521,7 @@ namespace UBAzir
         {
             List<Vector3> Positions = new List<Vector3>();
 
-            foreach (AIHeroClient Hero in EntityManager.Heroes.Enemies.Where(hero => !hero.IsDead && Player.Instance.Distance(hero) <= 600))
+            foreach (AIHeroClient Hero in EntityManager.Heroes.Enemies.Where(e => !e.IsDead && Player.Instance.Distance(e) <= 600))
             {
                 Positions.Add(Prediction.Position.PredictUnitPosition(Hero, 400).To3D());
             }
