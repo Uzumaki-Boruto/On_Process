@@ -243,6 +243,7 @@ namespace UBAzir
                 if (Orbwalker.IsAutoAttacking) return;
                 Orbwalker.ForcedTarget = null;
                 if (Config.JungleClear["Wjc"].Cast<CheckBox>().CurrentValue && Spells.W.IsReady()
+                    && ObjManager.CountAzirSoldier < Config.JungleClear["Wunitjc"].Cast<Slider>().CurrentValue
                     && Player.Instance.ManaPercent >= Config.JungleClear["JcManager"].Cast<Slider>().CurrentValue
                     && Spells.W.IsReady()
                     && wmonster.IsInRange(Player.Instance, Spells.W.Radius + Spells.W.Range))

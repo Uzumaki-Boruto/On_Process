@@ -11,9 +11,10 @@ namespace UBAzir
 {
     class Insec : UBAzir.SpecialVector
     {
-        //public static AIHeroClient target;
         public static Obj_AI_Turret Turret = EntityManager.Turrets.Allies.FirstOrDefault(t => t.IsValidTarget(1250));
         public static AIHeroClient Ally = EntityManager.Heroes.Allies.FirstOrDefault(a => a.IsValidTarget(1000));
+
+        #region Normal Insec
         public static void Do_Normal_Insec()
         {
             var normal = Config.Insec["normal.1"].Cast<ComboBox>().CurrentValue;
@@ -22,7 +23,7 @@ namespace UBAzir
             var Object = Objectnumber == 0 ?
                 Player.Instance.Position : Objectnumber == 1 ?
                 Game.CursorPos : Objectnumber == 2 ? (target != null ? target.Position : Game.CursorPos) : Vector3.Zero;
-            if (target != null && Spells.R.IsReady())
+            if (target != null && Spells.R.IsReady() && Player.Instance.Mana >= 270)
             {
                 if (target.IsValidTarget(300))
                 {
@@ -114,160 +115,15 @@ namespace UBAzir
                 {
                     Player.IssueOrder(GameObjectOrder.MoveTo, Object);
                 }
-                #region Rework
-                /*if (Spells.Flash.IsInRange(target) && Spells.Flash.IsReady() && Config.Insec["allowfl"].Cast<CheckBox>().CurrentValue)
-                {
-                    var PosAndHits = SpecialVector.GetBestRPos(target.ServerPosition.To2D());
-                    if (PosAndHits.First().Value >= Config.Insec["flvalue"].Cast<Slider>().CurrentValue)
-                    {
-                        Spells.Flash.Cast(PosAndHits.First().Key.To3D());
-                        switch (normal)
-                        {
-                            case 0:
-                                {
-                                    SpecialVector.WhereCastR(target, SpecialVector.I_want.Cursor);
-                                }
-                                break;
-                            case 1:
-                                {
-                                    SpecialVector.WhereCastR(target, SpecialVector.I_want.Turret);
-                                }
-                                break;
-                            case 2:
-                                {
-                                    SpecialVector.WhereCastR(target, SpecialVector.I_want.Ally);
-                                }
-                                break;
-                            case 3:
-                                {
-                                    SpecialVector.WhereCastR(target, SpecialVector.I_want.LastPostion);
-                                }
-                                break;
-                        }
-                    }
-                }
-                if (target.IsValidTarget(300) && Spells.R.IsReady())
-                {
-                    if (normal == 0)
-                    {
-                        SpecialVector.WhereCastR(target, SpecialVector.I_want.Cursor);
-                    }
-                    else if (Turret != null && normal == 1)
-                    {
-                        SpecialVector.WhereCastR(target, SpecialVector.I_want.Turret);
-                    }
-                    else if (Ally != null && normal == 2)
-                    {
-                        SpecialVector.WhereCastR(target, SpecialVector.I_want.Ally);
-                    }
-                    else
-                    {
-                        SpecialVector.WhereCastR(target, SpecialVector.I_want.LastPostion);
-                    }
-                }
-                else
-                {
-                    Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                }
-                if (target.IsValidTarget(1100))
-                {
-                    if (Spells.Q.IsReady())
-                    {
-                        if (Spells.R.IsReady())
-                        {
-                            var insecLoc = Vector3.Zero;
-                            var direction = (TargetSelector.SelectedTarget.ServerPosition - ObjectManager.Player.ServerPosition).To2D().Normalized();
-                            var insecPos = TargetSelector.SelectedTarget.ServerPosition.To2D() + (direction * 200f);
-                            var soldposition = Vector3.Zero;
-                            if (Orbwalker.AzirSoldiers.OrderBy(s => s.Distance(insecPos)).FirstOrDefault() != null)
-                            {
-                                soldposition = Orbwalker.AzirSoldiers.OrderBy(s => s.Distance(insecPos)).FirstOrDefault().ServerPosition;
-                            }
-                            insecLoc = Player.Instance.ServerPosition;
-
-                            if (Orbwalker.ValidAzirSoldiers.Any(it => it.Distance(Player.Instance.Position) <= 900))
-                            {
-                                var ESoldier = Orbwalker.ValidAzirSoldiers.FirstOrDefault(it => it.Distance(target) <= 200);
-
-                                if (ESoldier != null) Spells.E.Cast(Player.Instance.Position.Extend(ESoldier.Position, Spells.E.Range).To3D());
-
-                                else if (Spells.Q.IsReady())
-                                {
-                                    SpecialVector.WhereCastQ(target, Force);
-                                }
-                            }
-
-                            else if (Spells.W.IsReady())
-                            {
-                                SpecialVector.WhereCastW(target, Force);
-                                return;
-                            };
-                        }
-                        else
-                        {
-                            Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                        }
-                    }
-                    else
-                    {
-                        Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos); 
-                    }
-                }
-                else
-                {
-                    Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                }*/
-                #endregion
             }
             else
             {
                 Player.IssueOrder(GameObjectOrder.MoveTo, Object);
             }
         }
-        #region Do_Flash
-        /*public static void Do_Flash_Insec()
-        {
-            if (Config.Insec["normal"].Cast<KeyBind>().CurrentValue && Config.Insec["allowfl"].Cast<CheckBox>().CurrentValue)
-            {
-                var target = TargetSelector.GetTarget(Spells.Flash.Range, DamageType.Magical);
-                var normal = Config.Insec["normal.1"].Cast<ComboBox>().CurrentValue;
-                if (target != null)
-                {
-                    if (Spells.Flash.IsReady() && Spells.R.IsReady())
-                    {
-                        var PosAndHits = GetBestRPos(target.Position.To2D());
-                        if (PosAndHits.First().Value >= Config.Insec["flvalue"].Cast<Slider>().CurrentValue)
-                        {
-                            Spells.Flash.Cast(PosAndHits.First().Key.To3D());
-                            switch (normal)
-                            {
-                                case 0:
-                                    {
-                                        SpecialVector.WhereCastR(target, SpecialVector.I_want.Cursor);
-                                    }
-                                    break;
-                                case 1:
-                                    {
-                                        SpecialVector.WhereCastR(target, SpecialVector.I_want.Turret);
-                                    }
-                                    break;
-                                case 2:
-                                    {
-                                        SpecialVector.WhereCastR(target, SpecialVector.I_want.Ally);
-                                    }
-                                    break;
-                                case 3:
-                                    {
-                                        SpecialVector.WhereCastR(target, SpecialVector.I_want.LastPostion);
-                                    }
-                                    break;
-                            }
-                        }
-                    }
-                }
-            }
-        }*/
         #endregion
+
+        #region God Insec
         public static void Do_God_Insec()
         {
             var target = TargetSelector.GetTarget(1100, DamageType.Magical);
@@ -281,7 +137,7 @@ namespace UBAzir
                 Game.CursorPos : Objectnumber == 2 ? (target != null ? target.Position : Game.CursorPos) : Vector3.Zero;
 
             //var incapability = new SimpleNotification("UBAzir God Insec", "It isn't qualified to perform");
-            if (target != null && target.IsValidTarget(300) && Spells.R.IsReady())
+            if (target != null && target.IsValidTarget(300) && Spells.R.IsReady() && Player.Instance.Mana >= 270)
             {
                 switch (god1)
                 {
@@ -354,8 +210,9 @@ namespace UBAzir
                             {
                                 if (!SpecialVector.Between(target))
                                 {
-                                    if (ObjManager.CountAzirSoldier >= 0 && Spells.E.Cast(ObjManager.Soldier_Nearest_Enemy))
+                                    if (ObjManager.CountAzirSoldier >= 0)
                                     {
+                                        Spells.E.Cast(ObjManager.Soldier_Nearest_Enemy);
                                         var delay = Config.Flee["fleedelay"].Cast<Slider>().CurrentValue;
                                         var time = (Player.Instance.ServerPosition.Distance(ObjManager.Soldier_Nearest_Azir) / Spells.E.Speed) * (700 + delay - Game.Ping);
                                         Core.DelayAction(() => Spells.Q_in_Flee.Cast(CastQTo), (int)time);
@@ -435,6 +292,7 @@ namespace UBAzir
                 Player.IssueOrder(GameObjectOrder.MoveTo, Object);
             }
         }
+        #endregion
 
         #region Flash Logic
 
