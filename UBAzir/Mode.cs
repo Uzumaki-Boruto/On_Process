@@ -346,8 +346,8 @@ namespace UBAzir
         #region On_Unkillable_Minion
         public static void On_Unkillable_Minion(Obj_AI_Base unit, Orbwalker.UnkillableMinionArgs args)
         {
-            if (Player.Instance.ManaPercent < Config.LasthitMenu["LhManager"].Cast<Slider>().CurrentValue
-                && Config.LasthitMenu["QLh"].Cast<CheckBox>().CurrentValue
+            if (Player.Instance.ManaPercent >= Config.LasthitMenu["LhManager"].Cast<Slider>().CurrentValue
+                && Config.LasthitMenu["Qautolh"].Cast<CheckBox>().CurrentValue
                 && Spells.Q.IsReady()
                 && ObjManager.CountAzirSoldier > 0)
             {
