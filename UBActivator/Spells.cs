@@ -100,30 +100,34 @@ namespace UBActivator
         public static void JungSteal(EventArgs args)
         {
             var Important = Config.Spell["esmite3r"].Cast<CheckBox>().CurrentValue;
-            var minion = ObjectManager.Get<Obj_AI_Minion>().Where(m => m.IsMonster && m.IsValidTarget(Smite.Range) && Extensions.IsImportant(m)).OrderBy(x => x.MaxHealth).LastOrDefault();
-            var Red = ObjectManager.Get<Obj_AI_Minion>().Where(r => r.IsMonster && r.IsValidTarget(Smite.Range) && r.Name.Contains("Red")).OrderBy(x => x.MaxHealth).LastOrDefault();
-            var Blue = ObjectManager.Get<Obj_AI_Minion>().Where(b => b.IsMonster && b.IsValidTarget(Smite.Range) && b.Name.Contains("Blue")).OrderBy(x => x.MaxHealth).LastOrDefault();
-            if (minion != null && Smite != null && minion.IsValid && Important)
+            if (Spells.Smite != null)
             {
-                if (minion.Health <= Player.Instance.GetSummonerSpellDamage(minion, DamageLibrary.SummonerSpells.Smite))
+                var minion = ObjectManager.Get<Obj_AI_Minion>().FirstOrDefault(m => m.IsMonster && m.IsValidTarget(Smite.Range) && Extensions.IsImportant(m));
+                var Red = ObjectManager.Get<Obj_AI_Minion>().Where(r => r.IsMonster && r.IsValidTarget(Smite.Range) && r.Name.Contains("Red")).OrderBy(x => x.MaxHealth).LastOrDefault();
+                var Blue = ObjectManager.Get<Obj_AI_Minion>().Where(b => b.IsMonster && b.IsValidTarget(Smite.Range) && b.Name.Contains("Blue")).OrderBy(x => x.MaxHealth).LastOrDefault();
+                if (minion != null && minion.IsValid && Important)
                 {
-                    Smite.Cast(minion);
+                    if (minion.Health <= Player.Instance.GetSummonerSpellDamage(minion, DamageLibrary.SummonerSpells.Smite))
+                    {
+                        Smite.Cast(minion);
+                    }
+                }
+                if (Red != null && Red.IsValid && Config.Spell["esmitered"].Cast<CheckBox>().CurrentValue)
+                {
+                    if (Red.Health <= Player.Instance.GetSummonerSpellDamage(minion, DamageLibrary.SummonerSpells.Smite))
+                    {
+                        Smite.Cast(Red);
+                    }
+                }
+                if (Blue != null && Blue.IsValid && Config.Spell["esmiteblue"].Cast<CheckBox>().CurrentValue)
+                {
+                    if (Blue.Health <= Player.Instance.GetSummonerSpellDamage(minion, DamageLibrary.SummonerSpells.Smite))
+                    {
+                        Smite.Cast(Blue);
+                    }
                 }
             }
-            if (Red != null && Red.IsValid && Config.Spell["esmitered"].Cast<CheckBox>().CurrentValue)
-            {
-                if (Red.Health <= Player.Instance.GetSummonerSpellDamage(minion, DamageLibrary.SummonerSpells.Smite))
-                {
-                    Smite.Cast(Red);
-                }
-            }
-            if (Blue != null && Blue.IsValid && Config.Spell["esmiteblue"].Cast<CheckBox>().CurrentValue)
-            {
-                if (Blue.Health <= Player.Instance.GetSummonerSpellDamage(minion, DamageLibrary.SummonerSpells.Smite))
-                {
-                    Smite.Cast(Blue);
-                }
-            }
+            
         }
         public static void UseHeal(EventArgs args)
         {
@@ -138,13 +142,16 @@ namespace UBActivator
                 foreach (
                     var ally in EntityManager.Heroes.Allies.Where(a => !a.IsDead))
                 {
-                    if (Config.Spell["eHealAlly"].Cast<CheckBox>().CurrentValue
-                        && ally.CountEnemiesInRange(800) >= 1
-                        && ObjectManager.Player.Position.Distance(ally) < 800
-                        && Config.Spell["heal" + ally.ChampionName].Cast<CheckBox>().CurrentValue
-                        && ally.HealthPercent <= Config.Spell["managehealally"].Cast<Slider>().CurrentValue)
+                    if (ally != null && !ally.IsDead)
                     {
-                        Heal.Cast(ally);
+                        if (Config.Spell["eHealAlly"].Cast<CheckBox>().CurrentValue
+                            && ally.CountEnemiesInRange(800) >= 1
+                            && ObjectManager.Player.Position.Distance(ally) < 800
+                            && Config.Spell["heal" + ally.ChampionName].Cast<CheckBox>().CurrentValue
+                            && ally.HealthPercent <= Config.Spell["managehealally"].Cast<Slider>().CurrentValue)
+                        {
+                            Heal.Cast(ally);
+                        }
                     }
                 }
             }

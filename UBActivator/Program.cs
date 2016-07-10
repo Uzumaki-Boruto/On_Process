@@ -25,6 +25,8 @@ namespace UBActivator
             Orbwalker.OnPreAttack += Offensive.OnPreAttack;
 
             Game.OnTick += Offensive.Ontick;
+            Game.OnTick += Offensive.OnTick2;
+            Game.OnTick += Offensive.OnTick3;
             Game.OnTick += Utility.Game_OnTick;
             Game.OnTick += Utility.OnTick;
             Game.OnTick += Potions.OnTick;
