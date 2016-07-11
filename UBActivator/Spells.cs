@@ -50,7 +50,7 @@ namespace UBActivator
                 Cleanse = new Spell.Active(slot);
             }
         }
-        public static void KillSteal(EventArgs args)
+        public static void KillSteal()
         {
             if (Config.Spell["eIg"].Cast<CheckBox>().CurrentValue && Ignite != null)
             {
@@ -58,10 +58,9 @@ namespace UBActivator
                 {
                     case 0:
                         {
-                            var target = EntityManager.Heroes.Enemies.FirstOrDefault(
-                            t =>
+                            var target = EntityManager.Heroes.Enemies.Where(t =>
                                 t.IsValidTarget(Ignite.Range) &&
-                                t.Health <= Player.Instance.GetSpellDamage(t, Ignite.Slot));
+                                t.Health <= Player.Instance.GetSpellDamage(t, Ignite.Slot)).FirstOrDefault();
 
                             if (target != null && Config.Spell["Ig" + target.ChampionName].Cast<CheckBox>().CurrentValue && Ignite.IsReady())
                             {
@@ -71,10 +70,10 @@ namespace UBActivator
                         break;
                     case 1:
                         {
-                            var target = EntityManager.Heroes.Enemies.FirstOrDefault(
-                            t =>
+                            var target = EntityManager.Heroes.Enemies.Where(t =>
                                 t.IsValidTarget(Ignite.Range) &&
-                                t.Health <= Player.Instance.GetSpellDamage(t, Ignite.Slot) /5);
+                                t.Health <= Player.Instance.GetSpellDamage(t, Ignite.Slot) / 5).FirstOrDefault(
+                            );
 
                             if (target != null && Config.Spell["Ig" + target.ChampionName].Cast<CheckBox>().CurrentValue && Ignite.IsReady())
                             {
@@ -86,10 +85,9 @@ namespace UBActivator
             }
             if (Config.Spell["esmiteKs"].Cast<CheckBox>().CurrentValue && Smite != null && Extensions.CanUseOnChamp)
             {
-                var target = EntityManager.Heroes.Enemies.FirstOrDefault(
-                        t =>
+                var target = EntityManager.Heroes.Enemies.Where(t =>
                             t.IsValidTarget(Smite.Range) &&
-                            t.Health <= Player.Instance.GetSummonerSpellDamage(t, DamageLibrary.SummonerSpells.Smite));
+                            t.Health <= Player.Instance.GetSummonerSpellDamage(t, DamageLibrary.SummonerSpells.Smite)).FirstOrDefault();
 
                 if (target != null && Config.Spell["Smite" + target.ChampionName].Cast<CheckBox>().CurrentValue && Smite.IsReady())
                 {
@@ -97,7 +95,7 @@ namespace UBActivator
                 }
             }
         }
-        public static void JungSteal(EventArgs args)
+        public static void JungSteal()
         {
             var Important = Config.Spell["esmite3r"].Cast<CheckBox>().CurrentValue;
             if (Spells.Smite != null)
@@ -129,7 +127,7 @@ namespace UBActivator
             }
             
         }
-        public static void UseHeal(EventArgs args)
+        public static void UseHeal()
         {
             if (Heal != null && Heal.IsReady())
             {

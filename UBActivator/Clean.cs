@@ -13,6 +13,7 @@ namespace UBActivator
     {
         public static void OnBuffGain(Obj_AI_Base sender, Obj_AI_BaseBuffGainEventArgs args)
         {
+            if (Items.Quicksilver_Sash == null && Items.Mercurial_Scimitar == null && Items.Mikaels_Crucible == null && Spells.Cleanse == null) return;
             if (!sender.IsAlly) return;
             var Type = args.Buff.Type;
             var Duration = (args.Buff.EndTime - Game.Time) * 1000;

@@ -7,7 +7,7 @@ namespace UBActivator
 {
     class Potions
     {
-        public static void OnTick(EventArgs args)
+        public static void OnTick()
         {
             if (!Config.Potions["ePotions"].Cast<CheckBox>().CurrentValue) return;
             if (Player.Instance.IsRecalling() && Config.Potions["preHPrecall"].Cast<CheckBox>().CurrentValue) return;
@@ -34,33 +34,33 @@ namespace UBActivator
             }
             if (Config.Potions["Biscuit"].Cast<CheckBox>().CurrentValue
             && Health <= Config.Potions["BiscuitH"].Cast<Slider>().CurrentValue
-            && Items.HealthPotion.IsOwned()
-            && Items.HealthPotion.IsReady())
+            && Items.Total_Biscuit_of_Rejuvenation.IsOwned()
+            && Items.Total_Biscuit_of_Rejuvenation.IsReady())
             {
-                Items.HealthPotion.Cast();
+                Items.Total_Biscuit_of_Rejuvenation.Cast();
             }
             if (Config.Potions["RP"].Cast<CheckBox>().CurrentValue
             && Health <= Config.Potions["RPH"].Cast<Slider>().CurrentValue
-            && Items.HealthPotion.IsOwned()
-            && Items.HealthPotion.IsReady())
+            && Items.Refillable_Potion.IsOwned()
+            && Items.Refillable_Potion.IsReady())
             {
-                Items.HealthPotion.Cast();
+                Items.Refillable_Potion.Cast();
             }
             if (Config.Potions["CP"].Cast<CheckBox>().CurrentValue
             && Health <= Config.Potions["CPH"].Cast<Slider>().CurrentValue
             && Mana1 + 75 <= Player.Instance.MaxMana
-            && Items.HealthPotion.IsOwned()
-            && Items.HealthPotion.IsReady())
+            && Items.Corrupting_Potion.IsOwned()
+            && Items.Corrupting_Potion.IsReady())
             {
-                Items.HealthPotion.Cast();
+                Items.Corrupting_Potion.Cast();
             }
             if (Config.Potions["HTP"].Cast<CheckBox>().CurrentValue
             && Health <= Config.Potions["HTPH"].Cast<Slider>().CurrentValue
             && Mana2 + 35 <= Player.Instance.MaxMana
-            && Items.HealthPotion.IsOwned()
-            && Items.HealthPotion.IsReady())
+            && Items.Hunter_s_Potion.IsOwned()
+            && Items.Hunter_s_Potion.IsReady())
             {
-                Items.HealthPotion.Cast();
+                Items.Hunter_s_Potion.Cast();
             }
         }
     }

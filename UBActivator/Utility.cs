@@ -8,7 +8,7 @@ namespace UBActivator
     class Utility
     {
         public static int[] Level = { 0, 0, 0, 0 };
-        public static void OnTick(EventArgs args)
+        public static void OnTick()
         {
             if (ObjectManager.Player.SkinId != Config.Utility["skin"].Cast<Slider>().CurrentValue)
             {
@@ -18,7 +18,7 @@ namespace UBActivator
                 }
             }
         }
-        public static void Game_OnTick(EventArgs args)
+        public static void Game_OnTick()
         {
             var QLevel = Player.GetSpell(SpellSlot.Q).Level + Extensions.QOff;
             var WLevel = Player.GetSpell(SpellSlot.W).Level + Extensions.WOff;
@@ -74,7 +74,8 @@ namespace UBActivator
             var Delay = Config.Utility["lvlrandom"].Cast<CheckBox>().CurrentValue ?
                 new Random().Next(0, Time) :
                 Time;
+            if (Player.Instance.Spellbook.CanSpellBeUpgraded(slot))
             Core.DelayAction(() => Player.LevelSpell(slot), Delay);
-        }
+        }     
     }
 }

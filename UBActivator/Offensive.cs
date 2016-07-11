@@ -2,6 +2,7 @@
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
+using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Enumerations;
 
@@ -9,10 +10,10 @@ namespace UBActivator
 {
     class Offensive
     {
-        public static void Ontick(EventArgs args)
+        public static void Ontick()
         {
-            if (Items.Tiamat == null || Items.Ravenous_Hydra == null) return;
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)) return;
+            if (Items.Tiamat == null && Items.Ravenous_Hydra == null) return;
+            if (!Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)) return;
             {
                 var Count = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.Position, 400).Count();
                 if (Count >= Config.Offensive["TiamatLccount"].Cast<Slider>().CurrentValue)
@@ -27,10 +28,10 @@ namespace UBActivator
                 }
             }
         }
-        public static void OnTick2(EventArgs args)
+        public static void OnTick2()
         {
-            if (Items.Tiamat == null || Items.Ravenous_Hydra == null) return;
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear)) return;
+            if (Items.Tiamat == null && Items.Ravenous_Hydra == null) return;
+            if (!Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear)) return;
             {
                 var Count = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.Position, 400).Count();
                 var impMonster = ObjectManager.Get<Obj_AI_Minion>().Where(m => m.IsMonster && m.IsValidTarget(500) && Extensions.IsImportant(m)).OrderBy(x => x.MaxHealth).LastOrDefault();
@@ -59,13 +60,13 @@ namespace UBActivator
                 }
             }
         }
-        public static void OnTick3(EventArgs args)
+        public static void OnTick3()
         {
-            if (Items.Tiamat == null || Items.Ravenous_Hydra == null || Items.Bilgewater_Cutlass == null || Items.Hextech_Gunblade == null) return;
+            if (Items.Tiamat == null && Items.Ravenous_Hydra == null && Items.Bilgewater_Cutlass == null && Items.Hextech_Gunblade == null && Items.Blade_Of_The_Ruined_King == null) return;
             var TiamatTarget = TargetSelector.GetTarget(400, DamageType.Physical);
             var CutlassTarget = TargetSelector.GetTarget(550, DamageType.Magical);
             var HextechTarget = TargetSelector.GetTarget(700, DamageType.Magical);
-            if (TiamatTarget != null)
+            if (TiamatTarget != null && Items.Tiamat == null)
             {
                 var distance = Player.Instance.Distance(TiamatTarget);
                 if (Config.Offensive["Tiamat"].Cast<ComboBox>().CurrentValue > 0
@@ -110,7 +111,7 @@ namespace UBActivator
                     }
                 }
             }
-            if (CutlassTarget != null && CutlassTarget.IsValidTarget())
+            if (CutlassTarget != null && CutlassTarget.IsValidTarget() && (Items.Bilgewater_Cutlass != null || Items.Blade_Of_The_Ruined_King != null))
             {
                 if ((Config.Offensive["cbitem"].Cast<CheckBox>().CurrentValue
                     && Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
@@ -119,38 +120,182 @@ namespace UBActivator
                     if (Player.Instance.HealthPercent <= Config.Offensive["MyHPT"].Cast<Slider>().CurrentValue
                         && CutlassTarget.HealthPercent <= Config.Offensive["TargetHPT"].Cast<Slider>().CurrentValue)
                     {
-                        if (Items.Bilgewater_Cutlass.IsOwned() && Items.Bilgewater_Cutlass.IsReady()) Items.Bilgewater_Cutlass.Cast();
-                        if (Items.Blade_Of_The_Ruined_King.IsOwned() && Items.Blade_Of_The_Ruined_King.IsReady()) Items.Blade_Of_The_Ruined_King.Cast();
+                        if (Items.Bilgewater_Cutlass.IsOwned() && Items.Bilgewater_Cutlass.IsReady()) Items.Bilgewater_Cutlass.Cast(CutlassTarget);
+                        if (Items.Blade_Of_The_Ruined_King.IsOwned() && Items.Blade_Of_The_Ruined_King.IsReady()) Items.Blade_Of_The_Ruined_King.Cast(CutlassTarget);
                     }
                 }
             }
-            if (HextechTarget != null && HextechTarget.IsValidTarget())
+            if (HextechTarget != null && HextechTarget.IsValidTarget() && Items.Hextech_Gunblade != null)
             {
                 if ((Config.Offensive["cbitem"].Cast<CheckBox>().CurrentValue
                    && Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
                    || !Config.Offensive["cbitem"].Cast<CheckBox>().CurrentValue)
                 {
-                    if (Player.Instance.HealthPercent <= Config.Offensive["MyHPT"].Cast<Slider>().CurrentValue
+                    if (Config.Offensive["HG"].Cast<CheckBox>().CurrentValue
+                        && Player.Instance.HealthPercent <= Config.Offensive["MyHPT"].Cast<Slider>().CurrentValue
                         && CutlassTarget.HealthPercent <= Config.Offensive["TargetHPT"].Cast<Slider>().CurrentValue)
                     {
-                        if (Items.Hextech_Gunblade.IsOwned() && Items.Hextech_Gunblade.IsReady()) Items.Hextech_Gunblade.Cast();
+                        if (Items.Hextech_Gunblade.IsOwned() && Items.Hextech_Gunblade.IsReady()) Items.Hextech_Gunblade.Cast(HextechTarget);
                     }
                 }
             }
-            if (Player.Instance.CountEnemiesInRange(1000) >= 1)
+            if (Player.Instance.CountEnemiesInRange(1000) >= 1 && Items.Youmuu_s_Ghostblade != null)
             {
                 if ((Config.Offensive["cbmvitem"].Cast<CheckBox>().CurrentValue
                   && Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
                   || !Config.Offensive["cbmvitem"].Cast<CheckBox>().CurrentValue)
                 {
-                    if (Items.Youmuu_s_Ghostblade.IsOwned() && Items.Youmuu_s_Ghostblade.IsReady()) Items.Youmuu_s_Ghostblade.Cast();
+                    if (Config.Offensive["Youmuu"].Cast<CheckBox>().CurrentValue)
+                    {
+                        if (Items.Youmuu_s_Ghostblade.IsOwned() && Items.Youmuu_s_Ghostblade.IsReady()) Items.Youmuu_s_Ghostblade.Cast();
+                    }
+                }
+            }
+
+        
+        }
+        public static void OnTick4()
+        {
+            if (Items.Hextech_Protobelt_01 == null) return;
+            {
+                var target = TargetSelector.GetTarget(750, DamageType.Magical);
+                if (target != null && target.IsValidTarget(200, true, Player.Instance.Position))
+                {
+                    var pred = Prediction.Position.PredictLinearMissile(target, 750, 70, 150, 1150, int.MaxValue, Player.Instance.Position);
+                    switch (Config.Offensive["Hextech01gap"].Cast<ComboBox>().CurrentValue)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                            {
+                                if (Items.Hextech_Protobelt_01.IsOwned() && Items.Hextech_Protobelt_01.IsReady())
+                                {
+                                    Items.Hextech_Protobelt_01.Cast(Game.CursorPos);
+                                }
+                            }
+                            break;
+                        case 2:
+                            {
+                                if (Items.Hextech_Protobelt_01.IsOwned() && Items.Hextech_Protobelt_01.IsReady())
+                                {
+                                    if (!Player.Instance.IsInAutoAttackRange(target) && Player.Instance.Distance(pred.UnitPosition) <= Player.Instance.GetAutoAttackRange() + 325)
+                                        Items.Hextech_Protobelt_01.Cast(Player.Instance.Position.Extend(pred.CastPosition, 275));
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+        public static void Gapcloser_OnGapcloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
+        {
+            if (sender.IsAlly) return;
+            if (Items.Hextech_GLP_800 == null && Items.Hextech_Protobelt_01 == null) return;
+            {
+                if (sender.IsValidTarget(200, true, Player.Instance.Position))
+                {
+                    if ((Config.Offensive["Hextech800style"].Cast<ComboBox>().CurrentValue == 1
+                        || Config.Offensive["Hextech800style"].Cast<ComboBox>().CurrentValue == 3)
+                        && Items.Hextech_GLP_800 != null)
+                    {
+                        if (Items.Hextech_GLP_800.IsOwned() && Items.Hextech_GLP_800.IsReady())
+                        {
+                            Items.Hextech_GLP_800.Cast(e.End);
+                        }
+                    }
+                    if (Config.Offensive["Hextech01agap"].Cast<CheckBox>().CurrentValue
+                        && Items.Hextech_Protobelt_01 != null)
+                    {
+                        if (Items.Hextech_Protobelt_01.IsOwned() && Items.Hextech_Protobelt_01.IsReady())
+                        {
+                            Items.Hextech_Protobelt_01.Cast(sender.Position.Extend(Player.Instance.Position, sender.Distance(Player.Instance) + 275).To3D());
+                        }
+                    }
+                }
+            }
+        }
+
+        public static Spell.Skillshot Hextech800 { get; private set; }
+        public static Spell.Skillshot Hextech01 { get; private set; }
+
+        public static void InitItemSpell()
+        {
+            if (Items.Hextech_GLP_800 != null)
+                Hextech800 = new Spell.Skillshot(Items.Hextech_GLP_800.Slots.FirstOrDefault(), 750, SkillShotType.Cone, 0, 1150, 60);
+            if (Items.Hextech_Protobelt_01 != null)
+                Hextech01 = new Spell.Skillshot(Items.Hextech_Protobelt_01.Slots.FirstOrDefault(), 750, SkillShotType.Cone, 0, 1150, 60)
+                    {
+                        AllowedCollisionCount = 0,
+                    };
+        }
+        public static void KillSteal()
+        {
+            if (Items.Hextech_GLP_800 == null && Items.Hextech_Protobelt_01 == null && Items.Tiamat == null && Items.Ravenous_Hydra == null) return;
+            var HextechTarget = TargetSelector.GetTarget(750, DamageType.Magical);
+            var TiamatTarget = TargetSelector.GetTarget(400, DamageType.Physical);
+            if (HextechTarget != null
+                && Items.Hextech_GLP_800 != null
+                && Config.Offensive["Hextech800style"].Cast<ComboBox>().CurrentValue >= 2)
+            {
+                var Damage = Player.Instance.CalculateDamageOnUnit(
+                    HextechTarget, DamageType.Magical,
+                    (new[] { 0f, 100f, 106f, 112f, 118f, 124f, 130f, 136f, 141f, 147f, 153f, 159f, 165f, 171f, 176f, 182f, 188f, 194f, 200f}[Player.Instance.Level]) + 0.35f * Player.Instance.TotalMagicalDamage);
+                var Pred = Hextech800.GetPrediction(HextechTarget);
+                if (Items.Hextech_GLP_800.IsOwned() && Items.Hextech_GLP_800.IsReady() 
+                && HextechTarget.Health <= Damage)
+                {
+                    Items.Hextech_GLP_800.Cast(Pred.CastPosition);
+                }
+            }
+            if (HextechTarget != null
+                && Items.Hextech_Protobelt_01 != null
+                && Config.Offensive["Hextech01Ks"].Cast<CheckBox>().CurrentValue)
+            {
+                var Damage = Player.Instance.CalculateDamageOnUnit(
+                    HextechTarget, DamageType.Magical,
+                    (new[] { 0f, 75f, 79f, 83f, 88f, 92f, 97f, 101f, 106f, 110f, 115f, 119f, 124f, 128f, 132f, 137f, 141f, 146f, 150f }[Player.Instance.Level]) + 0.35f * Player.Instance.TotalMagicalDamage);
+                var Pred = Hextech01.GetPrediction(HextechTarget);
+                if (Items.Hextech_Protobelt_01.IsOwned() && Items.Hextech_Protobelt_01.IsReady()
+                && HextechTarget.Health <= Damage)
+                {
+                    Items.Hextech_Protobelt_01.Cast(Player.Instance.Position.Extend(Pred.CastPosition, 275).To3D());
+                }
+            }
+            if (TiamatTarget != null && (Items.Tiamat != null || Items.Ravenous_Hydra != null)
+                && Config.Offensive["TiamatKs"].Cast<CheckBox>().CurrentValue)
+            {
+                var PercentDame = (100 - Player.Instance.Distance(TiamatTarget) / 10);
+                var Damage = Player.Instance.CalculateDamageOnUnit(TiamatTarget, DamageType.Physical, Player.Instance.TotalAttackDamage * PercentDame, false);
+                if (Items.Tiamat.IsOwned()
+                && Items.Tiamat.IsReady()
+                && HextechTarget.Health <= Damage)
+                {
+                    Items.Tiamat.Cast();
+                }
+                if (Items.Ravenous_Hydra.IsOwned()
+                && Items.Ravenous_Hydra.IsReady()
+                && HextechTarget.Health <= Damage)
+                {
+                    Items.Ravenous_Hydra.Cast();
                 }
             }
 
         }
+        public static void On_Unkillable_Minion(Obj_AI_Base unit, Orbwalker.UnkillableMinionArgs args)
+        {
+            if (Config.Offensive["TiamatLh"].Cast<CheckBox>().CurrentValue
+                && (Items.Tiamat != null || Items.Ravenous_Hydra != null)
+                && unit.Health <= Player.Instance.TotalAttackDamage *0.8
+                && unit.Distance(Player.Instance) <= 400)
+            {
+                if (Items.Tiamat.IsOwned() && Items.Tiamat.IsReady()) Items.Tiamat.Cast();
+                else if (Items.Ravenous_Hydra.IsOwned() && Items.Ravenous_Hydra.IsReady()) Items.Ravenous_Hydra.Cast(); 
+            }
+        }
         public static void OnPostAttack(AttackableUnit target, EventArgs args)
         {
-            if (Items.Titanic_Hydra == null) return;
+            if (Items.Titanic_Hydra == null || !Items.Titanic_Hydra.IsOwned() || !Items.Titanic_Hydra.IsReady()) return;
             if (Config.Offensive["styletitanic"].Cast<ComboBox>().CurrentValue == 0)
             {
                 switch (Config.Offensive["Tiamat"].Cast<ComboBox>().CurrentValue)
@@ -161,7 +306,7 @@ namespace UBActivator
                         {
                             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass))
                             {
-                                if (Items.Titanic_Hydra.IsOwned() && Items.Titanic_Hydra.IsReady()) Items.Titanic_Hydra.Cast();
+                                Items.Titanic_Hydra.Cast();
                                 Orbwalker.ResetAutoAttack();
                                 Player.IssueOrder(GameObjectOrder.AttackTo, target);
                             }
@@ -171,7 +316,7 @@ namespace UBActivator
                         {
                             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
                             {
-                                if (Items.Titanic_Hydra.IsOwned() && Items.Titanic_Hydra.IsReady()) Items.Titanic_Hydra.Cast();
+                                Items.Titanic_Hydra.Cast();
                                 Orbwalker.ResetAutoAttack();
                                 Player.IssueOrder(GameObjectOrder.AttackTo, target);
                             }
@@ -181,7 +326,7 @@ namespace UBActivator
                         {
                             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass) || Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
                             {
-                                if (Items.Titanic_Hydra.IsOwned() && Items.Titanic_Hydra.IsReady()) Items.Titanic_Hydra.Cast();
+                                Items.Titanic_Hydra.Cast();
                                 Orbwalker.ResetAutoAttack();
                                 Player.IssueOrder(GameObjectOrder.AttackTo, target);
                             }
@@ -189,7 +334,7 @@ namespace UBActivator
                         break;
                     case 4:
                         {
-                            if (Items.Titanic_Hydra.IsOwned() && Items.Titanic_Hydra.IsReady()) Items.Titanic_Hydra.Cast();
+                            Items.Titanic_Hydra.Cast();
                             Orbwalker.ResetAutoAttack();
                             Player.IssueOrder(GameObjectOrder.AttackTo, target);
                         }
@@ -199,7 +344,7 @@ namespace UBActivator
         }
         public static void OnPreAttack(AttackableUnit target, EventArgs args)
         {
-            if (Items.Titanic_Hydra == null) return;
+            if (Items.Titanic_Hydra == null || !Items.Titanic_Hydra.IsOwned() || !Items.Titanic_Hydra.IsReady()) return;
             if (Config.Offensive["styletitanic"].Cast<ComboBox>().CurrentValue == 1)
             {
                 switch (Config.Offensive["Tiamat"].Cast<ComboBox>().CurrentValue)
@@ -210,7 +355,7 @@ namespace UBActivator
                         {
                             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass))
                             {
-                                if (Items.Titanic_Hydra.IsOwned() && Items.Titanic_Hydra.IsReady()) Items.Titanic_Hydra.Cast();
+                                Items.Titanic_Hydra.Cast();
                                 Orbwalker.ResetAutoAttack();
                                 Player.IssueOrder(GameObjectOrder.AttackTo, target);
                             }
@@ -220,7 +365,7 @@ namespace UBActivator
                         {
                             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
                             {
-                                if (Items.Titanic_Hydra.IsOwned() && Items.Titanic_Hydra.IsReady()) Items.Titanic_Hydra.Cast();
+                                Items.Titanic_Hydra.Cast();
                                 Orbwalker.ResetAutoAttack();
                                 Player.IssueOrder(GameObjectOrder.AttackTo, target);
                             }
@@ -230,7 +375,7 @@ namespace UBActivator
                         {
                             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass) || Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
                             {
-                                if (Items.Titanic_Hydra.IsOwned() && Items.Titanic_Hydra.IsReady()) Items.Titanic_Hydra.Cast();
+                                Items.Titanic_Hydra.Cast();
                                 Orbwalker.ResetAutoAttack();
                                 Player.IssueOrder(GameObjectOrder.AttackTo, target);
                             }
@@ -238,7 +383,7 @@ namespace UBActivator
                         break;
                     case 4:
                         {
-                            if (Items.Titanic_Hydra.IsOwned() && Items.Titanic_Hydra.IsReady()) Items.Titanic_Hydra.Cast();
+                            Items.Titanic_Hydra.Cast();
                             Orbwalker.ResetAutoAttack();
                             Player.IssueOrder(GameObjectOrder.AttackTo, target);
                         }

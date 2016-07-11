@@ -49,11 +49,18 @@ namespace UBActivator
         public static Item Titanic_Hydra { get; private set; }
         public static Item Total_Biscuit_of_Rejuvenation { get; private set; }
         public static Item Tracker_s_Knife { get; private set; }
+        public static Item Tracker_s_Knifee_Enchantment_Cinderhulk { get; private set; }
+        public static Item Tracker_s_Knife_Enchantment_Devourer { get; private set; }
+        public static Item Tracker_s_Knife_Enchantment_Runic_Echoes { get; private set; }
+        public static Item Tracker_s_Knife_Enchantment_Sated_Devourer { get; private set; }
+        public static Item Tracker_s_Knife_Enchantment_Warrior { get; private set; }
+        public static Item Sweeping_Lens { get; private set; }
         public static Item Vision_Ward { get; private set; }
+        public static Item Warding_Totem { get; private set; }
         public static Item Youmuu_s_Ghostblade { get; private set; }
         public static Item Zz_Rot_Portal { get; private set; }
         public static Item Zhonya_Hourglass { get; private set; }
-
+        
         public static void InitItems()
         {
             Archangel_Staff = new Item(ItemId.Archangels_Staff);
@@ -65,14 +72,15 @@ namespace UBActivator
             Elixir_of_Sorcery = new Item(ItemId.Elixir_of_Sorcery);
             Elixir_of_Wrath = new Item(ItemId.Elixir_of_Wrath);
             Eye_of_the_Equinox = new Item(ItemId.Eye_of_the_Equinox);
-            Eye_of_the_Oasis = new Item(ItemId.Eye_of_the_Oasis);
+            Eye_of_the_Oasis = new Item(ItemId.Eye_of_the_Oasis, 600f);
             Eye_of_the_Watchers = new Item(ItemId.Eye_of_the_Watchers);
             Face_of_the_moutain = new Item(ItemId.Face_of_the_Mountain);
             Farsight_Alteration = new Item(ItemId.Farsight_Alteration);
             Frost_Queen_s_Claim = new Item(ItemId.Frost_Queens_Claim);
             HealthPotion = new Item(ItemId.Health_Potion);
-            Hextech_GLP_800 = new Item(ItemId.Hextech_Sweeper);
+            Hextech_GLP_800 = new Item(3030);
             Hextech_Gunblade = new Item(ItemId.Hextech_Gunblade);
+            Hextech_Protobelt_01 = new Item(3152);
             Hunter_s_Potion = new Item(ItemId.Hunters_Potion);
             Locket_of_the_iron_Solari = new Item(ItemId.Locket_of_the_Iron_Solari);
             Manamune = new Item(ItemId.Manamune);
@@ -94,7 +102,13 @@ namespace UBActivator
             Titanic_Hydra = new Item(ItemId.Titanic_Hydra);
             Total_Biscuit_of_Rejuvenation = new Item(ItemId.Total_Biscuit_of_Rejuvenation);
             Tracker_s_Knife = new Item(ItemId.Trackers_Knife);
+            Tracker_s_Knife_Enchantment_Devourer = new Item(ItemId.Trackers_Knife_Enchantment_Devourer);
+            Tracker_s_Knife_Enchantment_Runic_Echoes = new Item(ItemId.Trackers_Knife_Enchantment_Runic_Echoes);
+            Tracker_s_Knife_Enchantment_Sated_Devourer = new Item(ItemId.Trackers_Knife_Enchantment_Sated_Devourer);
+            Tracker_s_Knife_Enchantment_Warrior = new Item(ItemId.Trackers_Knife_Enchantment_Warrior);
+            Tracker_s_Knifee_Enchantment_Cinderhulk = new Item(ItemId.Trackers_Knife_Enchantment_Cinderhulk);
             Vision_Ward = new Item(ItemId.Vision_Ward);
+            Warding_Totem = new Item(ItemId.Warding_Totem_Trinket);
             Youmuu_s_Ghostblade = new Item(ItemId.Youmuus_Ghostblade);
             Zz_Rot_Portal = new Item(ItemId.ZzRot_Portal);
             Zhonya_Hourglass = new Item(ItemId.Zhonyas_Hourglass);

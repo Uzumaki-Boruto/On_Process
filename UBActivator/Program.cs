@@ -1,6 +1,8 @@
 ﻿using System;
 using EloBuddy;
 using EloBuddy.SDK;
+using EloBuddy.SDK.Notifications;
+using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Events;
 
 
@@ -15,26 +17,41 @@ namespace UBActivator
 
         static void Loading_OnLoadingComplete(EventArgs args)
         {
+            var notStart = new SimpleNotification("UBActivator Load Status", "UBActivator sucessfully loaded.");
+            Notifications.Show(notStart, 5000);
+
             Config.Dattenosa();
             Spells.InitSpells();
             Items.InitItems();
+            InitEvent();
 
             Obj_AI_Base.OnBuffGain += Clean.OnBuffGain;
 
             Orbwalker.OnPostAttack += Offensive.OnPostAttack;
             Orbwalker.OnPreAttack += Offensive.OnPreAttack;
 
-            Game.OnTick += Offensive.Ontick;
-            Game.OnTick += Offensive.OnTick2;
-            Game.OnTick += Offensive.OnTick3;
-            Game.OnTick += Utility.Game_OnTick;
-            Game.OnTick += Utility.OnTick;
-            Game.OnTick += Potions.OnTick;
-            Game.OnTick += Spells.JungSteal;
-            Game.OnTick += Spells.KillSteal;
-            Game.OnTick += Spells.UseHeal;
-
-
-        }    
+        }
+        static void InitEvent()
+        {
+            Game.OnTick += _Game;
+            Gapcloser.OnGapcloser += Offensive.Gapcloser_OnGapcloser;
+        }
+       
+        static void _Game(EventArgs args)
+        {
+            Offensive.Ontick();
+            Offensive.OnTick2();
+            Offensive.OnTick3();
+            Offensive.OnTick4();
+            Offensive.KillSteal();
+            Utility.Game_OnTick();
+            Utility.OnTick();
+            Combat.OnTick();
+            Potions.OnTick();
+            Spells.JungSteal();
+            Spells.KillSteal();
+            Spells.UseHeal();
+        }
+        
     }
 }

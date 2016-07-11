@@ -22,6 +22,11 @@ namespace UBActivator
         public static Menu Utility { get; private set; }
         public static int[] SkillOrder;
         private static CheckBox RandomButton;
+        private static CheckBox OmenButton;
+        private static CheckBox GloryButton;
+        private static CheckBox TargetButton;
+        private static CheckBox WardButton;
+        private static Slider WardSlider;
         private static Slider RandomSlider;
 
         public static void Dattenosa()
@@ -29,9 +34,10 @@ namespace UBActivator
             Menu = MainMenu.AddMenu("UBActivator", "UB Activator");
             Menu.AddGroupLabel("Made by Uzumaki Boruto");
             Menu.AddLabel("Dattenosa");
+            
             /*
             Menu.AddLabel("Global Settings");
-            Menu.AddLabel("Must F5 to take effect");
+            Menu.AddLabel("Must F5 to take effect");          
             Menu.Add("Potions", new ComboBox("Potions Menus will be", 1, "Simple", "Details"));
             Menu.Add("Offensive", new ComboBox("Offensive Menus will be", 0, "Simple", "Details"));
             Menu.Add("Defensive", new ComboBox("Defensive Menus will be", 0, "Simple", "Details"));
@@ -39,7 +45,6 @@ namespace UBActivator
             Menu.Add("Spell", new ComboBox("Spell Menus will be", 0, "Simple", "Details"));
             Menu.Add("Ward", new ComboBox("Ward Menus will be", 0, "Simple", "Details"));
             Menu.Add("Utility", new ComboBox("Utility Menus will be", 0, "Simple", "Details"));*/
-
 
 
             Potions = Menu.AddSubMenu("Potions Config");
@@ -75,7 +80,8 @@ namespace UBActivator
             Offensive = Menu.AddSubMenu("Offensive Config");
             {
                 Offensive.AddGroupLabel("Targeted Item");
-                Offensive.Add("cbitem", new CheckBox("Only use item on Combo Flag", false));
+                TargetButton = Offensive.Add("cbitem", new CheckBox("Now is Auto use (Check to change)", false));
+                TargetButton.OnValueChange += TargetButton_OnValueChange;
                 Offensive.Add("BC", new CheckBox("Use Bilgewater Cutlass"));
                 Offensive.Add("Bork", new CheckBox("Use Blade of Ruined King"));
                 Offensive.Add("HG", new CheckBox("Use Hextech Gunblade"));
@@ -98,12 +104,12 @@ namespace UBActivator
                 Offensive.Add("cbmvitem", new CheckBox("Only use item on Combo Flag", false));
                 Offensive.Add("Youmuu", new CheckBox("Youmuu's Ghostblade"));
                 Offensive.AddSeparator();
-                Offensive.Add("Hextech01", new CheckBox("Use Hextech_Protobelt_01"));
-                Offensive.Add("Evade01", new CheckBox("Use on Evade Spell (must install Evade addon)"));
-                Offensive.Add("Hextech01Ks", new CheckBox("Use Hextech_Protobelt_01 on KillSteal"));
-                Offensive.Add("Hextech01Lc", new CheckBox("Use Hextech_Protobelt_01 on LaneClear", false));
-                Offensive.Add("Hextech01Lccount", new Slider("Use Hextech_Probelt_01 if hit {0} minion(s)", 5, 1, 10));
-                Offensive.Add("Hextech800style", new ComboBox("Use On:", 3, "None", "Only Anti GapCloser", "Only KillSteal", " Both"));
+                Offensive.Add("Hextech01", new CheckBox("Use HT_Protobelt_01"));
+                Offensive.Add("Hextech01Ks", new CheckBox("Use HT_Protobelt_01 on KillSteal"));
+                Offensive.Add("Hextech01gap", new ComboBox("Use HT_Protobelt_01 on GapCloser", 2, "None", "To Mouse", "To Target"));
+                Offensive.Add("Hextech01agap", new CheckBox("Use HT_Protobelt_01 on anti GapCloser", false));
+                Offensive.AddSeparator();
+                Offensive.Add("Hextech800style", new ComboBox("Use HT_GLP_800 On:", 3, "None", "Only Anti GapCloser", "Only KillSteal", " Both"));
 
             }
 
@@ -136,10 +142,14 @@ namespace UBActivator
             Combat = Menu.AddSubMenu("Combat Item");
             {
                 Combat.Add("Randuin", new CheckBox("Use Randuin"));
-                Combat.Add("Randuinh", new Slider("Use Randuin On {0} Enemies", 2, 1, 5));
+                OmenButton = Combat.Add("RanduinCb", new CheckBox("Use on Combo only(Check to change)"));
+                OmenButton.OnValueChange += OmenButton_OnValueChange;
+                Combat.Add("Randuincount", new Slider("Use Randuin On {0} Enemies", 2, 1, 5));
                 Combat.AddSeparator();
                 Combat.Add("Glory", new CheckBox("Auto use Righteous Glory"));
-                Combat.Add("Glory", new Slider("Use it if buff {0} ally", 3, 1, 4));
+                GloryButton = Combat.Add("GloryCb", new CheckBox("Use on Combo only(Check to change)"));
+                GloryButton.OnValueChange += GloryButton_OnValueChange;
+                Combat.Add("Glorycountally", new Slider("Use it if buff {0} ally", 3, 1, 4));
 
             }
 
@@ -185,7 +195,7 @@ namespace UBActivator
                 Spell.AddGroupLabel("Ignite");
                 Spell.Add("eIg", new CheckBox("Use Ig to KillSteal"));
                 Spell.Add("Igstyle", new ComboBox("Damage Calculator:", 0, "Full Damage", "First Tick"));
-                foreach (var enemy in  EntityManager.Heroes.Enemies)
+                foreach (var enemy in EntityManager.Heroes.Enemies)
                 {
                     Spell.Add("Ig" + enemy.ChampionName, new CheckBox("Use Ignite on " + enemy.ChampionName));
                 }
@@ -196,7 +206,7 @@ namespace UBActivator
                 foreach (var ally in EntityManager.Heroes.Allies)
                 {
                     if (ally.ChampionName != Player.Instance.ChampionName)
-                    Spell.Add("heal" + ally.ChampionName, new CheckBox("Heal " + ally.ChampionName));
+                        Spell.Add("heal" + ally.ChampionName, new CheckBox("Heal " + ally.ChampionName));
                 }
                 Spell.Add("allyHPHeal", new Slider("If ally's HP blow {0}% use Heal", 15));
                 Spell.AddGroupLabel("Ghost");
@@ -204,10 +214,10 @@ namespace UBActivator
 
             }
 
-            Ward = Menu.AddSubMenu("Ward-in-combat");
+            Ward = Menu.AddSubMenu("Auto Reveal");
             {
-                Ward.Add("enableward", new CheckBox("Enable Ward-in-combat"));
-                Ward.Add("enablebrush", new CheckBox("Anti Brush"));
+                Ward.Add("enableward", new CheckBox("Enable Reveal"));
+                Ward.Add("enablebrush", new CheckBox("Anti Bush"));
                 foreach (var champ in EntityManager.Heroes.Enemies)
                 {
                     if (champ.ChampionName == "Akali")
@@ -216,6 +226,8 @@ namespace UBActivator
                         Ward.Add("enablerengar", new CheckBox("Anti Rengar"));
                     if (champ.ChampionName == "Shaco")
                         Ward.Add("enableshaco", new CheckBox("Anti Shaco"));
+                    if (champ.ChampionName == "Wukong")
+                        Ward.Add("enableshaco", new CheckBox("Anti Wukong", false));
                     if (champ.ChampionName == "Leblanc")
                         Ward.Add("enableleblanc", new CheckBox("Anti Leblanc"));
                     if (champ.ChampionName == "KhaZix")
@@ -225,11 +237,16 @@ namespace UBActivator
                     if (champ.ChampionName == "Vayne")
                         Ward.Add("enablevayne", new CheckBox("Anti Vayne"));
                 }
+                WardButton = Ward.Add("wardhuman", new CheckBox("Use random value", false));
+                WardButton.OnValueChange += WardButton_OnValueChange;
+                WardSlider = Ward.Add("warddelay", new Slider("Delay", 500, 0, 2000));
 
             }
 
             Utility = Menu.AddSubMenu("Other Settings");
             {
+                Utility.AddGroupLabel("Auto Tear");
+                Utility.Add("etear", new CheckBox("Auto stack Tear"));
                 Utility.AddGroupLabel("Mod Skin");
                 Utility.Add("eskin", new CheckBox("Enable Modskin", false));
                 Utility.Add("skin", new Slider("Drag for skin", 0, 0, 15));
@@ -767,9 +784,76 @@ namespace UBActivator
                 {
                     Utility.Add(i.ToString(), new ComboBox("Level " + i, SkillOrder[i - 1], "None", "Q", "W", "E", "R"));
                 }
+            }            
+        }
+
+        #region Button Change
+        private static void GloryButton_OnValueChange(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
+        {
+            switch (args.NewValue)
+            {
+                case true:
+                    {
+                        GloryButton.DisplayName = "Use on Combo only (Check to change)";
+                    }
+                    break;
+                case false:
+                    {
+                        GloryButton.DisplayName = "Now is Auto use (Check to change)";
+                    }
+                    break;
             }
         }
 
+        private static void OmenButton_OnValueChange(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
+        {
+            switch (args.NewValue)
+            {
+                case true:
+                    {
+                        OmenButton.DisplayName = "Use on Combo only (Check to change)";
+                    }
+                    break;
+                case false:
+                    {
+                        OmenButton.DisplayName = "Now is Auto use (Check to change)";
+                    }
+                    break;
+            }
+        }
+
+        private static void TargetButton_OnValueChange(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
+        {
+            switch (args.NewValue)
+            {
+                case true:
+                    {
+                        TargetButton.DisplayName = "Use on Combo only (Check to change)";
+                    }
+                    break;
+                case false:
+                    {
+                        TargetButton.DisplayName = "Now is Auto use (Check to change)";
+                    }
+                    break;
+            }
+        }
+        static void WardButton_OnValueChange(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
+        {
+            switch (args.NewValue)
+            {
+                case true:
+                    {
+                        WardSlider.DisplayName = "Max Value for Random Delay";
+                    }
+                    break;
+                case false:
+                    {
+                        WardSlider.DisplayName = "Delay for auto reveal";
+                    }
+                    break;
+            }
+        }
         private static void RandomButton_OnValueChange(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
         {
             switch (args.NewValue)
@@ -786,5 +870,6 @@ namespace UBActivator
                     break;
             }
         }
+        #endregion
     }
 }

@@ -1,12 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EloBuddy;
+using EloBuddy.SDK;
+using EloBuddy.SDK.Menu.Values;
 
 namespace UBActivator
 {
     class Defensive
     {
+
+        public static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+
+        }
+        public static void OnBasicAttack(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+        }
     }
 }
