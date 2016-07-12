@@ -32,8 +32,8 @@ namespace UBActivator
 
             Obj_AI_Base.OnBuffGain += Clean.OnBuffGain;
 
-            Orbwalker.OnPostAttack += Offensive.OnPostAttack;
-            Orbwalker.OnPreAttack += Offensive.OnPreAttack;
+            //Orbwalker.OnPostAttack += Offensive.OnPostAttack;
+            //Orbwalker.OnPreAttack += Offensive.OnPreAttack;
 
             Gapcloser.OnGapcloser += Offensive.Gapcloser_OnGapcloser;
 
