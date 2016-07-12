@@ -21,13 +21,19 @@ namespace UBActivator
         public static Menu Ward { get; private set; }
         public static Menu Utility { get; private set; }
         public static int[] SkillOrder;
-        private static CheckBox RandomButton;
-        private static CheckBox OmenButton;
-        private static CheckBox GloryButton;
-        private static CheckBox TargetButton;
-        private static CheckBox WardButton;
-        private static Slider WardSlider;
-        private static Slider RandomSlider;
+        public static CheckBox RandomButton;
+        public static CheckBox OmenButton;
+        public static CheckBox GloryButton;
+        public static CheckBox TargetButton;
+        public static CheckBox WardButton;
+        public static Slider WardSlider;
+        public static Slider RandomSlider;
+        public static Slider FOTMSlider;
+        public static Slider SolariSlider;
+        public static Slider SerSlider;
+        public static Label SerLabel;
+        public static Label FOTMLabel;
+        public static Label SolariLabel;
 
         public static void Dattenosa()
         {
@@ -115,28 +121,40 @@ namespace UBActivator
 
             Defensive = Menu.AddSubMenu("Defensive Config");
             {
-                Defensive.Add("Zhonyas", new CheckBox("Use Zhonyas"));
-                Defensive.Add("Zhonyash", new Slider("Use Zhonyas health", 25, 0, 100));
-                Defensive.AddSeparator();
-                Defensive.Add("Seraph", new CheckBox("Use Seraph"));
-                Defensive.Add("Seraphh", new Slider("Use Seraph health", 45, 0, 100));
-                Defensive.AddSeparator();
-                Defensive.Add("Face", new CheckBox("Use Face Of The Mountain"));
-                Defensive.Add("Faceh", new Slider("Use Face Of The Mountain health", 50, 0, 100));
+                Defensive.AddGroupLabel("Seraph's Embrace Setting");
+                Defensive.Add("Ser", new CheckBox("Use Seraph's Embrace"));
+                Defensive.Add("Seratt", new CheckBox("Block basic attack & spells"));
+                SerSlider = Defensive.Add("Faceshield", new Slider("Use if block {0}% shield value", 60, 0, 100));
+                SerSlider.OnValueChange += SerSlider_OnValueChange;
+                SerLabel = Defensive.Add("SerLabel", new Label("This mean Use Seraph if the basic attack or spell ≥ " + Math.Round((150 + 0.2 * Player.Instance.Mana) * 60 / 100) + " damage"));
                 foreach (var Ally in EntityManager.Heroes.Allies)
                 {
                     Defensive.Add("Face" + Ally.ChampionName, new CheckBox("Use FOTM on " + Ally.ChampionName));
                 }
                 Defensive.AddSeparator();
+                Defensive.AddGroupLabel("Face of The Moutain Setting");
+                Defensive.Add("Face", new CheckBox("Use Face Of The Mountain"));
+                Defensive.Add("Faceatt", new CheckBox("Block basic attack & spells"));
+                FOTMSlider = Defensive.Add("Faceshield", new Slider("Use if block {0}% shield value", 60, 0, 100));
+                FOTMSlider.OnValueChange += FOTMSlider_OnValueChange;
+                FOTMLabel = Defensive.Add("FOTMLabel", new Label("This mean Use FOTM if the basic attack or spell ≥ " + Math.Round(Player.Instance.MaxHealth * 0.1 * 60 / 100) + " damage"));
+                foreach (var Ally in EntityManager.Heroes.Allies)
+                {
+                    Defensive.Add("Face" + Ally.ChampionName, new CheckBox("Use FOTM on " + Ally.ChampionName));
+                }
+                Defensive.AddSeparator();
+                Defensive.AddGroupLabel("Solari Setting");
                 Defensive.Add("Solari", new CheckBox("Use Solari"));
-                Defensive.Add("Solarih", new Slider("Use Solari health", 30, 0, 100));
+                SolariSlider = Defensive.Add("Solarishield", new Slider("Use if block {0}% shield value", 60, 0, 100));
+                SolariSlider.OnValueChange += SolariSlider_OnValueChange;
+                SolariLabel = Defensive.Add("SolariLabel", new Label("This mean Use Solari if the basic attack or spell ≥ " + (75 + 15 * Player.Instance.Level) * 60 / 100 + " damage"));
                 foreach (var Ally in EntityManager.Heroes.Allies)
                 {
                     Defensive.Add("Solari" + Ally.ChampionName, new CheckBox("Use Solari on " + Ally.ChampionName));
                 }
                 Defensive.AddSeparator();
-                Defensive.AddGroupLabel("Zhonya Danger Spells");
-                Defensive.Add("ZhonyasD", new CheckBox("Deny Dangers Spells"));
+                Defensive.AddGroupLabel("Block Danger Spells by Zhonya");
+                Defensive.Add("enableblock", new CheckBox("Enable deny spell in spells list below", false));
             }
 
             Combat = Menu.AddSubMenu("Combat Item");
@@ -787,7 +805,19 @@ namespace UBActivator
             }            
         }
 
-        #region Button Change
+        #region Value Change
+        static void SerSlider_OnValueChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs args)
+        {
+            SerLabel.DisplayName = "This mean Use Solari if the basic attack or spell ≥ " + Math.Round((150 + 0.2 * Player.Instance.Mana) * args.NewValue / 100) + " damage";
+        }
+        static void FOTMSlider_OnValueChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs args)
+        {
+            FOTMLabel.DisplayName = "This mean Use FOTM if the basic attack or spell ≥ " + Math.Round(Player.Instance.MaxHealth * 0.1 * args.NewValue / 100) + " damage";
+        }
+        static void SolariSlider_OnValueChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs args)
+        {
+            SolariLabel.DisplayName = "This mean Use Solari if the basic attack or spell ≥ " + (75 + 15 * Player.Instance.Level) * args.NewValue / 100 + " damage";
+        }
         private static void GloryButton_OnValueChange(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
         {
             switch (args.NewValue)

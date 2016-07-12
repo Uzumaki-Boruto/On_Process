@@ -12,7 +12,7 @@ namespace UBActivator
     {
         public static void Ontick()
         {
-            if (Items.Tiamat == null && Items.Ravenous_Hydra == null) return;
+            //if (Items.Tiamat == null && Items.Ravenous_Hydra == null) return;
             if (!Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)) return;
             {
                 var Count = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.Position, 400).Count();
@@ -30,7 +30,7 @@ namespace UBActivator
         }
         public static void OnTick2()
         {
-            if (Items.Tiamat == null && Items.Ravenous_Hydra == null) return;
+            //if (Items.Tiamat == null && Items.Ravenous_Hydra == null) return;
             if (!Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear)) return;
             {
                 var Count = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.Position, 400).Count();
@@ -62,11 +62,11 @@ namespace UBActivator
         }
         public static void OnTick3()
         {
-            if (Items.Tiamat == null && Items.Ravenous_Hydra == null && Items.Bilgewater_Cutlass == null && Items.Hextech_Gunblade == null && Items.Blade_Of_The_Ruined_King == null) return;
+            //if (Items.Tiamat == null && Items.Ravenous_Hydra == null && Items.Bilgewater_Cutlass == null && Items.Hextech_Gunblade == null && Items.Blade_Of_The_Ruined_King == null) return;
             var TiamatTarget = TargetSelector.GetTarget(400, DamageType.Physical);
             var CutlassTarget = TargetSelector.GetTarget(550, DamageType.Magical);
             var HextechTarget = TargetSelector.GetTarget(700, DamageType.Magical);
-            if (TiamatTarget != null && Items.Tiamat == null)
+            if (TiamatTarget != null)
             {
                 var distance = Player.Instance.Distance(TiamatTarget);
                 if (Config.Offensive["Tiamat"].Cast<ComboBox>().CurrentValue > 0
@@ -156,7 +156,7 @@ namespace UBActivator
         }
         public static void OnTick4()
         {
-            if (Items.Hextech_Protobelt_01 == null) return;
+            if (!Items.Hextech_Protobelt_01.IsOwned()) return;
             {
                 var target = TargetSelector.GetTarget(750, DamageType.Magical);
                 if (target != null && target.IsValidTarget(200, true, Player.Instance.Position))
@@ -231,7 +231,7 @@ namespace UBActivator
         }
         public static void KillSteal()
         {
-            if (Items.Hextech_GLP_800 == null && Items.Hextech_Protobelt_01 == null && Items.Tiamat == null && Items.Ravenous_Hydra == null) return;
+            //if (Items.Hextech_GLP_800 == null && Items.Hextech_Protobelt_01 == null && Items.Tiamat == null && Items.Ravenous_Hydra == null) return;
             var HextechTarget = TargetSelector.GetTarget(750, DamageType.Magical);
             var TiamatTarget = TargetSelector.GetTarget(400, DamageType.Physical);
             if (HextechTarget != null
@@ -269,13 +269,13 @@ namespace UBActivator
                 var Damage = Player.Instance.CalculateDamageOnUnit(TiamatTarget, DamageType.Physical, Player.Instance.TotalAttackDamage * PercentDame, false);
                 if (Items.Tiamat.IsOwned()
                 && Items.Tiamat.IsReady()
-                && HextechTarget.Health <= Damage)
+                && TiamatTarget.Health <= Damage)
                 {
                     Items.Tiamat.Cast();
                 }
                 if (Items.Ravenous_Hydra.IsOwned()
                 && Items.Ravenous_Hydra.IsReady()
-                && HextechTarget.Health <= Damage)
+                && TiamatTarget.Health <= Damage)
                 {
                     Items.Ravenous_Hydra.Cast();
                 }
@@ -295,7 +295,9 @@ namespace UBActivator
         }
         public static void OnPostAttack(AttackableUnit target, EventArgs args)
         {
-            if (Items.Titanic_Hydra == null || !Items.Titanic_Hydra.IsOwned() || !Items.Titanic_Hydra.IsReady()) return;
+            var Tar = target as AIHeroClient;
+            if (Tar == null) return;
+            if (!Items.Titanic_Hydra.IsOwned() || !Items.Titanic_Hydra.IsReady()) return;
             if (Config.Offensive["styletitanic"].Cast<ComboBox>().CurrentValue == 0)
             {
                 switch (Config.Offensive["Tiamat"].Cast<ComboBox>().CurrentValue)
@@ -344,7 +346,9 @@ namespace UBActivator
         }
         public static void OnPreAttack(AttackableUnit target, EventArgs args)
         {
-            if (Items.Titanic_Hydra == null || !Items.Titanic_Hydra.IsOwned() || !Items.Titanic_Hydra.IsReady()) return;
+            var Tar = target as AIHeroClient;
+            if (Tar == null) return;
+            if (!Items.Titanic_Hydra.IsOwned() || !Items.Titanic_Hydra.IsReady()) return;
             if (Config.Offensive["styletitanic"].Cast<ComboBox>().CurrentValue == 1)
             {
                 switch (Config.Offensive["Tiamat"].Cast<ComboBox>().CurrentValue)

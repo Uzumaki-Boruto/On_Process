@@ -76,6 +76,6 @@ namespace UBActivator
                 Time;
             if (Player.Instance.Spellbook.CanSpellBeUpgraded(slot))
             Core.DelayAction(() => Player.LevelSpell(slot), Delay);
-        }     
+        }
     }
 }

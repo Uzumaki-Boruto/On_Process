@@ -17,6 +17,7 @@ namespace UBActivator
 
         static void Loading_OnLoadingComplete(EventArgs args)
         {
+            if (Game.MapId != GameMapId.SummonersRift) return;
             var notStart = new SimpleNotification("UBActivator Load Status", "UBActivator sucessfully loaded.");
             Notifications.Show(notStart, 5000);
 
@@ -24,17 +25,21 @@ namespace UBActivator
             Spells.InitSpells();
             Items.InitItems();
             InitEvent();
+        }
+        static void InitEvent()
+        {
+            Game.OnTick += _Game;
 
             Obj_AI_Base.OnBuffGain += Clean.OnBuffGain;
 
             Orbwalker.OnPostAttack += Offensive.OnPostAttack;
             Orbwalker.OnPreAttack += Offensive.OnPreAttack;
 
-        }
-        static void InitEvent()
-        {
-            Game.OnTick += _Game;
             Gapcloser.OnGapcloser += Offensive.Gapcloser_OnGapcloser;
+
+            Obj_AI_Base.OnProcessSpellCast += Defense.OnProcessSpellCast;
+            Obj_AI_Base.OnProcessSpellCast += Defensive.OnProcessSpellCast;
+            Obj_AI_Base.OnProcessSpellCast += Ward.OnProcessSpellCast;
         }
        
         static void _Game(EventArgs args)
@@ -51,6 +56,7 @@ namespace UBActivator
             Spells.JungSteal();
             Spells.KillSteal();
             Spells.UseHeal();
+            Ward.OnTick();
         }
         
     }

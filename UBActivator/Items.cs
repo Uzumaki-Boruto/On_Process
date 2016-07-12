@@ -54,6 +54,7 @@ namespace UBActivator
         public static Item Tracker_s_Knife_Enchantment_Runic_Echoes { get; private set; }
         public static Item Tracker_s_Knife_Enchantment_Sated_Devourer { get; private set; }
         public static Item Tracker_s_Knife_Enchantment_Warrior { get; private set; }
+        public static Item Seraph_s_Embrace { get; private set; }
         public static Item Sweeping_Lens { get; private set; }
         public static Item Vision_Ward { get; private set; }
         public static Item Warding_Totem { get; private set; }
@@ -107,6 +108,8 @@ namespace UBActivator
             Tracker_s_Knife_Enchantment_Sated_Devourer = new Item(ItemId.Trackers_Knife_Enchantment_Sated_Devourer);
             Tracker_s_Knife_Enchantment_Warrior = new Item(ItemId.Trackers_Knife_Enchantment_Warrior);
             Tracker_s_Knifee_Enchantment_Cinderhulk = new Item(ItemId.Trackers_Knife_Enchantment_Cinderhulk);
+            Seraph_s_Embrace = new Item(ItemId.Seraphs_Embrace);
+            Sweeping_Lens = new Item(ItemId.Sweeping_Lens_Trinket);
             Vision_Ward = new Item(ItemId.Vision_Ward);
             Warding_Totem = new Item(ItemId.Warding_Totem_Trinket);
             Youmuu_s_Ghostblade = new Item(ItemId.Youmuus_Ghostblade);

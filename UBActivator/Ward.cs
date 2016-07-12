@@ -17,11 +17,11 @@ namespace UBActivator
         public static void OnTick()
         {
             if (!Config.Ward["enableward"].Cast<CheckBox>().CurrentValue || !Config.Ward["enablebrush"].Cast<CheckBox>().CurrentValue) return;
-            if (Items.Vision_Ward == null && Items.Ruby_Sightstone == null && Items.Sightstone == null && Items.Eye_of_the_Equinox == null
-                && Items.Eye_of_the_Oasis == null && Items.Eye_of_the_Watchers == null && Items.Farsight_Alteration == null
-                && Items.Warding_Totem == null && Items.Tracker_s_Knife == null && Items.Tracker_s_Knife_Enchantment_Devourer == null
-                && Items.Tracker_s_Knife_Enchantment_Runic_Echoes == null && Items.Tracker_s_Knife_Enchantment_Sated_Devourer == null
-                && Items.Tracker_s_Knife_Enchantment_Warrior == null && Items.Tracker_s_Knifee_Enchantment_Cinderhulk == null) return;
+            if (!Items.Vision_Ward.IsOwned() && !Items.Ruby_Sightstone.IsOwned() && !Items.Sightstone.IsOwned() && !Items.Eye_of_the_Equinox.IsOwned()
+                && !Items.Eye_of_the_Oasis.IsOwned() && !Items.Eye_of_the_Watchers.IsOwned() && !Items.Farsight_Alteration.IsOwned()
+                && !Items.Warding_Totem.IsOwned() && !Items.Tracker_s_Knife.IsOwned() && !Items.Tracker_s_Knife_Enchantment_Devourer.IsOwned()
+                && !Items.Tracker_s_Knife_Enchantment_Runic_Echoes.IsOwned() && !Items.Tracker_s_Knife_Enchantment_Sated_Devourer.IsOwned()
+                && !Items.Tracker_s_Knife_Enchantment_Warrior.IsOwned() && !Items.Tracker_s_Knifee_Enchantment_Cinderhulk.IsOwned()) return;
             foreach (var heros in EntityManager.Heroes.Enemies.Where(x => !x.IsDead && x.Distance(Player.Instance) < 1000))
             {
                 var Path = heros.Path.LastOrDefault();
@@ -41,12 +41,8 @@ namespace UBActivator
                             if (NavMesh.IsWallOfGrass(obj.Position, 1)) return;
                         }
                         #region Ward Cast
-                        if (Items.Vision_Ward != null && Items.Vision_Ward.IsOwned() && Items.Vision_Ward.IsReady() && CanCastWard)
-                        {
-                            Core.DelayAction(() => Items.Vision_Ward.Cast(Path), Delay);
-                            LastWard = Game.Time;
-                        }
-                        else if (Items.Ruby_Sightstone != null && Items.Ruby_Sightstone.IsOwned() && Items.Ruby_Sightstone.IsReady() && CanCastWard)
+                        
+                        if (Items.Ruby_Sightstone != null && Items.Ruby_Sightstone.IsOwned() && Items.Ruby_Sightstone.IsReady() && CanCastWard)
                         {
                             Core.DelayAction(() => Items.Ruby_Sightstone.Cast(Path), Delay);
                             LastWard = Game.Time;
@@ -74,11 +70,6 @@ namespace UBActivator
                         else if (Items.Farsight_Alteration != null && Items.Farsight_Alteration.IsOwned() && Items.Farsight_Alteration.IsReady() && CanCastWard)
                         {
                             Core.DelayAction(() => Items.Vision_Ward.Cast(Path), Delay);
-                            LastWard = Game.Time;
-                        }
-                        else if (Items.Warding_Totem != null && Items.Warding_Totem.IsOwned() && Items.Warding_Totem.IsReady() && CanCastWard)
-                        {
-                            Core.DelayAction(() => Items.Warding_Totem.Cast(Path), Delay);
                             LastWard = Game.Time;
                         }
                         else if (Items.Tracker_s_Knife != null && Items.Tracker_s_Knife.IsOwned() && Items.Tracker_s_Knife.IsReady() && CanCastWard)
@@ -116,10 +107,29 @@ namespace UBActivator
                             Core.DelayAction(() => Items.Tracker_s_Knifee_Enchantment_Cinderhulk.Cast(Path), Delay);
                             LastWard = Game.Time;
                         }
+                        else if (Items.Warding_Totem != null && Items.Warding_Totem.IsOwned() && Items.Warding_Totem.IsReady() && CanCastWard)
+                        {
+                            Core.DelayAction(() => Items.Warding_Totem.Cast(Path), Delay);
+                            LastWard = Game.Time;
+                        }
+                        else if (Items.Vision_Ward != null && Items.Vision_Ward.IsOwned() && Items.Vision_Ward.IsReady() && CanCastWard)
+                        {
+                            Core.DelayAction(() => Items.Vision_Ward.Cast(Path), Delay);
+                            LastWard = Game.Time;
+                        }
+                        else if (Items.Warding_Totem != null && Items.Warding_Totem.IsOwned() && Items.Warding_Totem.IsReady() && CanCastWard)
+                        {
+                            Core.DelayAction(() => Items.Warding_Totem.Cast(Path), Delay);
+                            LastWard = Game.Time;
+                        }
                         #endregion
                     }
                 }
             }
+        }
+        public static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+
         }
     }
 }

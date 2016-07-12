@@ -32,6 +32,25 @@ namespace UBActivator
         }
         public static byte lv = 1;
         public static int QOff = 0, WOff = 0, EOff = 0, ROff;
-
+        public static bool ChampNoMana
+        {
+            get { return Player.Instance.ChampionName == "Aatrox" 
+                || Player.Instance.ChampionName == "Akali"
+                || Player.Instance.ChampionName == "DrMundo"
+                || Player.Instance.ChampionName == "Kennen"
+                || Player.Instance.ChampionName == "Katarina"
+                || Player.Instance.ChampionName == "Leesin"
+                || Player.Instance.ChampionName == "Mordekaiser"
+                || Player.Instance.ChampionName == "Reksai"
+                || Player.Instance.ChampionName == "Rengar"
+                || Player.Instance.ChampionName == "Riven"
+                || Player.Instance.ChampionName == "Rumble"
+                || Player.Instance.ChampionName == "Shen"
+                || Player.Instance.ChampionName == "Tryndamere"
+                || Player.Instance.ChampionName == "Vladimir"
+                || Player.Instance.ChampionName == "Yasuo"
+                || Player.Instance.ChampionName == "Zed"
+                ; }
+        }
     }
 }

@@ -43,6 +43,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,6 +55,17 @@
     <Compile Include="Combat.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Defensive.cs" />
+    <Compile Include="Evade\Collision.cs" />
+    <Compile Include="Evade\Config.cs" />
+    <Compile Include="Evade\Evade.cs" />
+    <Compile Include="Evade\EvadeSpellData.cs" />
+    <Compile Include="Evade\EvadeSpellDatabase.cs" />
+    <Compile Include="Evade\Geometry.cs" />
+    <Compile Include="Evade\Skillshot.cs" />
+    <Compile Include="Evade\SkillshotDetector.cs" />
+    <Compile Include="Evade\SpellData.cs" />
+    <Compile Include="Evade\SpellDatabase.cs" />
+    <Compile Include="Evade\Utils.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Items.cs" />
     <Compile Include="Offensive.cs" />

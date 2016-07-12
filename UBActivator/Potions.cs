@@ -13,7 +13,10 @@ namespace UBActivator
             if (Player.Instance.IsRecalling() && Config.Potions["preHPrecall"].Cast<CheckBox>().CurrentValue) return;
             if (Player.Instance.IsInShopRange() && Config.Potions["inshopHP"].Cast<CheckBox>().CurrentValue) return;
             if (Player.Instance.HasBuff("RegenerationPotion")
-                || Player.Instance.HasBuff("ItemMiniRegenPotion"))
+                || Player.Instance.HasBuff("ItemMiniRegenPotion")
+                || Player.Instance.HasBuff("ItemCrystalFlask")
+                || Player.Instance.HasBuff("ItemDarkCrystalFlask")
+                || Player.Instance.HasBuff("ItemCrystalFlaskJungle"))
                 return;
             var Health = Config.Potions["predHP"].Cast<CheckBox>().CurrentValue ? 
                 Prediction.Health.GetPrediction(Player.Instance, 1000) / Player.Instance.MaxHealth * 100 :
@@ -48,7 +51,7 @@ namespace UBActivator
             }
             if (Config.Potions["CP"].Cast<CheckBox>().CurrentValue
             && Health <= Config.Potions["CPH"].Cast<Slider>().CurrentValue
-            && Mana1 + 75 <= Player.Instance.MaxMana
+            && (Mana1 + 75 <= Player.Instance.MaxMana || Extensions.ChampNoMana)
             && Items.Corrupting_Potion.IsOwned()
             && Items.Corrupting_Potion.IsReady())
             {
@@ -56,7 +59,7 @@ namespace UBActivator
             }
             if (Config.Potions["HTP"].Cast<CheckBox>().CurrentValue
             && Health <= Config.Potions["HTPH"].Cast<Slider>().CurrentValue
-            && Mana2 + 35 <= Player.Instance.MaxMana
+            && (Mana2 + 35 <= Player.Instance.MaxMana || Extensions.ChampNoMana)
             && Items.Hunter_s_Potion.IsOwned()
             && Items.Hunter_s_Potion.IsReady())
             {
