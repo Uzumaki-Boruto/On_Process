@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UBActivator", "UBActivator\UBActivator.csproj", "{6DB751BE-8058-4315-BFC3-147452345161}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UBActivator", "UBActivator.csproj", "{6DB751BE-8058-4315-BFC3-147452345161}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
