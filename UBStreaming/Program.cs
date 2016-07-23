@@ -26,9 +26,9 @@ namespace UBStreaming
         private static bool Pre;
         private static bool Stream
         {
-            get { return Menu["Menu"].Cast<KeyBind>().CurrentValue && Menu["Chat"].Cast<KeyBind>().CurrentValue; }
+            get { return (Menu["Menu"].Cast<KeyBind>().CurrentValue && Menu["Chat"].Cast<KeyBind>().CurrentValue) || CompleteTime < Game.Time - 7f; }
         }
-
+        private static float CompleteTime;
         private static int Random
         {
             get { return Menu["Random"].Cast<Slider>().CurrentValue; }
@@ -46,15 +46,17 @@ namespace UBStreaming
             Player.OnIssueOrder += OnIssueOrder;
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += GameOnUpdate;
+            CompleteTime = Game.Time;
 
             Menu = MainMenu.AddMenu("UB Stream", "UBStream");
-            Menu.Add("Random", new Slider("Random Modifier", 100, 0, 1000));
+            Menu.AddLabel("Make by Uzumaki Boruto");
+            Menu.Add("Random", new Slider("Random Delay per click 0.{0} sec", 1, 0, 5));
             Menu.AddLabel("Note: Press Shift won't show menu if Both true");
-            Menu.Add("Menu", new KeyBind("Show menu key", false, KeyBind.BindTypes.PressToggle, '.'));
+            Menu.Add("Menu", new KeyBind("Show menu key", true, KeyBind.BindTypes.PressToggle, '.'));
             Menu.Add("Chat", new KeyBind("Please Don't Change this key", false, KeyBind.BindTypes.HoldActive, 16));
         }
 
-        static void Drawing_OnDraw(EventArgs args)
+        private static void Drawing_OnDraw(EventArgs args)
         {
             if (Pre)
             {
@@ -77,24 +79,18 @@ namespace UBStreaming
         }
         private static void Orbwalker_OnPreAttack(AttackableUnit target, Orbwalker.PreAttackArgs args)
         {
-            if (target != null)
+            if (target != null && !target.IsDead)
             {
                 Pre = true;
             }
         }
+        private static void AfterAttack(AttackableUnit target, EventArgs args)
+        {
+            Pre = false;
+        }
         private static void ShowClick(Vector3 position, ClickType type)
         {            
             Hud.ShowClick(type, position);
-        }
-
-        private static void AfterAttack(AttackableUnit target, EventArgs args)
-        {
-            var t = target as AIHeroClient;
-            if (t != null)
-            {
-                ShowClick(t.Position, ClickType.Attack);
-            }
-            Pre = false;
         }
 
         private static void OnIssueOrder(Obj_AI_Base sender, PlayerIssueOrderEventArgs args)
@@ -102,7 +98,7 @@ namespace UBStreaming
             if (sender.IsMe &&
                 (args.Order == GameObjectOrder.MoveTo || args.Order == GameObjectOrder.AttackUnit ||
                  args.Order == GameObjectOrder.AttackTo) &&
-                lastclick + r.NextFloat(0.1f, 0.1f + 0.1f) < Game.Time)
+                lastclick + r.NextFloat(Random / 10, Random / 5) < Game.Time)
             {
                 var clickpos = args.TargetPosition;
                 if (args.Order == GameObjectOrder.AttackUnit || args.Order == GameObjectOrder.AttackTo)
