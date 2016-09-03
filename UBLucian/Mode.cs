@@ -66,7 +66,7 @@ namespace UBLucian
         #region Combo
         public static void Combo()
         {
-            if (Config.ComboMenu.GetValue("Q", false) > 0 && Extension.CanCastNextSpell(Config.ComboMenu) && Spells.Q.IsReady() && !Spells.E.IsReady())
+            if (Config.ComboMenu.GetValue("Q", false) > 0 && Extension.CanCastNextSpell(Config.ComboMenu) && !Player.Instance.IsDashing() && Spells.Q.IsReady() && !Spells.E.IsReady())
             {
                 var Target = TargetSelector.GetTarget(Spells.Q2.Range, DamageType.Physical);
                 if (Target != null)
@@ -82,7 +82,7 @@ namespace UBLucian
                     }
                 }
             }
-            if (Config.ComboMenu.GetValue("W", false) > 0 && Extension.CanCastNextSpell(Config.ComboMenu) && Spells.W.IsReady() && !Spells.E.IsReady())
+            if (Config.ComboMenu.GetValue("W", false) > 0 && Extension.CanCastNextSpell(Config.ComboMenu) && !Player.Instance.IsDashing() && Spells.W.IsReady() && !Spells.E.IsReady())
             {
                 var Target = TargetSelector.GetTarget(Spells.W.Range, DamageType.Magical);
                 if (Target != null)
@@ -132,7 +132,7 @@ namespace UBLucian
         public static void Harass()
         {
             if (Config.HarassMenu.GetValue("hr") > Player.Instance.ManaPercent) return;
-            if (Config.HarassMenu.GetValue("Q", false) > 0 && Extension.CanCastNextSpell(Config.HarassMenu) && Spells.Q.IsReady() && !Spells.E.IsReady())
+            if (Config.HarassMenu.GetValue("Q", false) > 0 && Extension.CanCastNextSpell(Config.HarassMenu) && !Player.Instance.IsDashing() && Spells.Q.IsReady() && !Spells.E.IsReady())
             {
                 var Target = TargetSelector.GetTarget(Spells.Q2.Range, DamageType.Physical);
                 if (Target != null)
@@ -148,7 +148,7 @@ namespace UBLucian
                     }
                 }
             }
-            if (Config.HarassMenu.Checked("W") && Extension.CanCastNextSpell(Config.HarassMenu) && Spells.W.IsReady() && !Spells.E.IsReady())
+            if (Config.HarassMenu.Checked("W") && Extension.CanCastNextSpell(Config.HarassMenu) && !Player.Instance.IsDashing() && Spells.W.IsReady() && !Spells.E.IsReady())
             {
                 var Target = TargetSelector.GetTarget(Spells.W.Range, DamageType.Magical);
                 if (Target != null)
@@ -198,7 +198,7 @@ namespace UBLucian
         public static void LaneClear()
         {
             if (Config.LaneClear.GetValue("lc") > Player.Instance.ManaPercent) return;
-            if (Config.LaneClear.Checked("Q") && Spells.Q.IsReady() && Extension.CanCastNextSpell(Config.LaneClear))
+            if (Config.LaneClear.Checked("Q") && Spells.Q.IsReady() && Extension.CanCastNextSpell(Config.LaneClear) && !Player.Instance.IsDashing())
             {
                 var minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.Q.Range);
                 if (minions.Count() >= Config.LaneClear.GetValue("Qhit"))
@@ -215,7 +215,7 @@ namespace UBLucian
                     }
                 }
             }
-            if (Config.LaneClear.Checked("W") && Spells.W.IsReady() && Extension.CanCastNextSpell(Config.LaneClear))
+            if (Config.LaneClear.Checked("W") && Spells.W.IsReady() && Extension.CanCastNextSpell(Config.LaneClear) && !Player.Instance.IsDashing())
             {
                 var minion = EntityManager.MinionsAndMonsters.EnemyMinions.Where(m => m.IsValidTarget(Spells.W.Range)).FirstOrDefault();
                 if (minion != null)
@@ -242,7 +242,7 @@ namespace UBLucian
         public static void JungleClear()
         {
             if (Config.JungleClear.GetValue("jc") > Player.Instance.ManaPercent) return;
-            if (Config.JungleClear.Checked("Q") && Spells.Q.IsReady() && Extension.CanCastNextSpell(Config.JungleClear))
+            if (Config.JungleClear.Checked("Q") && Spells.Q.IsReady() && Extension.CanCastNextSpell(Config.JungleClear) && !Player.Instance.IsDashing())
             {
                 var monster = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsMonster && x.IsValidTarget(Spells.Q.Range)).OrderBy(x => x.MaxHealth).LastOrDefault();
                 if (monster == null || !monster.IsValid) return;
@@ -250,7 +250,7 @@ namespace UBLucian
                 Orbwalker.ForcedTarget = null;
                 Spells.Q.Cast(monster);
             }
-            if (Config.JungleClear.Checked("W") && Spells.W.IsReady() && Extension.CanCastNextSpell(Config.JungleClear))
+            if (Config.JungleClear.Checked("W") && Spells.W.IsReady() && Extension.CanCastNextSpell(Config.JungleClear) && !Player.Instance.IsDashing())
             {
                 var monster = ObjectManager.Get<Obj_AI_Minion>().Where(x => x != null && x.IsMonster && x.IsValidTarget(Spells.W.Range)).OrderBy(x => x.MaxHealth).LastOrDefault();
                 if (monster != null)
@@ -392,7 +392,7 @@ namespace UBLucian
             if (!Config.HarassMenu.Checked("keyharass", false)) return;
             if (Player.Instance.IsUnderEnemyturret()) return;
             if (Modes.Combo.IsActive() || Modes.Harass.IsActive() || Modes.Flee.IsActive()) return;
-            if (Config.HarassMenu.GetValue("Q", false) > 0 && Extension.CanCastNextSpell(Config.HarassMenu) && Spells.Q.IsReady() && !Spells.E.IsReady())
+            if (Config.HarassMenu.GetValue("Q", false) > 0 && Extension.CanCastNextSpell(Config.HarassMenu) && !Player.Instance.IsDashing() && Spells.Q.IsReady() && !Spells.E.IsReady())
             {
                 var Target = TargetSelector.GetTarget(Spells.Q2.Range, DamageType.Physical);
                 if (Target != null)
@@ -408,7 +408,7 @@ namespace UBLucian
                     }
                 }
             }
-            if (Config.HarassMenu.GetValue("W", false) > 0 && Extension.CanCastNextSpell(Config.HarassMenu) && Spells.W.IsReady() && !Spells.E.IsReady())
+            if (Config.HarassMenu.GetValue("W", false) > 0 && Extension.CanCastNextSpell(Config.HarassMenu) && !Player.Instance.IsDashing() && Spells.W.IsReady() && !Spells.E.IsReady())
             {
                 var Target = TargetSelector.GetTarget(Spells.W.Range, DamageType.Magical);
                 if (Target != null)

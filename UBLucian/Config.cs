@@ -50,7 +50,9 @@ namespace UBLucian
                     {
                         case 1:
                             {
+                                ESafe.IsVisible = true;
                                 ESafe.CurrentValue = true;
+                                EWall.IsVisible = true;
                                 EWall.CurrentValue = true;
                                 ECorrect.IsVisible = true;
                                 EQ.IsVisible = true;
@@ -225,7 +227,9 @@ namespace UBLucian
             {
                 case 1:
                     {
+                        ESafe.IsVisible = true;
                         ESafe.CurrentValue = true;
+                        EWall.IsVisible = true;
                         EWall.CurrentValue = true;
                         ECorrect.IsVisible = true;
                         EQ.IsVisible = true;

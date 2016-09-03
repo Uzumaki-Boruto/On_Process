@@ -78,7 +78,7 @@ namespace UBLucian
                             }
                             else
                             {
-                                Location = Path.FirstOrDefault(x => IsNotDangerPosition(x)).To3D();
+                                Location = Path.OrderBy(x => Get_Rate_Position(x)).FirstOrDefault().To3D();
                             }
                         }
                         else
@@ -150,11 +150,11 @@ namespace UBLucian
             {
                 if (Path.Count(x => IsNotDangerPosition(x)) == 2)
                 {
-                    Corrected = Path.FirstOrDefault(x => x.IsInRange(Nearest, Player.Instance.GetAutoAttackRange(Nearest))).To3D();
+                    Corrected = Path.OrderByDescending(x => Get_Rate_Position(x)).FirstOrDefault(x => x.IsInRange(Nearest, Player.Instance.GetAutoAttackRange(Nearest))).To3D();
                 }
                 else
                 {
-                    Corrected = Path.FirstOrDefault(x => (IsNotDangerPosition(x))).To3D();
+                    Corrected = Path.OrderByDescending(x => Get_Rate_Position(x)).FirstOrDefault().To3D();
                 }
             }
             else
@@ -196,7 +196,7 @@ namespace UBLucian
                 {
                     return false;
                 }
-                else if (Nearest != null && Nearest.CountEnemiesInRange(1000) > Nearest.CountAlliesInRange(1000))
+                else if (Pos.CountEnemiesInRange(1000) > Pos.CountAlliesInRange(1000))
                 {
                     return false;
                 }

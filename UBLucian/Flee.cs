@@ -24,8 +24,8 @@ namespace UBLucian
         public static Vector3[] GetJumpSpot()
         {
             return JumpSpots
-                 .Where(x => Player.Instance.Distance(x[0]) <= 100)
-                 .OrderBy(x => LastMoveCommand.Distance(x[0]))
+                 .Where(x => LastMoveCommand.Distance(x[0]) <= Config.FleeMenu.GetValue("jumpclickrange"))
+                 .OrderBy(x => Player.Instance.Distance(x[0]))
                 .FirstOrDefault();
         }
         public static void JumpSystem(EventArgs args)
@@ -44,7 +44,7 @@ namespace UBLucian
                         Spells.E.Cast(spot[1]);
                         jumped = true;
                     }
-                    else if (Player.Instance.Distance(spot[0]) > 10 && Player.Instance.Distance(spot[0]) < 100)
+                    else if (Player.Instance.Distance(spot[0]) > 10 && Player.Instance.Distance(spot[0]) < Config.FleeMenu.GetValue("jumpclickrange"))
                     {
                         lastDistance = currentDistance;
                         currentDistance = Player.Instance.Distance(spot[0]);
