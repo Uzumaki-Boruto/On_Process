@@ -57,7 +57,7 @@ namespace UBLucian
             var AARange = Player.Instance.GetAutoAttackRange(Nearest);
             var TargetPosition = new Vector2();
             if (Nearest != null)
-                TargetPosition = Config.EPath.CurrentValue ? Prediction.Position.PredictUnitPosition(Nearest, 500) : Nearest.Position.To2D();
+                TargetPosition = Config.EPath.CurrentValue ? Prediction.Position.PredictUnitPosition(Nearest, 200) : Nearest.Position.To2D();
             var Location = new Vector3();
             if (Config.EQ.CurrentValue && Player.Instance.CountEnemiesInRange(Spells.Q2.Range + Spells.E.Range) > Config.EQHit.CurrentValue)
             {
