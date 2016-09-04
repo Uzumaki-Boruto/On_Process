@@ -75,7 +75,7 @@ namespace UBSyndra
                 MiscMenu.Add("Qks", new CheckBox("Use Q to Killsteal"));
                 MiscMenu.Add("Wks", new CheckBox("Use W to Killsteal"));
                 MiscMenu.Add("Eks", new CheckBox("Use E to Killsteal"));
-                MiscMenu.Add("Eks", new CheckBox("Use R to Killsteal"));
+                MiscMenu.Add("Rks", new CheckBox("Use R to Killsteal"));
                 foreach (var Enemy in EntityManager.Heroes.Enemies)
                 {
                     MiscMenu.Add(Enemy.ChampionName, new CheckBox("R on " + Enemy.ChampionName));

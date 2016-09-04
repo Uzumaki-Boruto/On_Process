@@ -109,7 +109,7 @@ namespace UBSyndra
             if (Config.LaneClear.Checked("Wlc") && Spells.W.IsReady())
             {
                 var Worst = EntityManager.MinionsAndMonsters.GetCircularFarmLocation(EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy), Spells.Q.Radius, (int)Spells.Q.Range);
-                if (Worst.HitNumber >= Config.LaneClear.GetValue("Qlchit"))
+                if (Worst.HitNumber >= Config.LaneClear.GetValue("Wlchit"))
                 {
                     Spells.Grab();
                     Spells.W.Cast(Worst.CastPosition);

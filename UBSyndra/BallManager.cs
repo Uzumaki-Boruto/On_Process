@@ -9,27 +9,33 @@ namespace UBSyndra
 {
     class BallManager
     {
-        public static List<Obj_AI_Minion> Balls;
-        public static void GameObject_OnCreate(GameObject sender, EventArgs args)
+        public static Obj_AI_Base[] Balls
         {
-            if (!(sender is Obj_AI_Minion) || !sender.IsAlly || sender.Name != "Seed")
-                return;
-            else
+            get
             {
-                var ball = sender as Obj_AI_Minion;
-                Balls.Add(ball);
+                return ObjectManager.Get<Obj_AI_Base>().Where(a => a.Name == "Seed" && a.IsValid).ToArray();
             }
         }
-        public static void GameObject_OnDelete(GameObject sender, EventArgs args)
-        {
-            if (!(sender is Obj_AI_Minion) || !sender.IsAlly || sender.Name != "Seed")
-                return;
-            else
-            {
-                var ball = sender as Obj_AI_Minion;
-                Balls.Remove(ball);
-            }
-        }
+        //public static void GameObject_OnCreate(GameObject sender, EventArgs args)
+        //{
+        //    if (!(sender is Obj_AI_Minion) || !sender.IsAlly || sender.Name != "Seed")
+        //        return;
+        //    else
+        //    {
+        //        var ball = sender as Obj_AI_Minion;
+        //        Balls.Add(ball);
+        //    }
+        //}
+        //public static void GameObject_OnDelete(GameObject sender, EventArgs args)
+        //{
+        //    if (!(sender is Obj_AI_Minion) || !sender.IsAlly || sender.Name != "Seed")
+        //        return;
+        //    else
+        //    {
+        //        var ball = sender as Obj_AI_Minion;
+        //        Balls.Remove(ball);
+        //    }
+        //}
         public static Obj_AI_Base Get_Grab_Shit()
         {
             var minion = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsValidTarget(Spells.W.Range)).OrderBy(x => x.Distance(Player.Instance)).FirstOrDefault();
