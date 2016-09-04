@@ -74,16 +74,18 @@ namespace UBLucian
             {
                 foreach (var obj in Collision)
                 {
-                    var Hitbox = new Geometry.Polygon.Rectangle(Player.Instance.Position.To2D(), Player.Instance.ServerPosition.Extend(obj.ServerPosition, Spells.Q2.Range), 65f);
-                    if (Hitbox.IsInside(PredictionResult.CastPosition))
+                    var Hitbox = new Geometry.Polygon.Rectangle(Player.Instance.Position.To2D(), Player.Instance.Position.Extend(obj.Position, Spells.Q2.Range), 75f);
+                    if (Hitbox.IsInside(PredictionResult.CastPosition) && Spells.Q.IsInRange(obj))
                     {
                         QTarget = obj;
                         break;
                     }
                 }
+            }
+            if (QTarget != null || QTarget != new Obj_AI_Base())
+            {
                 Spells.Q.Cast(QTarget);
             }
-            
         }
         public static bool IsUnderEnemyTurret(this Vector3 Pos)
         {

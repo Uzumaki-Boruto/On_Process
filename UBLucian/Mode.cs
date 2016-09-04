@@ -17,9 +17,11 @@ namespace UBLucian
         public static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (!sender.IsMe) return;
-            if (args.Slot == SpellSlot.R) return;
-            Extension.HasPassive = true;
-            Orbwalker.ResetAutoAttack();
+            if (args.Slot != SpellSlot.R)
+            {
+                Extension.HasPassive = true;
+                Orbwalker.ResetAutoAttack();
+            }
             if (args.Slot == SpellSlot.Q && Config.MiscMenu.Checked("Qcancel"))
             {
                 var minions = EntityManager.MinionsAndMonsters.EnemyMinions.Where(x => x.IsValid && !x.IsDead && Player.Instance.IsInAutoAttackRange(x)).OrderBy(x => x.Distance(Player.Instance));
@@ -28,17 +30,17 @@ namespace UBLucian
                 if (champs != null)
                 {
                     Core.DelayAction(() =>
-                    Player.IssueOrder(GameObjectOrder.AttackUnit, champs.FirstOrDefault()), 350);
+                    Player.IssueOrder(GameObjectOrder.AttackUnit, champs.FirstOrDefault()), 375);
                 }
                 else if (monsters != null)
                 {
                     Core.DelayAction(() =>
-                    Player.IssueOrder(GameObjectOrder.AttackUnit, monsters.FirstOrDefault()), 350);
+                    Player.IssueOrder(GameObjectOrder.AttackUnit, monsters.FirstOrDefault()), 375);
                 }
                 else if (minions != null)
                 {
                     Core.DelayAction(() =>
-                    Player.IssueOrder(GameObjectOrder.AttackUnit, minions.FirstOrDefault()), 350);
+                    Player.IssueOrder(GameObjectOrder.AttackUnit, minions.FirstOrDefault()), 375);
                 }
                 else
                 {
@@ -60,7 +62,7 @@ namespace UBLucian
         }
         public static void Orbwalker_OnPostAttack(AttackableUnit target, EventArgs args)
         {
-            Extension.HasPassive = false;
+            Core.DelayAction(() => Extension.HasPassive = false, 100);
         }
 
         #region Combo

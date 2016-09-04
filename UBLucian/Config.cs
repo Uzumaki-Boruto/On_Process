@@ -89,7 +89,6 @@ namespace UBLucian
                                 EWall.CurrentValue = false;
                                 ECorrect.IsVisible = true;
                                 ECorrect.CurrentValue = true;
-                                EQ.CurrentValue = false;
                                 EQ.IsVisible = true;
                                 EQHit.IsVisible = true;
                                 ERange.IsVisible = false;

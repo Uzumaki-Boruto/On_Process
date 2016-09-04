@@ -59,83 +59,136 @@ namespace UBLucian
             if (Nearest != null)
                 TargetPosition = Config.EPath.CurrentValue ? Prediction.Position.PredictUnitPosition(Nearest, 500) : Nearest.Position.To2D();
             var Location = new Vector3();
-            switch (Get_Style_Of_E)
+            if (Config.EQ.CurrentValue && Player.Instance.CountEnemiesInRange(Spells.Q2.Range + Spells.E.Range) > Config.EQHit.CurrentValue)
             {
-                case 1:
+                var Champs = EntityManager.Heroes.Enemies.Where(x => !x.IsDead && x.IsValid && x.Distance(Player.Instance) <= Spells.E.Range + Spells.Q2.Range).ToArray();
+                if (Champs != null)
+                {
+                    Prediction.Position.PredictionData data = new Prediction.Position.PredictionData(Prediction.Position.PredictionData.PredictionType.Linear, (int)Spells.Q2.Range, Spells.Q2.Width, 0, 450, int.MaxValue, int.MaxValue, Player.Instance.Position);
+                    var preds = Prediction.Position.GetPredictionAoe(Champs, data).OrderByDescending(x => x.CastPosition.Distance(Player.Instance)).ToArray();
+                    if (preds.Count() >= Config.EQHit.CurrentValue)
                     {
-                        var Range = Config.ERange.CurrentValue;
-                        var Path = Intersection_Of_2Circle(Player.Instance.Position.To2D(), Spells.E.Range, TargetPosition, AARange - Range);
-                        if (Path.Count() > 0)
+                        for (var i = 1; i <= preds.Count(); i++)
                         {
-                            if (Path.Count(x => IsNotDangerPosition(x)) == 2)
+                            var Rectangle = new Geometry.Polygon.Rectangle(preds[0].CastPosition, preds[i].CastPosition, 75f);
+                            var count = preds.Count(x => Rectangle.IsInside(x.CastPosition));
+                            if (count >= Config.EQHit.CurrentValue)
                             {
-                                Location = Path.OrderByDescending(x => Get_Rate_Position(x)).OrderBy(x => x.Distance(Game.CursorPos)).FirstOrDefault().To3D();
-                            }
-                            else if (Path.Count(x => IsNotDangerPosition(x)) == 0 && Config.ECorrect.CurrentValue)
-                            {
-                                var Loc = Path.OrderBy(x => x.Distance(Game.CursorPos)).FirstOrDefault().To3D();
-                                Location = CorrectToBetter(Loc);
-                            }
-                            else
-                            {
-                                Location = Path.OrderBy(x => Get_Rate_Position(x)).FirstOrDefault().To3D();
-                            }
-                        }
-                        else
-                        {
-                            if (Player.Instance.Distance(TargetPosition) >= AARange + Spells.E.Range)
-                            {
-                                Location = Vector3.Zero;
-                            }
-                            if (Player.Instance.Distance(TargetPosition) <= AARange - Spells.E.Range && Config.EKite.CurrentValue)
-                            {
-                                Location = Nearest.Position.Extend(Player.Instance, Nearest.Distance(Player.Instance) + Spells.E.Range).To3D();
-                            }
-                        }
-                    }
-                    break;
-                case 2:
-                    {
-                        if (Nearest.Distance(Player.Instance) <= AARange + Spells.E.Range)
-                            Location = Player.Instance.ServerPosition.Extend(Game.CursorPos, Spells.E.Range).To3D();
-                    }
-                    break;
-                case 3:
-                    {
-                        if (Nearest.Distance(Player.Instance) <= AARange + Spells.E.Range)
-                        {
-                            if (Nearest.Distance(Player.Instance) <= AARange - Spells.E.Range && Config.EKite.CurrentValue)
-                            {
-                                Location = Nearest.Position.Extend(Player.Instance, Nearest.Distance(Player.Instance) + Spells.E.Range).To3D();
-                            }
-                            else
-                            {
-                                var Pos = Player.Instance.ServerPosition.Extend(Game.CursorPos, Spells.E.Range).To3D();
-                                var GrassObject = ObjectManager.Get<GameObject>().Where(x => Spells.E.IsInRange(x.Position) && x.Type.ToString() == "GrassObject").OrderBy(x => x.Distance(Nearest)).FirstOrDefault();
-                                if (IsNotDangerPosition(Pos))
+                                var Position = preds[0].CastPosition.Extend(preds[i].CastPosition, Spells.Q.Range).To3D();
+                                if (Spells.E.IsInRange(Position))
                                 {
-                                    Location = Pos;
+                                    Location = Position;
+                                    break;
                                 }
-                                else if (Config.ECorrect.CurrentValue)
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                switch (Get_Style_Of_E)
+                {
+                    case 1:
+                        {
+                            var Range = Config.ERange.CurrentValue;
+                            var Path = Intersection_Of_2Circle(Player.Instance.Position.To2D(), Spells.E.Range, TargetPosition, AARange - Range);
+                            if (Path.Count() > 0)
+                            {
+                                if (Path.Count(x => IsNotDangerPosition(x)) == 2)
                                 {
-                                    if (GrassObject != null && Config.EGrass.CurrentValue)
+                                    Location = Path.OrderByDescending(x => Get_Rate_Position(x)).OrderBy(x => x.Distance(Game.CursorPos)).FirstOrDefault().To3D();
+                                }
+                                else if (Path.Count(x => IsNotDangerPosition(x)) == 0)
+                                {
+                                    var Position = Path.OrderByDescending(x => Get_Rate_Position(x)).OrderBy(x => x.Distance(Game.CursorPos)).FirstOrDefault().To3D();
+                                    var target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(t => t != null
+                                        && !t.IsDead
+                                        && t.IsValidTarget()
+                                        && Position.IsInRange(t, Player.Instance.GetAutoAttackRange(t))
+                                        && t.Health <= Damages.EDamage(t)
+                                        && !t.Unkillable()), DamageType.Physical);
+                                    if (target != null)
                                     {
-                                        Location = GrassObject.Position;
+                                        Location = Position;
+                                    }
+                                    else if (Config.ECorrect.CurrentValue)
+                                    {
+                                        var Loc = Path.OrderBy(x => x.Distance(Game.CursorPos)).FirstOrDefault().To3D();
+                                        Location = CorrectToBetter(Loc);
                                     }
                                     else
                                     {
-                                        Location = CorrectToBetter(Pos);
+                                        Location = Vector3.Zero;
+                                    }
+                                }
+                                else
+                                {
+                                    Location = Path.OrderBy(x => Get_Rate_Position(x)).FirstOrDefault(x => IsNotDangerPosition(x)).To3D();
+                                }
+                            }
+                            else
+                            {
+                                if (Player.Instance.Distance(TargetPosition) >= AARange + Spells.E.Range)
+                                {
+                                    Location = Vector3.Zero;
+                                }
+                                if (Player.Instance.Distance(TargetPosition) <= AARange - Spells.E.Range && Config.EKite.CurrentValue)
+                                {
+                                    Location = Nearest.Position.Extend(Player.Instance, Nearest.Distance(Player.Instance) + Spells.E.Range).To3D();
+                                }
+                            }
+                        }
+                        break;
+                    case 2:
+                        {
+                            if (Nearest.Distance(Player.Instance) <= AARange + Spells.E.Range)
+                                Location = Player.Instance.ServerPosition.Extend(Game.CursorPos, Spells.E.Range).To3D();
+                        }
+                        break;
+                    case 3:
+                        {
+                            if (Nearest.Distance(Player.Instance) <= AARange + Spells.E.Range)
+                            {
+                                if (Nearest.Distance(Player.Instance) <= AARange - Spells.E.Range && Config.EKite.CurrentValue)
+                                {
+                                    Location = Nearest.Position.Extend(Player.Instance, Nearest.Distance(Player.Instance) + Spells.E.Range).To3D();
+                                }
+                                else
+                                {
+                                    var Pos = Player.Instance.ServerPosition.Extend(Game.CursorPos, Spells.E.Range).To3D();
+                                    var GrassObject = ObjectManager.Get<GameObject>().Where(x => Spells.E.IsInRange(x.Position) && x.Type.ToString() == "GrassObject").OrderBy(x => x.Distance(Nearest)).FirstOrDefault();
+                                    var target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(t => t != null
+                                        && !t.IsDead
+                                        && t.IsValidTarget()
+                                        && Pos.IsInRange(t, Player.Instance.GetAutoAttackRange(t))
+                                        && t.Health <= Damages.EDamage(t)
+                                        && !t.Unkillable()), DamageType.Physical);
+                                    if (IsNotDangerPosition(Pos) || target != null)
+                                    {
+                                        Location = Pos;
+                                    }
+                                    else if (Config.ECorrect.CurrentValue)
+                                    {
+                                        if (GrassObject != null && Config.EGrass.CurrentValue)
+                                        {
+                                            Location = GrassObject.Position;
+                                        }
+                                        else
+                                        {
+                                            Location = CorrectToBetter(Pos);
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    break;
-                case 4:
-                    {
-                        Location = Player.Instance.ServerPosition.Extend(Game.CursorPos, Spells.E.Range).To3D();
-                    }
-                    break;
+                        break;
+                    case 4:
+                        {
+                            Location = Player.Instance.ServerPosition.Extend(Game.CursorPos, Spells.E.Range).To3D();
+                        }
+                        break;
+                }
             }
             return Location;
         }
