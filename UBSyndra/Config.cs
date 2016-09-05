@@ -59,7 +59,7 @@ namespace UBSyndra
             {
                 JungleClear.Add("Qjc", new CheckBox("Use Q"));
                 JungleClear.Add("Wjc", new CheckBox("Use W"));
-                JungleClear.Add("jcmanage", new Slider("If my MP below {0}% stop use spell to Jungclear", 50));
+                JungleClear.Add("jc", new Slider("If my MP below {0}% stop use spell to Jungclear", 50));
             }
 
             Lasthit = Menu.AddSubMenu("Unkillable");

@@ -76,7 +76,7 @@ namespace UBSyndra
                 }
                 else
                 {
-                    Q.Cast(Player.Instance.Position.Extend(pred.CastPosition, Spells.Q.Range - 50f).To3D());
+                    Q.Cast(Player.Instance.Position.Extend(pred.CastPosition, Spells.E.Range - 50f).To3D());
                 }
             }
         }
