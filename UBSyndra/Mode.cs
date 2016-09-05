@@ -265,7 +265,7 @@ namespace UBSyndra
         #region Gapclose
         public static void Gapcloser_OnGapcloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs args)
         {
-            if (Spells.W.IsReady()
+            if (Spells.E.IsReady()
                 && sender != null
                 && sender.IsEnemy
                 && sender.IsValid
@@ -286,7 +286,7 @@ namespace UBSyndra
             if (sender != null
                 && sender.IsEnemy
                 && Config.MiscMenu.Checked("interrupt")
-                && sender.IsValidTarget(Spells.R.Range - 20)
+                && sender.IsValidTarget(Spells.QE.Range - 20)
                 && e.DangerLevel == Danger)
             {
                 if (Player.Instance.Distance(sender) <= Spells.E.Range && Spells.E.IsReady())
