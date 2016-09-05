@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Menu.Values;
 using SharpDX;
 
 namespace UBLucian
@@ -30,7 +29,7 @@ namespace UBLucian
         }
         public static void JumpSystem(EventArgs args)
         {
-            var Value = Config.FleeMenu["jumptype"].Cast<ComboBox>().CurrentValue;
+            var Value = Config.FleeMenu.GetValue("jumptype", false);
             if (Value == 0) return;
             if ((Value == 1 && Orbwalker.ActiveModes.Flee.IsActive()) || Value == 2)
             {
@@ -64,7 +63,7 @@ namespace UBLucian
 
         public static void DrawJumpSpot(EventArgs agrs)
         {
-            if (Config.DrawMenu["spot"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("spot"))
             {
                 foreach (var spot in JumpSpots.Where(s => Player.Instance.Distance(s[0]) <= 2000))
                 {

@@ -2,7 +2,6 @@
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Menu.Values;
 using SharpDX;
 
 namespace UBLucian
@@ -73,7 +72,7 @@ namespace UBLucian
         }
         public static void Damage_Indicator(EventArgs args)
         {
-            if (Config.DrawMenu["dmg"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("dmg"))
             {
                 foreach (var unit in EntityManager.Heroes.Enemies.Where(u => u.IsValidTarget() && u.IsHPBarRendered)
                     )

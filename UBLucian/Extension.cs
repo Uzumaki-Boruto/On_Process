@@ -5,7 +5,6 @@ using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using SharpDX;
-using Modes = EloBuddy.SDK.Orbwalker.ActiveModes;
 
 namespace UBLucian
 {

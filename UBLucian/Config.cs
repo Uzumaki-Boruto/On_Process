@@ -14,7 +14,6 @@ namespace UBLucian
         public static Menu LasthitMenu;
         public static Menu FleeMenu;
         public static Menu MiscMenu;
-        public static Menu SemiPlayer;
         public static Menu DrawMenu;
 
         public static ComboBox WStyle;
@@ -163,14 +162,14 @@ namespace UBLucian
                 {
                     if (args.NewValue)
                     {
-                        var value = FleeMenu["jumptype"].Cast<ComboBox>();
-                        if (value.CurrentValue == 2)
+                        var value = FleeMenu.GetValue("jumptype", false);
+                        if (value == 2)
                         {
-                            value.CurrentValue = 0;
+                            value = 0;
                         }
                         else
                         {
-                            value.CurrentValue++;
+                            value++;
                         }
                     }
                 };
@@ -222,7 +221,7 @@ namespace UBLucian
         }
         public static void CorrectTheMenu()
         {
-            switch (ESettings["E"].Cast<ComboBox>().CurrentValue)
+            switch (ESettings.GetValue("E", false))
             {
                 case 1:
                     {

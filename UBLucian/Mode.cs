@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Collections.Generic;
 using EloBuddy;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Enumerations;
-using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Events;
 using SharpDX;
 using Modes = EloBuddy.SDK.Orbwalker.ActiveModes;
@@ -358,7 +355,7 @@ namespace UBLucian
         #region On Unkillable Minion
         public static void On_Unkillable_Minion(Obj_AI_Base unit, Orbwalker.UnkillableMinionArgs args)
         {
-            if (Config.LasthitMenu["lh"].Cast<Slider>().CurrentValue > Player.Instance.ManaPercent || unit == null
+            if (Config.LasthitMenu.GetValue("lh") > Player.Instance.ManaPercent || unit == null
                 || Orbwalker.ActiveModes.Combo.IsActive()) return;
             if (args.RemainingHealth <= Damages.QDamage(unit) && Spells.Q.IsReady() && Config.LasthitMenu.Checked("Q"))
             {
@@ -465,7 +462,7 @@ namespace UBLucian
                 && sender.IsValid
                 && (sender.IsAttackingPlayer || Player.Instance.Distance(args.End) < 100 || args.End.IsInRange(Player.Instance, Spells.E.Range))
                 && sender.Spellbook.CastEndTime <= Spells.W.CastDelay
-                && Config.MiscMenu["gapcloser"].Cast<CheckBox>().CurrentValue)
+                && Config.MiscMenu.Checked("Egap"))
             {
                 var ECast = args.Start.Extend(Player.Instance, args.Start.Distance(Player.Instance) + Spells.E.Range).To3D();
                 Spells.E.Cast(ECast);

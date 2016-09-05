@@ -3,7 +3,6 @@ using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Rendering;
-using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Notifications;
 using SharpDX;
 
@@ -23,7 +22,7 @@ namespace UBLucian
         }
         private static void InitEvents()
         {
-            if (Config.DrawMenu["notif"].Cast<CheckBox>().CurrentValue && Config.DrawMenu["draw"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("notif") && Config.DrawMenu.Checked("draw"))
             {
                 var notStart = new SimpleNotification("UBLucian Load Status", "UBLucian sucessfully loaded.");
                 Notifications.Show(notStart, 5000);
@@ -37,7 +36,7 @@ namespace UBLucian
 
             Gapcloser.OnGapcloser += Mode.Gapcloser_OnGapcloser;
 
-            if (Config.DrawMenu["draw"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("draw"))
             {
                 if (Game.MapId == GameMapId.SummonersRift)
                     Drawing.OnDraw += Flee.DrawJumpSpot;
@@ -72,27 +71,27 @@ namespace UBLucian
         }
         private static void OnDraw(EventArgs args)
         {
-            if (Config.DrawMenu["Qdr"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("Qdr"))
             {
                 Circle.Draw(Spells.Q.IsLearned ? Color.HotPink : Color.Zero, Spells.Q.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu["Q2dr"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("Q2dr"))
             {
                 Circle.Draw(Spells.Q2.IsLearned ? Color.HotPink : Color.Zero, Spells.Q2.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu["Wdr"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("Wdr"))
             {
                 Circle.Draw(Spells.W.IsLearned ? Color.Yellow : Color.Zero, Spells.W.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu["Edr"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("Edr"))
             {
                 Circle.Draw(Spells.E.IsLearned ? Color.AliceBlue : Color.Zero, Spells.E.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu["Rdr"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("Rdr"))
             {
                 Circle.Draw(Spells.R.IsLearned ? Color.Green : Color.Zero, Spells.R.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu["Eposdr"].Cast<CheckBox>().CurrentValue && _E_.BestEPos != null)
+            if (Config.DrawMenu.Checked("Eposdr") && _E_.BestEPos != null)
             {
                 Circle.Draw(Spells.E.IsReady() ? Color.OrangeRed : Color.Zero, Player.Instance.BoundingRadius, 3f, _E_.BestEPos);
             }
