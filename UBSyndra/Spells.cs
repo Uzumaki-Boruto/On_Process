@@ -16,15 +16,27 @@ namespace UBSyndra
 
         public static void InitSpells()
         {
-            Q = new Spell.Skillshot(SpellSlot.Q, 800, SkillShotType.Circular, 600, int.MaxValue, 125);
+            Q = new Spell.Skillshot(SpellSlot.Q, 800, SkillShotType.Circular, 600, int.MaxValue, 125)
+            {
+                AllowedCollisionCount = int.MaxValue,
+            };
 
-            W = new Spell.Skillshot(SpellSlot.W, 950, SkillShotType.Circular, 350, 1600, 140);
+            W = new Spell.Skillshot(SpellSlot.W, 950, SkillShotType.Circular, 350, 1600, 140)
+            {
+                AllowedCollisionCount = int.MaxValue,
+            };
 
-            E = new Spell.Skillshot(SpellSlot.E, 700, SkillShotType.Cone, 250, 2500, 22);
+            E = new Spell.Skillshot(SpellSlot.E, 700, SkillShotType.Cone, 250, 2500, 22)
+            {
+                AllowedCollisionCount = int.MaxValue,
+            };
 
             R = new Spell.Targeted(SpellSlot.R, 675);
 
-            QE = new Spell.Skillshot(SpellSlot.E, 1200, SkillShotType.Linear, 500, 2500, 55);
+            QE = new Spell.Skillshot(SpellSlot.E, 1200, SkillShotType.Linear, 500, 2500, 55)
+            {
+                AllowedCollisionCount = int.MaxValue,
+            };
         }
         public static void UpdateSpells(EventArgs args)
         {
