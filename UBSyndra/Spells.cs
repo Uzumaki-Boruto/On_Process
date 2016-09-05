@@ -66,7 +66,7 @@ namespace UBSyndra
         public static void ComboEQ()
         {
             var target = TargetSelector.GetTarget(Spells.QE.Range, DamageType.Magical);
-            if (target != null)
+            if (target != null && Q.IsReady())
             {
                 Extension.QEcomboing = true;
                 var pred = QE.GetPrediction(target);

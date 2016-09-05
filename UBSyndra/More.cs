@@ -50,7 +50,6 @@ namespace UBSyndra
         }
         private static void GameOnTick(EventArgs args)
         {
-            Orbwalker.ForcedTarget = null;
             if (Player.Instance.IsDead) return;
            
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
