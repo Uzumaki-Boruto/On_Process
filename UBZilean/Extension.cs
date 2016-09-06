@@ -25,6 +25,10 @@ namespace UBZilean
         }
         public static bool HasQBuff(this Obj_AI_Base target)
         {
+            if (target.IsEnemy)
+            {
+                return target.HasBuff("ZileanQEnemyBomb");
+            }
             return target.HasBuff("ZileanQAllyBomb");
         }
         public static bool Unkillable(this AIHeroClient target)

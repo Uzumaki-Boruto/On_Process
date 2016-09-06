@@ -33,6 +33,7 @@ namespace UBZilean
             Game.OnUpdate += Mode.Killsteal;
             //Game.OnWndProc += Flee.Game_OnWndProc;
 
+            Orbwalker.OnPostAttack += Mode.Orbwalker_OnPostAttack;
             Gapcloser.OnGapcloser += Mode.Gapcloser_OnGapcloser;
             Interrupter.OnInterruptableSpell += Mode.Interrupter_OnInterruptableSpell;
 
@@ -41,7 +42,7 @@ namespace UBZilean
                 Drawing.OnDraw += OnDraw;
                 Drawing.OnEndScene += Damages.Damage_Indicator;
             }
-        }
+        }       
 
         private static void GameOnTick(EventArgs args)
         {
@@ -56,8 +57,8 @@ namespace UBZilean
             { Mode.LaneClear(); }
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
             { Mode.JungleClear(); }
-            //if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
-            //{ Mode.Flee(); }
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
+            { Mode.Flee(); }
 
         }
         private static void OnDraw(EventArgs args)
@@ -69,10 +70,6 @@ namespace UBZilean
             if (Config.DrawMenu["Edr"].Cast<CheckBox>().CurrentValue)
             {
                 Circle.Draw(Spells.E.IsLearned ? Color.AliceBlue : Color.Zero, Spells.E.Range, Player.Instance.Position);
-            }
-            if (Config.DrawMenu["Rdr"].Cast<CheckBox>().CurrentValue)
-            {
-                Circle.Draw(Spells.R.IsLearned ? Color.Yellow : Color.Zero, Spells.R.Range, Player.Instance.Position);
             }
         }
     }

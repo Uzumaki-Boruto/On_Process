@@ -8,7 +8,6 @@ namespace UBZilean
     class Config
     {
         public static Menu Menu;
-        public static Menu ESettings;
         public static Menu ComboMenu;
         public static Menu HarassMenu;
         public static Menu LaneClear;
@@ -29,6 +28,7 @@ namespace UBZilean
                 ComboMenu.AddGroupLabel("Combo Settings");
                 ComboMenu.Add("Q", new ComboBox("Q style", 2, "Don't use Q", "Q Normal", "Q Smart"));
                 ComboMenu.Add("W", new CheckBox("Use W"));
+                ComboMenu.Add("Wcast", new Slider("Don't W if Q will Ready in {0} seconds", 1, 0, 4));
                 ComboMenu.Add("E", new ComboBox("E style", 3, "Don't use E", "E Slow", "E Speed", "Smart"));
                 ComboMenu.AddGroupLabel("R Settings");
                 ComboMenu.Add("R", new CheckBox("Use R"));
@@ -45,6 +45,7 @@ namespace UBZilean
                 HarassMenu.AddGroupLabel("Harass Settings");
                 HarassMenu.Add("Q", new ComboBox("Q style", 1, "Don't use Q", "Q Normal", "Q Smart"));
                 HarassMenu.Add("W", new CheckBox("Use W"));
+                HarassMenu.Add("Wcast", new Slider("Don't W if Q will Ready in {0} seconds", 1, 0, 4));
                 HarassMenu.Add("hr", new Slider("If mana percent below {0}% stop harass", 50));
                 HarassMenu.Add("keyharass", new KeyBind("Auto Harass", false, KeyBind.BindTypes.HoldActive, 'Z'));
                 HarassMenu.Add("autohrmng", new Slider("If mana percent below {0}% stop auto harass", 85));
@@ -74,7 +75,7 @@ namespace UBZilean
                 GapCloser.Add("E", new ComboBox("E style", 3, "Don't use E", "E Slow", "E Speed", "Smart"));
                 foreach (var champ in EntityManager.Heroes.Allies)
                 {
-                    ComboMenu.Add("anti" + champ.ChampionName, new CheckBox("Active if target is " + champ.ChampionName));
+                    GapCloser.Add("anti" + champ.ChampionName, new CheckBox("Active if target is " + champ.ChampionName));
                 }
                 GapCloser.AddSeparator();
                 GapCloser.AddGroupLabel("GapCloser");
@@ -96,9 +97,8 @@ namespace UBZilean
                 DrawMenu.Add("draw", new CheckBox("Enable Drawing"));
                 DrawMenu.Add("notif", new CheckBox("Enable notification"));
                 DrawMenu.AddSeparator();
-                DrawMenu.Add("Qdr", new CheckBox("Draw Q"));
+                DrawMenu.Add("Qdr", new CheckBox("Draw Q + R"));
                 DrawMenu.Add("Edr", new CheckBox("Draw E"));
-                DrawMenu.Add("Rdr", new CheckBox("Draw R"));
                 DrawMenu.Add("dmg", new CheckBox("Draw Damage Indicator"));
                 DrawMenu.Add("color", new ColorPicker("Damage Indicator Color", System.Drawing.Color.FromArgb(255, 255, 236, 0)));
             }

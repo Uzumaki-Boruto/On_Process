@@ -20,7 +20,7 @@ namespace UBZilean
 
             W = new Spell.Active(SpellSlot.W);
 
-            E = new Spell.Targeted(SpellSlot.E, 550);
+            E = new Spell.Targeted(SpellSlot.E, 750);
 
             R = new Spell.Targeted(SpellSlot.R, 900);
         }

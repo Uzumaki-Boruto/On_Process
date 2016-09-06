@@ -11,7 +11,8 @@ namespace UBZilean
 {
     class Mode
     {
-        #region Boolean
+        #region Cast
+        //Buff "TimeWarp"
         public static void W_And_Cast(Obj_AI_Base target)
         {
             if (target != null && Spells.W.IsReady())
@@ -30,17 +31,41 @@ namespace UBZilean
                 Spells.Q.Cast(Vector);
             }
         }
+        public static void Orbwalker_OnPostAttack(AttackableUnit target, EventArgs args)
+        {
+            var Target = target as Obj_AI_Base;
+            if (Target.Health < Player.Instance.GetAutoAttackDamage(Target, true))
+            {
+                if (Config.ComboMenu.GetValue("Q", false) == 2)
+                {
+                    var QTarget = TargetSelector.GetTarget(300f, DamageType.Magical, Target.Position);
+                    if (QTarget != null)
+                    {
+                        if (Spells.Q.IsReady())
+                        {
+                            Spells.Q.Cast(Target);
+                        }
+                        if (Config.ComboMenu.Checked("W") && Spells.W.IsReady() && !Spells.Q.IsReady())
+                        {
+                            W_And_Cast(Target);
+                        }
+
+                    }
+                }
+            }
+        }
         #endregion
 
         #region Combo
         public static void Combo()
         {
             var Target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
+            if (Target == null) return;
             if (Config.ComboMenu.GetValue("Q", false) > 0 && Spells.Q.IsReady())
             {
                 if (Config.ComboMenu.GetValue("Q", false) == 2)
                 {
-                    if (Extension.Superman != null)
+                    if (Extension.Superman.Any())
                     {
                         var Count = Extension.Superman.First().CountEnemiesInRange(300);
                         if (Count > 1)
@@ -49,12 +74,12 @@ namespace UBZilean
                             Spells.Q.Cast(pred.CastPosition);
                         }
                     }
-                    else if (Extension.Batman != null)
+                    if (Extension.Batman.Any())
                     {
                         var pred = Spells.Q.GetPrediction(Extension.Batman.First());
                         Spells.Q.Cast(pred.CastPosition);
                     }
-                    else
+                    if (!Extension.Superman.Any() && !Extension.Batman.Any())
                     {
                         if (Target != null)
                         {
@@ -72,12 +97,68 @@ namespace UBZilean
                     }
                 }
             }
-            if (Config.ComboMenu.Checked("W") && Spells.W.IsReady() && !Spells.Q.IsReady() && Extension.League_Of_Bomber != null)
+            if (Config.ComboMenu.Checked("W") && Spells.W.IsReady() && !Spells.Q.IsReady((uint)Config.ComboMenu.GetValue("Wcast") * 1000) && Extension.League_Of_Bomber != null)
             {
                 W_And_Cast(Target);
             }
-            if (Config.ESettings.GetValue("E", false) > 0 && Spells.E.IsReady())
+            if (Config.ComboMenu.GetValue("E", false) > 0 && Spells.E.IsReady())
             {
+                var target = TargetSelector.GetTarget(Spells.E.Range, DamageType.Mixed);
+                var Enemies = EntityManager.Heroes.Enemies.Where(x => !x.IsDead && x.IsValidTarget(1200));
+                var Allies = EntityManager.Heroes.Allies.Where(x => !x.IsDead && x.IsValidTarget(1200));
+                switch (Config.ComboMenu.GetValue("E", false))
+                {
+                    case 1:
+                        {
+                            if (target != null && Spells.E.IsInRange(target))
+                            {
+                                Spells.E.Cast(target);
+                            }
+                        }
+                        break;
+                    case 2:
+                        {
+                            if (Enemies != null)
+                            {
+                                Spells.E.Cast(Player.Instance);
+                            }
+                        }
+                        break;
+                    case 3:
+                        {
+                            var Nearest = Enemies.OrderBy(x => x.Distance(Player.Instance)).FirstOrDefault();
+                            if (Nearest != null)
+                            {
+                                var EnemyPath = Nearest.Path.Last();
+                                if (Spells.E.IsInRange(Nearest))
+                                {
+                                    if (EnemyPath.Distance(Player.Instance) >= Player.Instance.Distance(Nearest))
+                                    {
+                                        if (Nearest.CountEnemiesInRange(1000) <= Player.Instance.CountAlliesInRange(1000))
+                                        {
+                                            Spells.E.Cast(Nearest);
+                                        }
+                                    }
+                                    if (EnemyPath.Distance(Player.Instance) < Player.Instance.Distance(Nearest))
+                                    {
+                                        if (Nearest.CountEnemiesInRange(1000) <= Player.Instance.CountAlliesInRange(1000))
+                                        {
+                                            Spells.E.Cast(Nearest);
+                                        }
+                                        if (Nearest.CountEnemiesInRange(1000) > Player.Instance.CountAlliesInRange(1000))
+                                        {
+                                            Spells.E.Cast(Player.Instance);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    Spells.E.Cast(Player.Instance);
+                                }
+                            }
+                        }
+                        break;
+                }
             }
         }
         #endregion
@@ -120,7 +201,7 @@ namespace UBZilean
             {
                 if (Config.HarassMenu.GetValue("Q", false) == 2)
                 {
-                    if (Extension.Superman != null)
+                    if (Extension.Superman.Any())
                     {
                         var Count = Extension.Superman.First().CountEnemiesInRange(300);
                         if (Count > 1)
@@ -129,12 +210,12 @@ namespace UBZilean
                             Spells.Q.Cast(pred.CastPosition);
                         }
                     }
-                    else if (Extension.Batman != null)
+                    if (Extension.Batman.Any())
                     {
                         var pred = Spells.Q.GetPrediction(Extension.Batman.First());
                         Spells.Q.Cast(pred.CastPosition);
                     }
-                    else
+                    if (!Extension.Superman.Any() && !Extension.Batman.Any())
                     {
                         if (Target != null)
                         {
@@ -152,7 +233,7 @@ namespace UBZilean
                     }
                 }
             }
-            if (Config.HarassMenu.Checked("W") && Spells.W.IsReady() && !Spells.Q.IsReady() && Extension.Batman != null)
+            if (Config.HarassMenu.Checked("W") && Spells.W.IsReady() && !Spells.Q.IsReady((uint)Config.HarassMenu.GetValue("Wcast") * 1000) && Extension.League_Of_Bomber.Any())
             {
                 Spells.W.Cast();
             }
@@ -200,12 +281,27 @@ namespace UBZilean
         }
         #endregion
 
+        #region Flee
+        public static void Flee()
+        {
+            if (Spells.E.IsReady())
+            {
+                Spells.E.Cast(Player.Instance);
+            }
+            if (Spells.W.IsReady() && !Spells.E.IsReady() && !Player.Instance.HasBuff("TimeWarp"))
+            {
+                Spells.W.Cast();
+            }
+        }
+        #endregion
+
         #region Killsteal
         public static void Killsteal(EventArgs args)
         {
             var target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(t => t != null
                 && t.IsValidTarget()
                 && Spells.Q.IsInRange(t)
+                && !t.HasQBuff()
                 && t.Health <= Damages.QDamage(t)), DamageType.Physical);
 
             if (target != null && !target.Unkillable())
@@ -235,13 +331,32 @@ namespace UBZilean
             var Target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
             if (Config.HarassMenu.GetValue("Q", false) > 0 && Spells.Q.IsReady())
             {
-                var QBuffTar = EntityManager.Heroes.Enemies.Where(x => Spells.Q.IsInRange(x) && x.HasQBuff()).FirstOrDefault();
-                if (QBuffTar != null)
+                if (Config.HarassMenu.GetValue("Q", false) == 2)
                 {
-                    var pred = Spells.Q.GetPrediction(QBuffTar);
-                    Spells.Q.Cast(pred.CastPosition);
+                    if (Extension.Superman.Any())
+                    {
+                        var Count = Extension.Superman.First().CountEnemiesInRange(300);
+                        if (Count > 1)
+                        {
+                            var pred = Spells.Q.GetPrediction(Extension.Superman.First());
+                            Spells.Q.Cast(pred.CastPosition);
+                        }
+                    }
+                    if (Extension.Batman.Any())
+                    {
+                        var pred = Spells.Q.GetPrediction(Extension.Batman.First());
+                        Spells.Q.Cast(pred.CastPosition);
+                    }
+                    if (!Extension.Superman.Any() && !Extension.Batman.Any())
+                    {
+                        if (Target != null)
+                        {
+                            var pred = Spells.Q.GetPrediction(Target);
+                            Spells.Q.Cast(pred.CastPosition);
+                        }
+                    }
                 }
-                else
+                if (Config.HarassMenu.GetValue("Q", false) == 1)
                 {
                     if (Target != null)
                     {
@@ -250,7 +365,7 @@ namespace UBZilean
                     }
                 }
             }
-            if (Config.HarassMenu.Checked("W") && Spells.W.IsReady() && !Spells.Q.IsReady() && Extension.Batman != null)
+            if (Config.HarassMenu.Checked("W") && Spells.W.IsReady() && !Spells.Q.IsReady((uint)Config.ComboMenu.GetValue("Wcast") * 1000) && Extension.League_Of_Bomber.Any())
             {
                 Spells.W.Cast();
             }

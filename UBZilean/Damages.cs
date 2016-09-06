@@ -19,7 +19,7 @@ namespace UBZilean
         public static float WDamage(Obj_AI_Base target)
         {
             if (Spells.W.IsReady())
-                return QDamage(target);
+                return Player.Instance.CalculateDamageOnUnit(target, DamageType.Magical, new float[] { 0f, 75f, 115f, 165f, 230f, 300f }[Spells.Q.Level] + 0.9f * Player.Instance.TotalMagicalDamage);
             else
                 return 0f;
         }
