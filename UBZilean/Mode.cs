@@ -82,6 +82,35 @@ namespace UBZilean
         }
         #endregion
 
+        #region AutoR
+        public static void AutoR(EventArgs args)
+        {
+            if (Config.ComboMenu.Checked("R") && Spells.R.IsReady())
+            {
+                var Allies = EntityManager.Heroes.Allies.Where(x => !x.IsDead && x.IsValid && x.HealthPercent <= Config.ComboMenu.GetValue("HP" + x.ChampionName) && Spells.R.IsInRange(x)).OrderBy(x => x.Health);
+                foreach (var Ally in Allies)
+                {                  
+                    if (Config.ComboMenu.Checked("R" + Ally.ChampionName))
+                    {
+                        Spells.R.Cast(Ally);
+                    }
+                }
+                if (Config.ComboMenu.Checked("R" + Player.Instance.ChampionName))
+                {
+                    var prediction = Prediction.Health.GetPrediction(Player.Instance, 2000);
+                    if (prediction <= 0)
+                    {
+                        Spells.R.Cast(Player.Instance);
+                    }
+                    if (Player.Instance.HealthPercent < Config.ComboMenu.GetValue("HP" + Player.Instance.ChampionName))
+                    {
+                        Spells.R.Cast(Player.Instance);
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region Harass
         public static void Harass()
         {

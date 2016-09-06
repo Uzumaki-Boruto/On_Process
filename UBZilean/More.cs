@@ -13,7 +13,7 @@ namespace UBZilean
     {
         public static void Loading_OnLoadingComplete(EventArgs args)
         {
-            if (Player.Instance.ChampionName != "Lucian") return;
+            if (Player.Instance.ChampionName != "Zilean") return;
 
             Config.Dattenosa();
             Spells.InitSpells();
@@ -23,11 +23,12 @@ namespace UBZilean
         {
             if (Config.DrawMenu["notif"].Cast<CheckBox>().CurrentValue && Config.DrawMenu["draw"].Cast<CheckBox>().CurrentValue)
             {
-                var notStart = new SimpleNotification("UBLucian Load Status", "UBLucian sucessfully loaded.");
+                var notStart = new SimpleNotification("UBZilean Load Status", "UBZilean sucessfully loaded.");
                 Notifications.Show(notStart, 5000);
             }
 
             Game.OnTick += GameOnTick;
+            Game.OnUpdate += Mode.AutoR;
             Game.OnUpdate += Mode.AutoHarass;
             Game.OnUpdate += Mode.Killsteal;
             //Game.OnWndProc += Flee.Game_OnWndProc;
