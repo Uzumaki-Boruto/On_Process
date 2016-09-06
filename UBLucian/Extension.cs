@@ -15,13 +15,6 @@ namespace UBLucian
         {
             return (!HasPassive && menu.Checked("passive")) || !menu.Checked("passive");
         }
-        public static bool SemiPlayerActive
-        {
-            get
-            {
-                return Orbwalker.ActiveModes.None.IsActive() && Config.SemiPlayer.Checked("semi", false);
-            }
-        }
         public static int GetValue(this Menu menu, string id, bool IsSlider = true)
         {
             if (IsSlider)
