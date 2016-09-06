@@ -14,36 +14,36 @@ namespace UBLucian
         public static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (!sender.IsMe) return;
-            if (args.Slot != SpellSlot.R)
+            if (args.Slot == SpellSlot.Q || args.Slot == SpellSlot.W || args.Slot == SpellSlot.E)
             {
                 Extension.HasPassive = true;
                 Orbwalker.ResetAutoAttack();
-            }
-            if (args.Slot == SpellSlot.Q && Config.MiscMenu.Checked("Qcancel"))
-            {
-                var minions = EntityManager.MinionsAndMonsters.EnemyMinions.Where(x => x.IsValid && !x.IsDead && Player.Instance.IsInAutoAttackRange(x)).OrderBy(x => x.Distance(Player.Instance));
-                var champs = EntityManager.Heroes.Enemies.Where(x => x.IsValid && !x.IsDead && Player.Instance.IsInAutoAttackRange(x)).OrderBy(x => x.Distance(Player.Instance));
-                var monsters = EntityManager.MinionsAndMonsters.Monsters.Where(x => x.IsValid && !x.IsDead && Player.Instance.IsInAutoAttackRange(x)).OrderBy(x => x.Distance(Player.Instance));
-                if (champs != null)
+                if (args.Slot == SpellSlot.Q && Config.MiscMenu.Checked("Qcancel"))
                 {
-                    Core.DelayAction(() =>
-                    Player.IssueOrder(GameObjectOrder.AttackUnit, champs.FirstOrDefault()), 375);
+                    var minions = EntityManager.MinionsAndMonsters.EnemyMinions.Where(x => x.IsValid && !x.IsDead && Player.Instance.IsInAutoAttackRange(x)).OrderBy(x => x.Distance(Player.Instance));
+                    var champs = EntityManager.Heroes.Enemies.Where(x => x.IsValid && !x.IsDead && Player.Instance.IsInAutoAttackRange(x)).OrderBy(x => x.Distance(Player.Instance));
+                    var monsters = EntityManager.MinionsAndMonsters.Monsters.Where(x => x.IsValid && !x.IsDead && Player.Instance.IsInAutoAttackRange(x)).OrderBy(x => x.Distance(Player.Instance));
+                    if (champs != null)
+                    {
+                        Core.DelayAction(() =>
+                        Player.IssueOrder(GameObjectOrder.AttackUnit, champs.FirstOrDefault()), 375);
+                    }
+                    else if (monsters != null)
+                    {
+                        Core.DelayAction(() =>
+                        Player.IssueOrder(GameObjectOrder.AttackUnit, monsters.FirstOrDefault()), 375);
+                    }
+                    else if (minions != null)
+                    {
+                        Core.DelayAction(() =>
+                        Player.IssueOrder(GameObjectOrder.AttackUnit, minions.FirstOrDefault()), 375);
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
-                else if (monsters != null)
-                {
-                    Core.DelayAction(() =>
-                    Player.IssueOrder(GameObjectOrder.AttackUnit, monsters.FirstOrDefault()), 375);
-                }
-                else if (minions != null)
-                {
-                    Core.DelayAction(() =>
-                    Player.IssueOrder(GameObjectOrder.AttackUnit, minions.FirstOrDefault()), 375);
-                }
-                else
-                {
-                    return;
-                }
-            }
+            }          
         }
         public static void Obj_AI_Base_OnBuffGain(Obj_AI_Base sender, Obj_AI_BaseBuffGainEventArgs args)
         {
