@@ -16,7 +16,7 @@ namespace UBSyndra
 
         public static void InitSpells()
         {
-            Q = new Spell.Skillshot(SpellSlot.Q, 800, SkillShotType.Circular, 600, int.MaxValue, 125)
+            Q = new Spell.Skillshot(SpellSlot.Q, 800, SkillShotType.Circular, 500, int.MaxValue, 125)
             {
                 AllowedCollisionCount = int.MaxValue,
             };
@@ -33,7 +33,7 @@ namespace UBSyndra
 
             R = new Spell.Targeted(SpellSlot.R, 675);
 
-            QE = new Spell.Skillshot(SpellSlot.E, 1200, SkillShotType.Linear, 500, 2500, 55)
+            QE = new Spell.Skillshot(SpellSlot.E, 1200, SkillShotType.Linear, 500, 2500, 65)
             {
                 AllowedCollisionCount = int.MaxValue,
             };
@@ -82,9 +82,9 @@ namespace UBSyndra
             {
                 Extension.QEcomboing = true;
                 var pred = QE.GetPrediction(target);
-                if (Q.IsInRange(pred.UnitPosition))
+                if (E.IsInRange(pred.UnitPosition))
                 {
-                    Q.Cast(pred.CastPosition);
+                    Q.Cast(Player.Instance.Position.Extend(pred.CastPosition, Player.Instance.Distance(pred.CastPosition) - 20f).To3D());
                 }
                 else
                 {

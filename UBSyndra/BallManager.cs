@@ -13,7 +13,7 @@ namespace UBSyndra
         {
             get
             {
-                return ObjectManager.Get<Obj_AI_Base>().Where(a => a.Name == "Seed" && a.IsValid).ToArray();
+                return ObjectManager.Get<Obj_AI_Base>().Where(a => a.Name == "Seed" && a.IsValid && a.IsAlly).ToArray();
             }
         }
         //public static void GameObject_OnCreate(GameObject sender, EventArgs args)
@@ -38,7 +38,7 @@ namespace UBSyndra
         //}
         public static Obj_AI_Base Get_Grab_Shit()
         {
-            var minion = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsValidTarget(Spells.W.Range)).OrderBy(x => x.Distance(Player.Instance)).FirstOrDefault();
+            var minion = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsValidTarget(Spells.W.Range) && !x.IsAlly).OrderBy(x => x.Distance(Player.Instance)).FirstOrDefault();
             if (Balls != null)
             {
                 return Balls.Where(x => Spells.W.IsInRange(x)).OrderBy(x => x.Distance(Player.Instance)).FirstOrDefault();
@@ -60,7 +60,7 @@ namespace UBSyndra
                 {
                     var Vector = Player.Instance.Position.Extend(ball, Spells.QE.Range);
                     var Rectangle = new Geometry.Polygon.Rectangle(Player.Instance.Position.To2D(), Vector, Spells.QE.Width);
-                    var Count = EntityManager.Heroes.Enemies.Count(x => x.IsValid() && Rectangle.IsInside(x));
+                    var Count = EntityManager.Heroes.Enemies.Count(x => x.IsValid() && !x.IsDead && Rectangle.IsInside(x));
                     if (Count >= Config.ComboMenu.GetValue("Ecbhit") && Spells.E.IsInRange(ball))
                     {
                         Spells.E.Cast(ball);

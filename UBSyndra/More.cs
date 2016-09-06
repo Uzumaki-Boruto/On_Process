@@ -64,23 +64,23 @@ namespace UBSyndra
         }
         private static void OnDraw(EventArgs args)
         {
-            if (Config.DrawMenu["drQ"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("drQ"))
             {
                 Circle.Draw(Spells.Q.IsLearned ? Color.HotPink : Color.Zero, Spells.Q.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu["drW"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("drW"))
             {
                 Circle.Draw(Spells.W.IsLearned ? Color.Orange : Color.Zero, Spells.W.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu["drE"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("drE"))
             {
-                Circle.Draw(Spells.E.IsLearned ? Color.AliceBlue : Color.Zero, Spells.W.Range, Player.Instance.Position);
+                Circle.Draw(Spells.E.IsLearned ? Color.AliceBlue : Color.Zero, Spells.E.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu["drEQ"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("drEQ"))
             {
-                Circle.Draw(Spells.Q.IsLearned && Spells.E.IsLearned ? Color.Yellow : Color.Zero, Spells.W.Range, Player.Instance.Position);
+                Circle.Draw(Spells.Q.IsLearned && Spells.E.IsLearned ? Color.Yellow : Color.Zero, Spells.QE.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu["drR"].Cast<CheckBox>().CurrentValue && Player.Instance.Level < 11)
+            if (Config.DrawMenu.Checked("drR"))
             {
                 Circle.Draw(Spells.R.IsLearned ? Color.Green : Color.Zero, Spells.R.Range, Player.Instance.Position);
             }
