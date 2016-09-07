@@ -84,6 +84,14 @@ namespace UBSyndra
             {
                 Circle.Draw(Spells.R.IsLearned ? Color.Green : Color.Zero, Spells.R.Range, Player.Instance.Position);
             }
+            if (Config.DrawMenu.Checked("drBall"))
+            {
+                foreach (var Ball in BallManager.Balls.Where(x => Spells.E.IsInRange(x)))
+                {
+                    var Rectangle = new Geometry.Polygon.Rectangle(Player.Instance.Position, Ball.Position, Spells.QE.Width);
+                    Rectangle.Draw(Colour.Cyan);
+                }
+            }
         }
     }
 }

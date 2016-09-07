@@ -95,6 +95,7 @@ namespace UBSyndra
                 DrawMenu.Add("drW", new CheckBox("Draw W"));
                 DrawMenu.Add("drE", new CheckBox("Draw E"));
                 DrawMenu.Add("drEQ", new CheckBox("Draw QE"));
+                DrawMenu.Add("drBall", new CheckBox("Draw Ball"));
                 DrawMenu.Add("drR", new CheckBox("Draw R"));
                 DrawMenu.Add("drdamage", new CheckBox("Damage Indicator"));
                 DrawMenu.Add("Color", new ColorPicker("Damage Indicator Color", Color.FromArgb(255, 255, 236, 0)));
