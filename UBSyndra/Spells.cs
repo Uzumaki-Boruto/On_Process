@@ -66,6 +66,10 @@ namespace UBSyndra
             if (W.IsReady() && spell == 2)
             {
                 W.Cast(pred.CastPosition);
+                if (E.IsReady())
+                {
+                    Extension.QEcomboing = true;
+                }
             }
         }
         public static void CastE(PredictionResult pred)
@@ -96,6 +100,10 @@ namespace UBSyndra
         {
             if (!sender.IsMe) return;
             if (args.Slot == SpellSlot.Q && Extension.QEcomboing)
+            {
+                Spells.E.Cast(args.End);
+            }
+            if (args.Slot == SpellSlot.W && Extension.QEcomboing && E.IsInRange(args.End))
             {
                 Spells.E.Cast(args.End);
             }

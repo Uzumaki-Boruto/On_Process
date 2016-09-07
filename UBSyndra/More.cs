@@ -74,7 +74,7 @@ namespace UBSyndra
             }
             if (Config.DrawMenu.Checked("drE"))
             {
-                Circle.Draw(Spells.E.IsLearned ? Color.AliceBlue : Color.Zero, Spells.E.Range, Player.Instance.Position);
+                Circle.Draw(Spells.E.IsLearned ? Color.SkyBlue : Color.Zero, Spells.E.Range, Player.Instance.Position);
             }
             if (Config.DrawMenu.Checked("drEQ"))
             {
