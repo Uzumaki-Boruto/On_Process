@@ -65,25 +65,29 @@ namespace UBVeigar
         }
         private static void OnDraw(EventArgs args)
         {
-            if (Config.DrawMenu["drQ"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("drQ"))
             {
                 Circle.Draw(Spells.Q.IsLearned ? Color.HotPink : Color.Zero, Spells.Q.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu["drW"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("drW"))
             {
                 Circle.Draw(Spells.W.IsLearned ? Color.Orange : Color.Zero, Spells.W.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu["drE"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("drE"))
             {
-                Circle.Draw(Spells.E.IsLearned ? Color.AliceBlue : Color.Zero, Spells.E.Range, Player.Instance.Position);
+                Circle.Draw(Spells.E.IsLearned ? Color.Cyan : Color.Zero, Spells.E.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu["drR"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("drR"))
             {
                 Circle.Draw(Spells.R.IsLearned ? Color.Green : Color.Zero, Spells.R.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu["drR"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("drminion"))
             {
-                Circle.Draw(Spells.R.IsLearned ? Color.Green : Color.Zero, Spells.R.Range, Player.Instance.Position);
+                var minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.Q.Range).Where(m => m.Health <= Damage.QDamage(m)).ToArray() ;
+                if (minions != null)
+                {
+                    Circle.Draw(Color.HotPink, 50f, minions);
+                }
             }
         }
     }

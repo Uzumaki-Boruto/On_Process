@@ -16,7 +16,6 @@ namespace UBVeigar
         public static Menu JungleClear;
         public static Menu MiscMenu;
         public static Menu DrawMenu;
-        public static ComboBox AutoBox;
 
         public static void Dattenosa()
         {

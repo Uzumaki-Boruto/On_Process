@@ -99,9 +99,9 @@ namespace UBVeigar
             {
                 if (Spells.Q.IsReady())
                 {
-                    var minions = EntityManager.MinionsAndMonsters.EnemyMinions.Where(m => m.IsValidTarget(Spells.Q.Range) && m.Health <= Damage.QDamage(m)).ToArray();
-                    var MinionLeastHP = EntityManager.MinionsAndMonsters.EnemyMinions.Where(m => m.IsValidTarget(Spells.Q.Range)).OrderBy(m => m.HealthPercent).FirstOrDefault();
-                    var LCMinion = Orbwalker.LaneClearMinionsList.ToArray();
+                    var minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.Q.Range).Where(m => m.Health <= Damage.QDamage(m));
+                    var MinionLeastHP = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.Q.Range).OrderBy(m => m.HealthPercent).FirstOrDefault();
+                    var LCMinion = Orbwalker.LaneClearMinionsList;
                     var allyminion = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Ally);
                     var value = Config.LaneClear.GetValue("Q.waittime") * Player.Instance.GetAutoAttackDamage(Orbwalker.LaneClearMinion);
                     if (minions.Any())
@@ -122,37 +122,30 @@ namespace UBVeigar
                                 {
                                     if (allyminion != null)
                                     {
-                                        if (!Extension.ShouldWait)
+                                        if (Orbwalker.PriorityLastHitWaitingMinion != null)
                                         {
-                                            Spells.Q.Cast(minions.First());
+                                            Orbwalker.ForcedTarget = LCMinion.Where(m => m.IsValid && m.Health >= Damage.QDamage(m) && m != Orbwalker.PriorityLastHitWaitingMinion).OrderBy(m => m.Distance(Orbwalker.PriorityLastHitWaitingMinion)).FirstOrDefault();
                                         }
                                         else
                                         {
-                                            if (Orbwalker.PriorityLastHitWaitingMinion != null)
-                                            {
-                                                Orbwalker.ForcedTarget = LCMinion.Where(m => m.IsValid && m.Health >= Orbwalker.PriorityLastHitWaitingMinion.Health && m != Orbwalker.LaneClearMinion).OrderBy(m => m.Distance(Orbwalker.PriorityLastHitWaitingMinion)).FirstOrDefault();
-                                            }
-                                            else
-                                            {
-                                                Orbwalker.ForcedTarget = LCMinion.Where(m => m.IsValid && m.Health >= minions.First().Health && m != minions.First()).OrderBy(m => m.Distance(minions.First())).FirstOrDefault();
-                                            }
+                                            Orbwalker.ForcedTarget = LCMinion.Where(m => m.IsValid && m.Health >= Damage.QDamage(m) && m != minions.FirstOrDefault()).OrderBy(m => m.Distance(minions.FirstOrDefault())).FirstOrDefault();
                                         }
                                     }
                                     else
                                     {
-                                        Orbwalker.ForcedTarget = LCMinion.Where(m => m.IsValid && m.Health > Damage.QDamage(m) && m != minions.First()).OrderBy(m => m.Distance(minions.First())).FirstOrDefault();
+                                        Orbwalker.ForcedTarget = LCMinion.Where(m => m.IsValid && m.Health > Damage.QDamage(m) && m != minions.FirstOrDefault()).OrderBy(m => m.Distance(minions.FirstOrDefault())).FirstOrDefault();
                                     }
                                 }
                                 break;
                             default:
                                 {
-                                    var Result = minions.Where(x => x != minions[0]).OrderBy(x => x.Distance(minions[0])).FirstOrDefault();
-                                    var Rectangle1 = new Geometry.Polygon.Rectangle(minions[0].Position, Result.Position, 10f);
-                                    var Rectangle2 = new Geometry.Polygon.Rectangle(Player.Instance.Position, Rectangle1.CenterOfPolygon().To3D(), Spells.Q.Width);
-                                    if (Rectangle2.IsInside(Result) && Rectangle2.IsInside(minions[0]))
-                                    {
-                                        Spells.Q.Cast(Rectangle2.End.To3D());
-                                    }
+                                    //var Result = minions.Where(x => x != minions.ToArray()[0]).OrderBy(x => x.Distance(minions.ToArray()[0])).FirstOrDefault();
+                                    //var Rectangle1 = new Geometry.Polygon.Rectangle(minions.ToArray()[0].Position, Result.Position, 10f);
+                                    //var Rectangle2 = new Geometry.Polygon.Rectangle(Player.Instance.Position, Rectangle1.CenterOfPolygon().To3D(), Spells.Q.Width);
+                                    //if (Rectangle2.IsInside(Result) && Rectangle2.IsInside(minions.ToArray()[0]))
+                                    //{
+                                    //    Spells.Q.Cast(Rectangle2.End.To3D());
+                                    //}
                                     //if (!QMinions.Any()) return;
 
                                     //var predictionResult =
