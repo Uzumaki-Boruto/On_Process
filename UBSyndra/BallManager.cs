@@ -13,7 +13,7 @@ namespace UBSyndra
         {
             get
             {
-                return ObjectManager.Get<Obj_AI_Base>().Where(a => a.Name == "Seed" && a.IsValid && a.IsAlly).ToArray();
+                return ObjectManager.Get<Obj_AI_Base>().Where(a => a.Name == "Seed" && a.IsValid && a.IsAlly && !a.IsDead).ToArray();
             }
         }
         //public static void GameObject_OnCreate(GameObject sender, EventArgs args)
@@ -39,7 +39,7 @@ namespace UBSyndra
         public static Obj_AI_Base Get_Grab_Shit()
         {
             var minion = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsValidTarget(Spells.W.Range) && !x.IsAlly).OrderBy(x => x.Distance(Player.Instance)).FirstOrDefault();
-            if (Balls != null)
+            if (Balls.Any())
             {
                 return Balls.Where(x => Spells.W.IsInRange(x)).OrderBy(x => x.Distance(Player.Instance)).FirstOrDefault();
             }

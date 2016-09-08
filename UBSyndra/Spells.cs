@@ -44,6 +44,13 @@ namespace UBSyndra
             {
                 R = new Spell.Targeted(SpellSlot.R, 750);
             }
+            if (E.Level == 5 && E.Width == 22)
+            {
+                E = new Spell.Skillshot(SpellSlot.E, 700, SkillShotType.Cone, 250, 2500, 33)
+                {
+                    AllowedCollisionCount = int.MaxValue,
+                };
+            }
         }
         public static void CastQ(PredictionResult pred)
         {
@@ -58,18 +65,6 @@ namespace UBSyndra
             if (W.IsReady() && spell == 1 && BallManager.Get_Grab_Shit() != null)
             {
                 W.Cast(BallManager.Get_Grab_Shit());
-            }
-        }
-        public static void CastW(PredictionResult pred)
-        {
-            var spell = Player.GetSpell(SpellSlot.W).ToggleState;
-            if (W.IsReady() && spell == 2)
-            {
-                W.Cast(pred.CastPosition);
-                if (E.IsReady())
-                {
-                    Extension.QEcomboing = true;
-                }
             }
         }
         public static void CastE(PredictionResult pred)

@@ -60,7 +60,6 @@ namespace UBSyndra
             { Mode.LaneClear(); }
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
             { Mode.JungleClear(); }
-
         }
         private static void OnDraw(EventArgs args)
         {
@@ -84,11 +83,11 @@ namespace UBSyndra
             {
                 Circle.Draw(Spells.R.IsLearned ? Color.Green : Color.Zero, Spells.R.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu.Checked("drBall"))
+            if (Config.DrawMenu.Checked("drBall") && Spells.E.IsReady())
             {
                 foreach (var Ball in BallManager.Balls.Where(x => Spells.E.IsInRange(x)))
                 {
-                    var Rectangle = new Geometry.Polygon.Rectangle(Player.Instance.Position, Ball.Position, Spells.QE.Width);
+                    var Rectangle = new Geometry.Polygon.Rectangle(Player.Instance.Position, Player.Instance.Position.Extend(Ball.Position, Spells.QE.Range).To3D(), Spells.QE.Width);
                     Rectangle.Draw(Colour.Cyan);
                 }
             }

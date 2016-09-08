@@ -29,11 +29,8 @@ namespace UBSyndra
                 if (target != null)
                 {
                     var pred = Spells.W.GetPrediction(target);
-                    if (Spells.W.IsInRange(pred.UnitPosition))
-                    {
-                        Spells.Grab();
-                    }
-                    Spells.CastW(pred);
+                    Spells.Grab();
+                    Spells.W.Cast(pred.CastPosition);
                 }
             }
             if (Config.ComboMenu.Checked("Ecb") && Spells.E.IsReady())
@@ -48,6 +45,15 @@ namespace UBSyndra
             if (Config.ComboMenu.Checked("QEcb") && Spells.Q.IsReady() && Spells.E.IsReady())
             {
                 Spells.ComboEQ();
+            }
+            if (Spells.R.IsReady() && Config.ComboMenu.Checked("R"))
+            {
+                var target = TargetSelector.GetTarget(Spells.R.Range, DamageType.Magical);
+
+                if (target != null && !target.HasSpellShield() && Config.ComboMenu.Checked(target.ChampionName) && Damage.Damagefromspell(target) >= target.Health)
+                {
+                    Spells.R.Cast(target);
+                }
             }
         }
         #endregion
@@ -71,11 +77,8 @@ namespace UBSyndra
                 if (target != null)
                 {
                     var pred = Spells.W.GetPrediction(target);
-                    if (Spells.W.IsInRange(pred.UnitPosition))
-                    {
-                        Spells.Grab();
-                    }
-                    Spells.CastW(pred);
+                    Spells.Grab();
+                    Spells.W.Cast(pred.CastPosition);
                 }
             }
             if (Config.HarassMenu.Checked("Ehr") && Spells.E.IsReady())
@@ -185,7 +188,8 @@ namespace UBSyndra
                 {
                     var pred = Spells.W.GetPrediction(target);
                     Spells.Grab();
-                    Spells.CastW(pred);
+                    Spells.W.Cast(pred.CastPosition);
+
                 }
             }
             if (Spells.E.IsReady() && Config.MiscMenu.Checked("Eks"))
@@ -239,11 +243,9 @@ namespace UBSyndra
                 if (target != null)
                 {
                     var pred = Spells.W.GetPrediction(target);
-                    if (Spells.W.IsInRange(pred.UnitPosition))
-                    {
-                        Spells.Grab();
-                    }
-                    Spells.CastW(pred);
+                    Spells.Grab();
+                    Spells.W.Cast(pred.CastPosition);
+
                 }
             }
             if (Config.HarassMenu.Checked("Ehr") && Spells.E.IsReady())

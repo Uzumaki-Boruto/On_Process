@@ -27,7 +27,7 @@ namespace UBSyndra
         }
         public static float EDamage(Obj_AI_Base target)
         {
-            if (Spells.Q.IsReady())
+            if (Spells.E.IsReady())
                 return Player.Instance.CalculateDamageOnUnit(target, DamageType.Magical, new[] { 0f, 70f, 115f, 160f, 205f, 250f }[Spells.E.Level] + 0.5f * Player.Instance.TotalMagicalDamage);
             else
                 return 0f;
@@ -37,7 +37,7 @@ namespace UBSyndra
         {
             int Ball = Player.GetSpell(SpellSlot.R).Ammo;
             if (Spells.R.IsReady())
-                return Player.Instance.CalculateDamageOnUnit(target, DamageType.Magical, new[] { 0f, 90f, 135f, 180f }[Spells.R.Level] + 0.2f * Player.Instance.TotalMagicalDamage * Ball);
+                return Player.Instance.CalculateDamageOnUnit(target, DamageType.Magical, new[] { 0f, 90f, 135f, 180f }[Spells.R.Level] * Ball + 0.2f * Player.Instance.TotalMagicalDamage * Ball);
             else
                 return 0f;
         }

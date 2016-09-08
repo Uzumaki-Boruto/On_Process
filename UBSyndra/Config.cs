@@ -33,6 +33,12 @@ namespace UBSyndra
                 ComboMenu.Add("Ecb", new CheckBox("Use E", false));
                 ComboMenu.Add("Ecbhit", new Slider("Auto E if can stun {0} enemies", 4, 2, 6));
                 ComboMenu.Add("QEcb", new CheckBox("Use QE"));
+                ComboMenu.Add("R", new CheckBox("Use R"));
+                ComboMenu.AddLabel("It's not killsteal settings");
+                foreach (var Enemy in EntityManager.Heroes.Enemies)
+                {
+                    ComboMenu.Add(Enemy.ChampionName, new CheckBox("R on " + Enemy.ChampionName));
+                }
             }
 
             HarassMenu = Menu.AddSubMenu("Harass");
