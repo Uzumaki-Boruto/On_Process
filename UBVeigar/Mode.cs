@@ -99,23 +99,16 @@ namespace UBVeigar
             {
                 if (Spells.Q.IsReady())
                 {
-                    var minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.Q.Range).Where(m => m.Health <= Damage.QDamage(m));
-                    var MinionLeastHP = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.Q.Range).OrderBy(m => m.HealthPercent).FirstOrDefault();
+                    var minions = EntityManager.MinionsAndMonsters.EnemyMinions.Where(m => m.IsValidTarget(Spells.Q.Range) && m.Health <= Damage.QDamage(m));
                     var LCMinion = Orbwalker.LaneClearMinionsList;
                     var allyminion = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Ally);
-                    var value = Config.LaneClear.GetValue("Q.waittime") * Player.Instance.GetAutoAttackDamage(Orbwalker.LaneClearMinion);
                     if (minions.Any())
                     {
-                        //if (Orbwalker.LaneClearMinion.Health <= Damage.QDamage(Orbwalker.LaneClearMinion) + value && Config.LaneClear.Checked("Q.wait"))
-                        //{
-                        //    Orbwalker.ForcedTarget = Orbwalker.LaneClearMinionsList.Where(m => m.IsValid
-                        //        && m.Health >= Orbwalker.LaneClearMinion.Health && m != Orbwalker.LaneClearMinion).OrderBy(m => m.Distance(Orbwalker.LaneClearMinion)).FirstOrDefault();
-                        //}
                         switch (minions.Count())
                         {
                             case 0:
                                 {
-                                    Orbwalker.ForcedTarget = LCMinion.Where(m => m.IsValid && m.HealthPercent >= MinionLeastHP.HealthPercent && m != MinionLeastHP).OrderBy(m => m.Distance(MinionLeastHP)).FirstOrDefault();
+                                    Orbwalker.ForcedTarget = LCMinion.Where(x => x != Orbwalker.LaneClearMinion).OrderBy(x => x.Distance(Orbwalker.LaneClearMinion)).First();
                                 }
                                 break;
                             case 1:
@@ -139,27 +132,15 @@ namespace UBVeigar
                                 break;
                             default:
                                 {
-                                    //var Result = minions.Where(x => x != minions.ToArray()[0]).OrderBy(x => x.Distance(minions.ToArray()[0])).FirstOrDefault();
-                                    //var Rectangle1 = new Geometry.Polygon.Rectangle(minions.ToArray()[0].Position, Result.Position, 10f);
-                                    //var Rectangle2 = new Geometry.Polygon.Rectangle(Player.Instance.Position, Rectangle1.CenterOfPolygon().To3D(), Spells.Q.Width);
-                                    //if (Rectangle2.IsInside(Result) && Rectangle2.IsInside(minions.ToArray()[0]))
-                                    //{
-                                    //    Spells.Q.Cast(Rectangle2.End.To3D());
-                                    //}
-                                    //if (!QMinions.Any()) return;
-
-                                    //var predictionResult =
-                                    //    (from minion in QMinions
-                                    //     let pred = Spells.Q.GetPrediction(minion)
-                                    //     let count = pred.GetCollisionObjects<Obj_AI_Minion>().Count(x =>
-                                    //                    x.Health <= Damage.QDamage(x)
-                                    //                    && x.IsValidTarget() && x.IsEnemy)
-                                    //     where count >= 2
-                                    //     select pred).FirstOrDefault();
-                                    //if (Spells.Q.IsReady() && predictionResult != null)
-                                    //{
-                                    //    Spells.Q.Cast(predictionResult.CastPosition);
-                                    //}
+                                    foreach (var minion in minions)
+                                    {
+                                        var pred = Spells.Q.GetPrediction(minion);
+                                        var Collision = pred.CollisionObjects;
+                                        if (Collision.Length == 1 && Collision.First().Health < Damage.QDamage(Collision.First()))
+                                        {
+                                            Spells.Q.Cast(pred.CastPosition);
+                                        }
+                                    }                                  
                                 }
                                 break;
                         }
@@ -210,13 +191,10 @@ namespace UBVeigar
                 if (Target != null)
                 {
                     var prediction = Spells.Q.GetPrediction(Target);
-                    var coll = prediction.CollisionObjects;
-                    if (coll.Count() == 1)
+                    var Collision = prediction.CollisionObjects;
+                    if (Collision.Length == 1 && Collision.First().Health > Damage.QDamage(Collision.First()))
                     {
-                        if (coll.Count(x => x.Health <= Damage.QDamage(x)) == 1)
-                        {
-                            Spells.Q.Cast(prediction.CastPosition);
-                        }
+                        Spells.Q.Cast(prediction.CastPosition);
                     }
                 }
                 var minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells.Q.Range).ToArray();

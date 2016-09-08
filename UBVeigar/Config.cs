@@ -89,6 +89,7 @@ namespace UBVeigar
             DrawMenu = Menu.AddSubMenu("Drawing");
             {
                 DrawMenu.Add("draw", new CheckBox("Enable Drawing"));
+                DrawMenu.Add("notif", new CheckBox("Enable Notifiaction"));
                 DrawMenu.Add("drQ", new CheckBox("Draw Q"));
                 DrawMenu.Add("drminion", new CheckBox("Draw killable minion with Q"));
                 DrawMenu.Add("drW", new CheckBox("Draw W"));

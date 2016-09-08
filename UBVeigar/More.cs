@@ -17,15 +17,18 @@ namespace UBVeigar
         {
             if (Player.Instance.ChampionName != "Veigar") return;
 
-            var notStart = new SimpleNotification("UBVeigar Load Status", "UBVeigar sucessfully loaded.");
-            Notifications.Show(notStart, 5000);
-
             Config.Dattenosa();
             Spells.InitSpells();
             InitEvents();
         }
         private static void InitEvents()
         {
+            if (Config.DrawMenu.Checked("notif") && Config.DrawMenu.Checked("draw"))
+            {
+                var notStart = new SimpleNotification("UBVeigar Load Status", "UBVeigar sucessfully loaded.");
+                Notifications.Show(notStart, 5000);
+            }
+
             Game.OnTick += GameOnTick;
             Game.OnTick += Mode.Get_AP;
             Game.OnTick += Mode.JungSteal;
@@ -35,11 +38,9 @@ namespace UBVeigar
             Gapcloser.OnGapcloser += Mode.Gapcloser_OnGapcloser;
             Interrupter.OnInterruptableSpell += Mode.Interrupter_OnInterruptableSpell;
 
-            if (Config.DrawMenu["draw"].Cast<CheckBox>().CurrentValue)
-            {
-                Drawing.OnDraw += OnDraw;
-                Drawing.OnEndScene += Damage.Damage_Indicator;
-            }
+            Drawing.OnDraw += OnDraw;
+            Drawing.OnEndScene += Damage.Damage_Indicator;
+            
 
             Orbwalker.OnUnkillableMinion += Mode.On_Unkillable_Minion;
 
@@ -50,7 +51,6 @@ namespace UBVeigar
         }
         private static void GameOnTick(EventArgs args)
         {
-            Orbwalker.ForcedTarget = null;
             if (Player.Instance.IsDead) return;
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
@@ -65,6 +65,8 @@ namespace UBVeigar
         }
         private static void OnDraw(EventArgs args)
         {
+            if (!Config.DrawMenu.Checked("draw")) return;          
+
             if (Config.DrawMenu.Checked("drQ"))
             {
                 Circle.Draw(Spells.Q.IsLearned ? Color.HotPink : Color.Zero, Spells.Q.Range, Player.Instance.Position);

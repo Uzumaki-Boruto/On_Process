@@ -53,7 +53,7 @@ namespace UBVeigar
         }
         public static void Damage_Indicator(EventArgs args)
         {
-            if (Config.DrawMenu["drdamage"].Cast<CheckBox>().CurrentValue)
+            if (Config.DrawMenu.Checked("drdamage") && Config.DrawMenu.Checked("draw"))
             {
                 foreach (var unit in EntityManager.Heroes.Enemies.Where(u => u.IsValidTarget() && u.IsHPBarRendered)
                     )
