@@ -2,7 +2,6 @@
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Rendering;
 using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Notifications;
@@ -34,12 +33,10 @@ namespace UBSyndra
 
             Gapcloser.OnGapcloser += Mode.Gapcloser_OnGapcloser;
             Interrupter.OnInterruptableSpell += Mode.Interrupter_OnInterruptableSpell;
-
-            if (Config.DrawMenu["draw"].Cast<CheckBox>().CurrentValue)
-            {
-                Drawing.OnDraw += OnDraw;
-                Drawing.OnEndScene += Damage.Damage_Indicator;
-            }
+          
+            Drawing.OnDraw += OnDraw;
+            Drawing.OnEndScene += Damage.Damage_Indicator;
+            
 
             Orbwalker.OnUnkillableMinion += Mode.On_Unkillable_Minion;
 
@@ -63,6 +60,7 @@ namespace UBSyndra
         }
         private static void OnDraw(EventArgs args)
         {
+            if (!Config.DrawMenu.Checked("draw")) return;
             if (Config.DrawMenu.Checked("drQ"))
             {
                 Circle.Draw(Spells.Q.IsLearned ? Color.HotPink : Color.Zero, Spells.Q.Range, Player.Instance.Position);

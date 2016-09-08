@@ -1,7 +1,5 @@
 ﻿using System.Drawing;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Notifications;
-using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 
