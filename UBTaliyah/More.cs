@@ -12,7 +12,7 @@ namespace UBTaliyah
     {
         public static void Loading_OnLoadingComplete(EventArgs args)
         {
-            if (Player.Instance.ChampionName != "Lucian") return;
+            if (Player.Instance.ChampionName != "Taliyah") return;
 
             Config.Dattenosa();
             Spells.InitSpells();
