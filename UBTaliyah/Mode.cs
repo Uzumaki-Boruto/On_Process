@@ -16,7 +16,7 @@ namespace UBTaliyah
         {
             if (Config.ComboMenu.GetValue("Q") > 0 && Spells.Q.IsReady())
             {
-                var Target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Physical);
+                var Target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
                 if (Target != null)
                 {
                     if ((Config.ComboMenu.GetValue("Q") == 1 && !Extension.In_Q_Side) || Config.ComboMenu.GetValue("Q") == 2)
@@ -28,11 +28,10 @@ namespace UBTaliyah
             }
             if (Config.ComboMenu.GetValue("W") > 0 && Spells.W.IsReady())
             {
-                var Target = TargetSelector.GetTarget(Spells.W.Range, DamageType.Physical);
+                var Target = TargetSelector.GetTarget(Spells.W.Range, DamageType.Magical);
                 if (Target != null)
                 {
                     var pred = Spells.W.GetPrediction(Target);
-                    Spells.W.SourcePosition = pred.CastPosition;
                     Vector3 StartPos;
                     switch (Config.ComboMenu.GetValue("W"))
                     {
@@ -62,7 +61,7 @@ namespace UBTaliyah
             }
             if (Config.ComboMenu.Checked("E") && Spells.E.IsReady())
             {
-                var Target = TargetSelector.GetTarget(Spells.E.Range, DamageType.Physical);
+                var Target = TargetSelector.GetTarget(Spells.E.Range, DamageType.Magical);
                 if (Target != null)
                 {
                     var pred = Spells.E.GetPrediction(Target);
@@ -94,7 +93,6 @@ namespace UBTaliyah
                 if (Target != null)
                 {
                     var pred = Spells.W.GetPrediction(Target);
-                    Spells.W.SourcePosition = pred.CastPosition;
                     Vector3 StartPos;
                     switch (Config.HarassMenu.GetValue("W"))
                     {
@@ -137,7 +135,7 @@ namespace UBTaliyah
         #region LaneClear
         public static void LaneClear()
         {
-            if (Config.LaneClear.GetValue("lc") > Player.Instance.ManaPercent || EntityManager.MinionsAndMonsters.GetLaneMinions().Count() < Config.LaneClear.GetValue("hit")) return;
+            if (Config.LaneClear.GetValue("lc") > Player.Instance.ManaPercent || Orbwalker.LaneClearMinionsList.Count() < Config.LaneClear.GetValue("hit")) return;
             if (Config.LaneClear.Checked("Q") && Spells.Q.IsReady())
             {
                 var Minion = Orbwalker.LaneClearMinion;
@@ -293,7 +291,6 @@ namespace UBTaliyah
                 if (Target != null)
                 {
                     var pred = Spells.W.GetPrediction(Target);
-                    Spells.W.SourcePosition = pred.CastPosition;
                     Vector3 StartPos;
                     switch (Config.HarassMenu.GetValue("W"))
                     {
