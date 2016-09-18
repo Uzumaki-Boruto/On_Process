@@ -27,6 +27,7 @@ namespace UBTaliyah
             }
 
             Game.OnTick += GameOnTick;
+            Game.OnTick += Spells.Update;
             Game.OnUpdate += Mode.AutoHarass;
             Game.OnUpdate += Mode.Killsteal;
 
@@ -43,7 +44,6 @@ namespace UBTaliyah
         }
         private static void GameOnTick(EventArgs args)
         {
-            Orbwalker.ForcedTarget = null;
             if (Player.Instance.IsDead) return;
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
