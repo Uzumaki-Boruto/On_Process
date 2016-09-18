@@ -14,26 +14,26 @@ namespace UBTaliyah
         #region Combo
         public static void Combo()
         {
-            if (Config.ComboMenu.GetValue("Q") > 0 && Spells.Q.IsReady())
+            if (Config.ComboMenu.GetValue("Q", false) > 0 && Spells.Q.IsReady())
             {
                 var Target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
                 if (Target != null)
                 {
-                    if ((Config.ComboMenu.GetValue("Q") == 1 && !Extension.In_Q_Side) || Config.ComboMenu.GetValue("Q") == 2)
+                    if ((Config.ComboMenu.GetValue("Q", false) == 1 && !Extension.In_Q_Side) || Config.ComboMenu.GetValue("Q", false) == 2)
                     {
                         var pred = Spells.Q.GetPrediction(Target);
                         Spells.Q.Cast(pred.CastPosition);
                     }
                 }
             }
-            if (Config.ComboMenu.GetValue("W") > 0 && Spells.W.IsReady())
+            if (Config.ComboMenu.GetValue("W", false) > 0 && Spells.W.IsReady())
             {
                 var Target = TargetSelector.GetTarget(Spells.W.Range, DamageType.Magical);
                 if (Target != null)
                 {
                     var pred = Spells.W.GetPrediction(Target);
                     Vector3 StartPos;
-                    switch (Config.ComboMenu.GetValue("W"))
+                    switch (Config.ComboMenu.GetValue("W", false))
                     {
                         case 1:
                             {
@@ -75,7 +75,7 @@ namespace UBTaliyah
         public static void Harass()
         {
             if (Config.HarassMenu.GetValue("hr") > Player.Instance.ManaPercent) return;
-            if (Config.HarassMenu.GetValue("Q") > 0 && Spells.Q.IsReady())
+            if (Config.HarassMenu.GetValue("Q", false) > 0 && Spells.Q.IsReady())
             {
                 var Target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Physical);
                 if (Target != null)
@@ -87,14 +87,14 @@ namespace UBTaliyah
                     }
                 }
             }
-            if (Config.HarassMenu.GetValue("W") > 0 && Spells.W.IsReady())
+            if (Config.HarassMenu.GetValue("W", false) > 0 && Spells.W.IsReady())
             {
                 var Target = TargetSelector.GetTarget(Spells.W.Range, DamageType.Physical);
                 if (Target != null)
                 {
                     var pred = Spells.W.GetPrediction(Target);
                     Vector3 StartPos;
-                    switch (Config.HarassMenu.GetValue("W"))
+                    switch (Config.HarassMenu.GetValue("W", false))
                     {
                         case 1:
                             {
@@ -273,26 +273,26 @@ namespace UBTaliyah
             if (!Config.HarassMenu.Checked("keyharass", false)) return;
             if (Player.Instance.IsUnderEnemyturret()) return;
             if (Modes.Combo.IsActive() || Modes.Harass.IsActive() || Modes.Flee.IsActive()) return;
-            if (Config.HarassMenu.GetValue("Q") > 0 && Spells.Q.IsReady())
+            if (Config.HarassMenu.GetValue("Q", false) > 0 && Spells.Q.IsReady())
             {
                 var Target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Physical);
                 if (Target != null)
                 {
-                    if ((Config.HarassMenu.GetValue("Q") == 1 && !Extension.In_Q_Side) || Config.HarassMenu.GetValue("Q") == 2)
+                    if ((Config.HarassMenu.GetValue("Q", false) == 1 && !Extension.In_Q_Side) || Config.HarassMenu.GetValue("Q", false) == 2)
                     {
                         var pred = Spells.Q.GetPrediction(Target);
                         Spells.Q.Cast(pred.CastPosition);
                     }
                 }
             }
-            if (Config.HarassMenu.GetValue("W") > 0 && Spells.W.IsReady())
+            if (Config.HarassMenu.GetValue("W", false) > 0 && Spells.W.IsReady())
             {
                 var Target = TargetSelector.GetTarget(Spells.W.Range, DamageType.Physical);
                 if (Target != null)
                 {
                     var pred = Spells.W.GetPrediction(Target);
                     Vector3 StartPos;
-                    switch (Config.HarassMenu.GetValue("W"))
+                    switch (Config.HarassMenu.GetValue("W", false))
                     {
                         case 1:
                             {
