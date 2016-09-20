@@ -16,8 +16,6 @@ namespace UBAnivia
         {
             if (Player.Instance.ChampionName != "Anivia") return;
 
-            var notStart = new SimpleNotification("UBAnivia Load Status", "UBAnivia sucessfully loaded.");
-            Notifications.Show(notStart, 5000);
 
             Config.Dattenosa();
             Spells.InitSpells();
@@ -25,6 +23,12 @@ namespace UBAnivia
         }
         private static void InitEvents()
         {
+            if (Config.DrawMenu.Checked("notif") && Config.DrawMenu.Checked("draw"))
+            {
+                var notStart = new SimpleNotification("UBAnivia Load Status", "UBAnivia sucessfully loaded.");
+                Notifications.Show(notStart, 5000);
+            }
+
             Game.OnTick += GameOnTick;
             Game.OnUpdate += Mode.AutoHarass;
             Game.OnUpdate += Mode.Killsteal;

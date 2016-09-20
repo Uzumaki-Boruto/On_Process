@@ -111,6 +111,8 @@ namespace UBAnivia
             DrawMenu = Menu.AddSubMenu("Drawing");
             {
                 DrawMenu.Add("draw", new CheckBox("Enable Drawing"));
+                DrawMenu.Add("notif", new CheckBox("Enable notification"));
+                DrawMenu.AddSeparator();
                 DrawMenu.Add("drQ", new CheckBox("Draw Q"));
                 DrawMenu.Add("drW", new CheckBox("Draw W"));
                 DrawMenu.Add("drE", new CheckBox("Draw E"));
