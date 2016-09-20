@@ -26,11 +26,6 @@ namespace UBAnivia
             else
                 return menu[id].Cast<KeyBind>().CurrentValue;
         }
-        public static bool Try_To_Gap_Me(this Obj_AI_Base target, float range = 550f)
-        {
-            var Path = Prediction.Position.GetRealPath(target).Last();
-            return Path.Distance(Player.Instance) < Player.Instance.Distance(target) && target.IsInRange(Player.Instance, range);
-        }
         public static bool Unkillable(AIHeroClient target)
         {
             if (target.Buffs.Any(b => b.IsValid() && b.DisplayName == "UndyingRage"))
@@ -66,7 +61,7 @@ namespace UBAnivia
         {
             get
             {
-                return Missile != null && Player.HasBuff("FlashFrost");
+                return Player.HasBuff("FlashFrost");
             }
         }
         public static bool Chilled(this Obj_AI_Base target)
@@ -139,7 +134,7 @@ namespace UBAnivia
                         QTarget = sender as AIHeroClient;
                         Spells.Q.Cast(sender);
                     }
-                    if (sender.IsValidTarget(Spells.R.Range))
+                    if (sender.IsValidTarget(Spells.R.Range) && Extension.HasR)
                     {
                         Spells.R.Cast(sender);
                     }
@@ -156,29 +151,34 @@ namespace UBAnivia
         public static Vector3 QMissile_End = new Vector3();
         public static void MissileTracker(EventArgs args)
         {
-            if (Missile == null || Missile.IsDead || QTarget == null || Spells.QActive.IsReady())
+            if (Spells.Q.IsReady() && Missile != null && Player.Instance.Spellbook.GetSpell(SpellSlot.Q).ToggleState != 1)            
             {
-                Missile = null;
-                QTarget = null;
-                return;
-            }
-            else
-            {
-                var target = QTarget;
-                var Rectangle = new Geometry.Polygon.Rectangle(Missile.Position, QMissile_End, 110f);
-                var Rectangle2 = new Geometry.Polygon.Rectangle(Missile.Position, QMissile_End, 230f);
-                var pred = Prediction.Position.PredictLinearMissile(target, Missile.Distance(QMissile_End), 110, 150, Spells.Q.Speed, int.MaxValue, Missile.Position);
-                if (Rectangle2.IsInside(pred.UnitPosition))
+                if (!QTarget.IsDead && QTarget != null)
                 {
-                    if (Rectangle.IsInside(pred.UnitPosition))
+                    var target = QTarget;
+                    int Time_to_Travel = (int)(Missile.Distance(Player.Instance) / Spells.Q.Speed * 1000);
+                    var Rectangle = new Geometry.Polygon.Rectangle(Missile.Position, QMissile_End, 110f);
+                    var Rectangle2 = new Geometry.Polygon.Rectangle(Missile.Position, QMissile_End, 230f);
+                    var pred = Prediction.Position.PredictUnitPosition(target, Time_to_Travel);
+                    if (Rectangle2.IsInside(pred))
                     {
-                        Core.DelayAction(() => Spells.QActive.Cast(), (int)(Missile.Distance(Player.Instance) / Spells.Q.Speed * 1000));
+                        if (Rectangle.IsInside(pred))
+                        {
+                            Core.DelayAction(() => Spells.QActive.Cast(), Time_to_Travel);
+                        }
+                        else
+                        {
+                            if (Missile.IsInRange(target, 230f))
+                            {
+                                Spells.QActive.Cast();
+                            }
+                        }
                     }
                     else
                     {
-                        if (Missile.IsInRange(target, 230f))
+                        if (Missile.CountEnemiesInRange(230f) > 0)
                         {
-                            Spells.QActive.Cast();
+                            Spells.Q.Cast();
                         }
                     }
                 }
@@ -192,7 +192,7 @@ namespace UBAnivia
             }
             if (Storm != null && Spells.ROff.IsReady() && Config.MiscMenu["turnoffR"].Cast<CheckBox>().CurrentValue)
             {
-                if (Storm.CountEnemiesInRange(Spells.RMax.Radius) == 0 && Storm.CountEnemyMinionsInRange(Spells.RMax.Radius) == 0)
+                if (Storm.CountEnemiesInRange(Spells.RMax.Radius) == 0 && Storm.CountEnemyMinionsInRange(Spells.RMax.Radius) == 0 && !Player.Instance.IsInShopRange())
                 {
                     Spells.ROff.Cast();
                 }

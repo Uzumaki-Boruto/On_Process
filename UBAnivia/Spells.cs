@@ -21,7 +21,7 @@ namespace UBAnivia
                     AllowedCollisionCount = int.MaxValue
             };
 
-            QActive = new Spell.Active(SpellSlot.Q);
+            QActive = new Spell.Active(SpellSlot.Q, 230, DamageType.Magical);
 
             W = new Spell.Skillshot(SpellSlot.W, 1000, SkillShotType.Circular, 400, int.MaxValue, 100);
 
@@ -31,7 +31,7 @@ namespace UBAnivia
 
             RMax = new Spell.Skillshot(SpellSlot.R, 750, SkillShotType.Circular, 3000, int.MaxValue, 400);
 
-            ROff = new Spell.Active(SpellSlot.R);
+            ROff = new Spell.Active(SpellSlot.R, 750, DamageType.Magical);
 
         }
     }

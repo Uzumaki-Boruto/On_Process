@@ -13,14 +13,17 @@ namespace UBAnivia
         #region Combo
         public static void Combo()
         {
-            if (Config.ComboMenu.Checked("Q") && Spells.Q.IsReady() && !Extension.QActive)
+            if (Config.ComboMenu.Checked("Q"))
             {
                 var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
                 if (target != null && target.IsValid)
                 {
                     Extension.QTarget = target;
                     var pred = Spells.Q.GetPrediction(target);
-                    Spells.Q.Cast(pred.CastPosition);
+                    if (Spells.Q.IsReady() && !Extension.QActive)
+                    {
+                        Spells.Q.Cast(pred.CastPosition);
+                    }
                 }
             }
             if (Config.ComboMenu.Checked("W") && Spells.W.IsReady())
@@ -119,8 +122,8 @@ namespace UBAnivia
             }
             if (Config.LaneClear.Checked("R") && Extension.HasR)
             {
-                var minion = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy);
-                var FarmLoc = EntityManager.MinionsAndMonsters.GetCircularFarmLocation(minion, Spells.R.Width, (int)Spells.R.Range + Spells.R.Radius);
+                var minion = Orbwalker.LaneClearMinionsList;
+                var FarmLoc = EntityManager.MinionsAndMonsters.GetCircularFarmLocation(minion, Spells.R.Radius, (int)Spells.R.Range + Spells.R.Radius);
                 if (minion != null && FarmLoc.HitNumber >= Config.LaneClear.GetValue("Rlc"))
                 {
                     Spells.R.Cast(FarmLoc.CastPosition);
