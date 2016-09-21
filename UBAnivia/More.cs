@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Rendering;
 using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Notifications;
 using SharpDX;
-using Colour = System.Drawing.Color;
 
 namespace UBAnivia
 {
@@ -15,7 +13,6 @@ namespace UBAnivia
         public static void Loading_OnLoadingComplete(EventArgs args)
         {
             if (Player.Instance.ChampionName != "Anivia") return;
-
 
             Config.Dattenosa();
             Spells.InitSpells();

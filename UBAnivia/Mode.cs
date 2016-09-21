@@ -4,12 +4,13 @@ using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Events;
-using SharpDX;
 
 namespace UBAnivia
 {
     class Mode
     {
+        private static float LastCastQ;
+
         #region Combo
         public static void Combo()
         {
@@ -20,9 +21,10 @@ namespace UBAnivia
                 {
                     Extension.QTarget = target;
                     var pred = Spells.Q.GetPrediction(target);
-                    if (Spells.Q.IsReady() && !Extension.QActive)
+                    if (Spells.Q.IsReady() && (!Extension.QActive || LastCastQ < Game.Time - 0.9f) && pred.HitChancePercent >= Config.ComboMenu.GetValue("Qcb"))
                     {
                         Spells.Q.Cast(pred.CastPosition);
+                        LastCastQ = Game.Time;
                     }
                 }
             }
@@ -63,14 +65,18 @@ namespace UBAnivia
         public static void Harass()
         {
             if (Player.Instance.ManaPercent < Config.HarassMenu.GetValue("hr")) return;
-            if (Config.HarassMenu.Checked("Q") && Spells.Q.IsReady() && !Extension.QActive)
+            if (Config.HarassMenu.Checked("Q"))
             {
                 var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
                 if (target != null && target.IsValid)
                 {
                     Extension.QTarget = target;
                     var pred = Spells.Q.GetPrediction(target);
-                    Spells.Q.Cast(pred.CastPosition);
+                    if (Spells.Q.IsReady() && (!Extension.QActive || LastCastQ < Game.Time - 0.9f) && pred.HitChancePercent >= Config.ComboMenu.GetValue("Qcb"))
+                    {
+                        Spells.Q.Cast(pred.CastPosition);
+                        LastCastQ = Game.Time;
+                    }
                 }          
             }
             if (Config.HarassMenu.Checked("E") && Spells.E.IsReady())
@@ -100,13 +106,14 @@ namespace UBAnivia
         public static void LaneClear()
         {
             if (Player.Instance.ManaPercent < Config.LaneClear.GetValue("lc")) return;
-            if (Config.LaneClear.Checked("Q") && Spells.Q.IsReady() && !Extension.QActive)
+            if (Config.LaneClear.Checked("Q") && Spells.Q.IsReady() && (!Extension.QActive || LastCastQ < Game.Time - 0.9f))
             {
                 var minion = EntityManager.MinionsAndMonsters.EnemyMinions.Where(m => m.IsValidTarget(Spells.Q.Range) && Spells.Q.IsInRange(m)).FirstOrDefault();
                 {
                     if (minion != null)
                     {
                         Spells.Q.Cast(minion);
+                        LastCastQ = Game.Time;
                     }
                 }
             }
@@ -123,8 +130,8 @@ namespace UBAnivia
             if (Config.LaneClear.Checked("R") && Extension.HasR)
             {
                 var minion = Orbwalker.LaneClearMinionsList;
-                var FarmLoc = EntityManager.MinionsAndMonsters.GetCircularFarmLocation(minion, Spells.R.Radius, (int)Spells.R.Range + Spells.R.Radius);
-                if (minion != null && FarmLoc.HitNumber >= Config.LaneClear.GetValue("Rlc"))
+                var FarmLoc = EntityManager.MinionsAndMonsters.GetCircularFarmLocation(minion, Spells.RMax.Radius, (int)Spells.R.Range + Spells.R.Radius);
+                if (minion != null && FarmLoc.CastPosition.CountEnemyMinionsInRange(Spells.RMax.Radius) >= Config.LaneClear.GetValue("Rlc"))
                 {
                     Spells.R.Cast(FarmLoc.CastPosition);
                 }
@@ -136,12 +143,13 @@ namespace UBAnivia
         public static void JungleClear()
         {
             if (Player.Instance.ManaPercent < Config.JungleClear.GetValue("jc")) return;
-            if (Config.JungleClear.Checked("Q") && Spells.Q.IsReady() && !Extension.QActive)
+            if (Config.JungleClear.Checked("Q") && Spells.Q.IsReady() && (!Extension.QActive || LastCastQ < Game.Time - 0.9f))
             {
                 var monster = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsMonster && x.IsValidTarget(Spells.Q.Range)).OrderBy(x => x.MaxHealth).LastOrDefault();
                 if (monster == null || !monster.IsValid) return;
                 if (Orbwalker.IsAutoAttacking) return;
-                Spells.Q.Cast(monster);             
+                Spells.Q.Cast(monster);
+                LastCastQ = Game.Time;
             }
             if (Config.JungleClear.Checked("E") && Spells.E.IsReady())
             {
@@ -185,7 +193,7 @@ namespace UBAnivia
         #region KillSteal
         public static void Killsteal(EventArgs args)
         {
-            if (Spells.Q.IsReady() && Config.MiscMenu.Checked("Qks") && !Extension.QActive)
+            if (Spells.Q.IsReady() && Config.MiscMenu.Checked("Qks") && (!Extension.QActive || LastCastQ < Game.Time - 0.9f))
             {
                 var target = TargetSelector.GetTarget(EntityManager.Heroes.Enemies.Where(t => t != null
                     && t.IsValidTarget()
@@ -198,6 +206,7 @@ namespace UBAnivia
                     var pred = Spells.Q.GetPrediction(target);
                     {
                         Spells.Q.Cast(pred.CastPosition);
+                        LastCastQ = Game.Time;
                     }
                 }
             }
@@ -234,14 +243,18 @@ namespace UBAnivia
         {
             if (Player.Instance.ManaPercent < Config.HarassMenu.GetValue("autohrmng")) return;
             if (!Config.HarassMenu.Checked("keyharass", false)) return;
-            if (Config.HarassMenu.Checked("Q") && Spells.Q.IsReady() && !Extension.QActive)
+            if (Config.HarassMenu.Checked("Q"))
             {
                 var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Magical);
                 if (target != null && target.IsValid)
                 {
                     Extension.QTarget = target;
                     var pred = Spells.Q.GetPrediction(target);
-                    Spells.Q.Cast(pred.CastPosition);
+                    if (Spells.Q.IsReady() && (!Extension.QActive || LastCastQ < Game.Time - 0.9f) && pred.HitChancePercent >= Config.ComboMenu.GetValue("Qcb"))
+                    {
+                        Spells.Q.Cast(pred.CastPosition);
+                        LastCastQ = Game.Time;
+                    }
                 }
             }
             if (Config.HarassMenu.Checked("E") && Spells.E.IsReady())
@@ -305,10 +318,12 @@ namespace UBAnivia
             {
                 if (Config.MiscMenu.Checked("Qinter")
                 && sender.IsValidTarget(Spells.Q.Range)
-                && Spells.Q.IsReady())
+                && Spells.Q.IsReady()
+                && (!Extension.QActive || LastCastQ < Game.Time - 0.9f))
                 {
                     Extension.QTarget = sender as AIHeroClient;
                     Spells.Q.Cast(sender);
+                    LastCastQ = Game.Time;
                 }
                 else if (Config.MiscMenu.Checked("Winter")
                     && sender.IsValidTarget(Spells.W.Range)

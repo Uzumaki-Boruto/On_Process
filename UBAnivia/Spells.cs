@@ -25,7 +25,7 @@ namespace UBAnivia
 
             W = new Spell.Skillshot(SpellSlot.W, 1000, SkillShotType.Circular, 400, int.MaxValue, 100);
 
-            E = new Spell.Targeted(SpellSlot.E, 600);
+            E = new Spell.Targeted(SpellSlot.E, 650);
 
             R = new Spell.Skillshot(SpellSlot.R, 750, SkillShotType.Circular, 50, int.MaxValue, 200);
 

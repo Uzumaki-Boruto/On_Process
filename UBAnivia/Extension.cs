@@ -64,6 +64,10 @@ namespace UBAnivia
                 return Player.HasBuff("FlashFrost");
             }
         }
+        public static int Count_Monster_In_Range(this GameObject Object, float range)
+        {
+            return EntityManager.MinionsAndMonsters.GetJungleMonsters(Object.Position, range).Count();
+        }
         public static bool Chilled(this Obj_AI_Base target)
         {
             return target.HasBuff("Chilled") || (target.IsValidTarget(Spells.R.Range + Spells.R.Radius) && Spells.R.IsReady());
@@ -151,6 +155,11 @@ namespace UBAnivia
         public static Vector3 QMissile_End = new Vector3();
         public static void MissileTracker(EventArgs args)
         {
+            if (!Spells.Q.IsReady())
+            {
+                Missile = null;
+                QTarget = null;
+            }
             if (Spells.Q.IsReady() && Missile != null && Player.Instance.Spellbook.GetSpell(SpellSlot.Q).ToggleState != 1)            
             {
                 if (!QTarget.IsDead && QTarget != null)
@@ -164,7 +173,7 @@ namespace UBAnivia
                     {
                         if (Rectangle.IsInside(pred))
                         {
-                            Core.DelayAction(() => Spells.QActive.Cast(), Time_to_Travel);
+                            Core.DelayAction(() => Spells.QActive.Cast(), Time_to_Travel + 150);
                         }
                         else
                         {
@@ -178,7 +187,7 @@ namespace UBAnivia
                     {
                         if (Missile.CountEnemiesInRange(230f) > 0)
                         {
-                            Spells.Q.Cast();
+                            Spells.QActive.Cast();
                         }
                     }
                 }
@@ -186,15 +195,54 @@ namespace UBAnivia
                 {
                     if (Missile.CountEnemiesInRange(230f) > 0)
                     {
-                        Spells.Q.Cast();
+                        Spells.QActive.Cast();
                     }
                 }
             }
             if (Storm != null && Spells.ROff.IsReady() && Config.MiscMenu["turnoffR"].Cast<CheckBox>().CurrentValue)
             {
-                if (Storm.CountEnemiesInRange(Spells.RMax.Radius) == 0 && Storm.CountEnemyMinionsInRange(Spells.RMax.Radius) == 0 && !Player.Instance.IsInShopRange())
+                switch (Orbwalker.ActiveModesFlags)
                 {
-                    Spells.ROff.Cast();
+                    case Orbwalker.ActiveModes.Combo:
+                        {
+                            if (Storm.CountEnemiesInRange(Spells.RMax.Radius) == 0)
+                            {
+                                Spells.ROff.Cast();
+                            }
+                        }
+                        break;
+                    case Orbwalker.ActiveModes.Harass:
+                        {
+                            if (Storm.CountEnemiesInRange(Spells.RMax.Radius) == 0 && Storm.CountEnemyMinionsInRange(Spells.RMax.Radius) == 0)
+                            {
+                                Spells.ROff.Cast();
+                            }
+                        }
+                        break;
+                    case Orbwalker.ActiveModes.JungleClear:
+                        {
+                            if (Storm.CountEnemiesInRange(Spells.RMax.Radius) == 0 && Storm.Count_Monster_In_Range(Spells.RMax.Radius) == 0)
+                            {
+                                Spells.ROff.Cast();
+                            }
+                        }
+                        break;
+                    case Orbwalker.ActiveModes.LaneClear:
+                        {
+                            if (Storm.CountEnemiesInRange(Spells.RMax.Radius) == 0 && Storm.CountEnemyMinionsInRange(Spells.RMax.Radius) == 0)
+                            {
+                                Spells.ROff.Cast();
+                            }
+                        }
+                        break;
+                    case Orbwalker.ActiveModes.None:
+                        {
+                            if (Storm.CountEnemiesInRange(Spells.RMax.Radius) == 0 && Storm.CountEnemyMinionsInRange(Spells.RMax.Radius) == 0 && Storm.Count_Monster_In_Range(Spells.RMax.Radius) == 0 && !Player.Instance.IsInShopRange())
+                            {
+                                Spells.ROff.Cast();
+                            }
+                        }
+                        break;
                 }
             }
         }

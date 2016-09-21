@@ -28,6 +28,7 @@ namespace UBAnivia
             ComboMenu = Menu.AddSubMenu("Combo");
             {
                 ComboMenu.Add("Q", new CheckBox("Use Q"));
+                ComboMenu.Add("Qcb", new Slider("Min {0}% hit Q", 80));
                 ComboMenu.Add("W", new CheckBox("Use W"));
                 ComboMenu.Add("E", new CheckBox("Use E"));
                 ComboMenu.Add("R", new CheckBox("Use R"));
@@ -40,6 +41,7 @@ namespace UBAnivia
             HarassMenu = Menu.AddSubMenu("Harass");
             {
                 HarassMenu.Add("Q", new CheckBox("Use Q"));
+                HarassMenu.Add("Qhr", new Slider("Min {0}% hit Q", 80));
                 HarassMenu.Add("E", new CheckBox("Use E"));
                 HarassMenu.Add("R", new CheckBox("Use R"));
                 HarassMenu.Add("hr", new Slider("If my MP below {0}% stop use spell to harass", 50));
