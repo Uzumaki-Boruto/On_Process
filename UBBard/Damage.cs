@@ -8,10 +8,17 @@ namespace UBBard
 {
     class Damage
     {
+        public static float PassiveRawDamage()
+        {
+            var BuffCount = Player.Instance.GetBuffCount("BardPDisplayChimeCount");
+            var Count = (int)BuffCount / 10;
+            var RawDamage = new[] { 30f, 55f, 80f, 110f, 140f, 175f, 210f, 245f, 280f, 310f, 370f, 395f, 420f, 440f, 460f }[Count];
+            return BuffCount <= 150 ? RawDamage : ((int)(BuffCount - 150) / 5) * 20 + 460;
+        }
         public static float PassiveDamage(Obj_AI_Base target)
         {
-            if (Orbwalker.CanAutoAttack)
-                return Player.Instance.CalculateDamageOnUnit(target, DamageType.Mixed, Player.Instance.TotalAttackDamage + 30f);
+            if (Player.Instance.HasBuff("BardPSpiritAmmoCount"))
+                return Player.Instance.CalculateDamageOnUnit(target, DamageType.Mixed, Player.Instance.TotalAttackDamage + PassiveRawDamage() + Player.Instance.TotalMagicalDamage * 0.3f);
             else
                 return 0f;
         }
