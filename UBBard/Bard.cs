@@ -1,8 +1,8 @@
 ﻿using EloBuddy.SDK.Events;
 
-namespace UBAnivia
+namespace UBBard
 {
-    class Anivia
+    class Bard
     {
         static void Main(string[] args)
         {

@@ -1,18 +1,18 @@
 ﻿using System;
 using EloBuddy;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Rendering;
 using EloBuddy.SDK.Events;
+using EloBuddy.SDK.Rendering;
 using EloBuddy.SDK.Notifications;
 using SharpDX;
 
-namespace UBAnivia
+namespace UBBard
 {
     class More
     {
         public static void Loading_OnLoadingComplete(EventArgs args)
         {
-            if (Player.Instance.ChampionName != "Anivia") return;
+            if (Player.Instance.ChampionName != "Bard") return;
 
             Config.Dattenosa();
             Spells.InitSpells();
@@ -22,31 +22,21 @@ namespace UBAnivia
         {
             if (Config.DrawMenu.Checked("notif") && Config.DrawMenu.Checked("draw"))
             {
-                var notStart = new SimpleNotification("UBAnivia Load Status", "UBAnivia sucessfully loaded.");
+                var notStart = new SimpleNotification(Extension.AddonName + " Load Status", Extension.AddonName + " sucessfully loaded.");
                 Notifications.Show(notStart, 5000);
             }
 
             Game.OnTick += GameOnTick;
+            Game.OnUpdate += Mode.AutoW;
             Game.OnUpdate += Mode.AutoHarass;
             Game.OnUpdate += Mode.Killsteal;
-            Game.OnUpdate += Extension.MissileTracker;
-
-            Gapcloser.OnGapcloser += Mode.Gapcloser_OnGapcloser;
 
             Interrupter.OnInterruptableSpell += Mode.Interrupter_OnInterruptableSpell;
+            Gapcloser.OnGapcloser += Mode.Gapcloser_OnGapcloser;
 
             Drawing.OnDraw += OnDraw;
-            Drawing.OnEndScene += Damages.Damage_Indicator;
-
-            Orbwalker.OnUnkillableMinion += Mode.On_Unkillable_Minion;
-
-            Obj_AI_Base.OnProcessSpellCast += Extension.Obj_AI_Base_OnProcessSpellCast;
-            Obj_AI_Base.OnCreate += Extension.Obj_AI_Base_OnCreate;
-            Obj_AI_Base.OnDelete += Extension.Obj_AI_Base_OnDelete;
-
-            AIHeroClient.OnBuffGain += Extension.Obj_AI_Base_OnBuffGain;
+            Drawing.OnEndScene += Damage.Damage_Indicator;
         }
-
         private static void GameOnTick(EventArgs args)
         {
             if (Player.Instance.IsDead) return;
@@ -59,23 +49,24 @@ namespace UBAnivia
             { Mode.LaneClear(); }
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
             { Mode.JungleClear(); }
+
         }
         private static void OnDraw(EventArgs args)
         {
             if (!Config.DrawMenu.Checked("draw")) return;
-            if (Config.DrawMenu.Checked("drQ"))
+            if (Config.DrawMenu.Checked("Qdr"))
             {
                 Circle.Draw(Spells.Q.IsLearned ? Color.HotPink : Color.Zero, Spells.Q.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu.Checked("drW"))
+            if (Config.DrawMenu.Checked("Wdr"))
             {
                 Circle.Draw(Spells.W.IsLearned ? Color.Yellow : Color.Zero, Spells.W.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu.Checked("drE"))
+            if (Config.DrawMenu.Checked("Edr"))
             {
-                Circle.Draw(Spells.E.IsLearned ? Color.Cyan : Color.Zero, Spells.E.Range, Player.Instance.Position);
+                Circle.Draw(Spells.E.IsLearned ? Color.AliceBlue : Color.Zero, Spells.E.Range, Player.Instance.Position);
             }
-            if (Config.DrawMenu.Checked("drR"))
+            if (Config.DrawMenu.Checked("Rdr"))
             {
                 Circle.Draw(Spells.R.IsLearned ? Color.Green : Color.Zero, Spells.R.Range, Player.Instance.Position);
             }

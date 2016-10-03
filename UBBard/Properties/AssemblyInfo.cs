@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("UBAnivia")]
+[assembly: AssemblyTitle("UBBard")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("UBAnivia")]
+[assembly: AssemblyProduct("UBBard")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("c0d5d46b-f6e8-443f-851f-3d020cd2abef")]
+[assembly: Guid("4bbc10d2-8c56-4bf7-81df-5f4ca4bb127a")]
 
 // Version information for an assembly consists of the following four values:
 //
