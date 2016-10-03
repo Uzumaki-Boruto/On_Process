@@ -173,6 +173,22 @@ namespace UBBard
         }
         #endregion
 
+        #region AutoR
+        public static void Obj_AI_Turret_OnBasicAttack(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (sender.IsAlly) return;
+            var caster = (Obj_AI_Turret)sender;
+            var target = (AIHeroClient)args.Target;
+            if (Spells.R.IsInRange(caster) && args.Target is AIHeroClient && target != null && target.IsAlly)
+            {
+                if (Config.MiscMenu.Checked("R") && Spells.R.IsReady())
+                {
+                    Spells.R.Cast(caster);
+                }
+            }
+        }
+        #endregion
+
         #region Gapcloser
         public static void Gapcloser_OnGapcloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs args)
         {

@@ -31,12 +31,15 @@ namespace UBBard
             Game.OnUpdate += Mode.AutoHarass;
             Game.OnUpdate += Mode.Killsteal;
 
+            Obj_AI_Turret.OnBasicAttack += Mode.Obj_AI_Turret_OnBasicAttack;
+
             Interrupter.OnInterruptableSpell += Mode.Interrupter_OnInterruptableSpell;
             Gapcloser.OnGapcloser += Mode.Gapcloser_OnGapcloser;
 
             Drawing.OnDraw += OnDraw;
             Drawing.OnEndScene += Damage.Damage_Indicator;
         }
+
         private static void GameOnTick(EventArgs args)
         {
             if (Player.Instance.IsDead) return;

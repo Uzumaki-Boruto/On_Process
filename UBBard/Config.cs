@@ -70,6 +70,8 @@ namespace UBBard
             {
                 MiscMenu.AddGroupLabel("KillSteal Settings");
                 MiscMenu.Add("Qks", new CheckBox("Use Q to KillSteal", false));
+                MiscMenu.AddGroupLabel("Auto R Crossing Turret");
+                MiscMenu.Add("R", new CheckBox("Auto R when your team crossing turret"));
                 MiscMenu.AddGroupLabel("GapCloser");
                 MiscMenu.Add("Qgap", new CheckBox("Use Q anti GapCloser <stun>"));
                 MiscMenu.Add("Wgap", new CheckBox("Use W to anti GapCloser"));
