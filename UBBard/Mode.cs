@@ -3,8 +3,10 @@ using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu;
+using EloBuddy.SDK.ThirdParty.Glide;
 using System;
 using System.Linq;
+using SharpDX;
 
 namespace UBBard
 {
@@ -77,6 +79,16 @@ namespace UBBard
         }
         #endregion 
 
+        #region Flee
+        public static void Flee()
+        {
+            if ((Game.CursorPos.IsWall() || Game.CursorPos.IsBuilding()) && Spells.E.IsInRange(Game.CursorPos))
+            {
+                Spells.E.Cast(Game.CursorPos);
+            }
+        }
+        #endregion 
+
         #region AutoW
         public static void AutoW(EventArgs args)
         {
@@ -107,7 +119,7 @@ namespace UBBard
             if (OderedAlly != null)
             {
                 Spells.W.Cast(OderedAlly);
-            }
+            }            
         }
         #endregion 
 
@@ -177,13 +189,12 @@ namespace UBBard
         public static void Obj_AI_Turret_OnBasicAttack(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (sender.IsAlly) return;
-            var caster = (Obj_AI_Turret)sender;
-            var target = (AIHeroClient)args.Target;
-            if (Spells.R.IsInRange(caster) && args.Target is AIHeroClient && target != null && target.IsAlly)
+            var target = args.Target as AIHeroClient;
+            if (sender is Obj_AI_Turret && Spells.R.IsInRange(sender) && args.Target is AIHeroClient && target != null && target.IsAlly)
             {
                 if (Config.MiscMenu.Checked("R") && Spells.R.IsReady())
                 {
-                    Spells.R.Cast(caster);
+                    Spells.R.Cast(sender);
                 }
             }
         }

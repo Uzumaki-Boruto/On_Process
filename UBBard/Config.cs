@@ -93,11 +93,7 @@ namespace UBBard
                 var ColorPick = DrawMenu.Add("color", new ColorPicker("Damage Indicator Color", SaveColor.Load()));
                 ColorPick.OnLeftMouseUp += delegate(Control sender, System.EventArgs args)
                 {
-                    var defautlValue = System.Drawing.Color.FromArgb(255, 255, 236, 0);
-                    if (ColorPick.CurrentValue != defautlValue)
-                    {
-                        SaveColor.Save(ColorPick.CurrentValue);
-                    }
+                    SaveColor.Save(ColorPick.CurrentValue);
                 };
             }
         }

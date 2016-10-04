@@ -52,6 +52,8 @@ namespace UBBard
             { Mode.LaneClear(); }
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
             { Mode.JungleClear(); }
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
+            { Mode.Flee(); }
 
         }
         private static void OnDraw(EventArgs args)
@@ -64,10 +66,6 @@ namespace UBBard
             if (Config.DrawMenu.Checked("Wdr"))
             {
                 Circle.Draw(Spells.W.IsLearned ? Color.Yellow : Color.Zero, Spells.W.Range, Player.Instance.Position);
-            }
-            if (Config.DrawMenu.Checked("Edr"))
-            {
-                Circle.Draw(Spells.E.IsLearned ? Color.AliceBlue : Color.Zero, Spells.E.Range, Player.Instance.Position);
             }
             if (Config.DrawMenu.Checked("Rdr"))
             {
