@@ -15,7 +15,7 @@ namespace UBBard
         {
             Q = new Spell.Skillshot(SpellSlot.Q, 950, SkillShotType.Linear, 250, 1600, 65);
 
-            W = new Spell.Skillshot(SpellSlot.W, 800, SkillShotType.Circular);
+            W = new Spell.Skillshot(SpellSlot.W, 800, SkillShotType.Circular, 250, int.MaxValue, 100);
 
             E = new Spell.Skillshot(SpellSlot.E, 600, SkillShotType.Linear);
 

@@ -92,34 +92,31 @@ namespace UBBard
         #region AutoW
         public static void AutoW(EventArgs args)
         {
-            if (!Spells.W.IsReady() || Player.Instance.IsRecalling() || !Config.AutoHeal.Checked("W"))
+            if (!Spells.W.IsReady() || Player.Instance.IsRecalling() || !Config.AutoHeal.Checked("W")) return;
+            var Allies = EntityManager.Heroes.Allies.Where(a => !a.IsDead && !a.IsZombie && a.IsValid && Spells.W.IsInRange(a) && a.HealthPercent <= Config.AutoHeal.GetValue("HP")
+            && Config.AutoHeal.Checked(a.ChampionName));
+            
+            if (Allies.Count() != 0)
             {
-                return;
+                switch (Config.AutoHeal.GetValue("Worder", false))
+                {
+                    case 0:
+                        {
+                            Spells.W.Cast(Allies.OrderByDescending(x => x.TotalMagicalDamage).FirstOrDefault());
+                        }
+                        break;
+                    case 1:
+                        {
+                            Spells.W.Cast(Allies.OrderByDescending(x => x.TotalAttackDamage).FirstOrDefault());
+                        }
+                        break;
+                    case 2:
+                        {
+                            Spells.W.Cast(Allies.OrderBy(x => x.Health).FirstOrDefault().Position);
+                        }
+                        break;
+                }
             }
-            var Allies = EntityManager.Heroes.Allies.Where(x => x.IsValid && !x.IsDead && Spells.W.IsInRange(x) && x.HealthPercent <= Config.AutoHeal.GetValue("HP"));
-            AIHeroClient OderedAlly = new AIHeroClient();
-            switch (Config.AutoHeal.GetValue("Worder", false))
-            {
-                case 0:
-                    {
-                        OderedAlly = Allies.OrderByDescending(x => x.TotalMagicalDamage).First();
-                    }
-                    break;
-                case 1:
-                    {
-                        OderedAlly = Allies.OrderByDescending(x => x.TotalAttackDamage).First();
-                    }
-                    break;
-                case 2:
-                    {
-                        OderedAlly = Allies.OrderBy(x => x.Health).First();
-                    }
-                    break;
-            }
-            if (OderedAlly != null)
-            {
-                Spells.W.Cast(OderedAlly);
-            }            
         }
         #endregion 
 
@@ -194,7 +191,7 @@ namespace UBBard
             {
                 if (Config.MiscMenu.Checked("R") && Spells.R.IsReady())
                 {
-                    Spells.R.Cast(sender);
+                    Spells.R.Cast(sender.Position);
                 }
             }
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Events;
@@ -70,7 +71,7 @@ namespace UBBard
             if (Config.DrawMenu.Checked("Rdr"))
             {
                 Circle.Draw(Spells.R.IsLearned ? Color.Green : Color.Zero, Spells.R.Range, Player.Instance.Position);
-            }
+            }            
         }
     }
 }
