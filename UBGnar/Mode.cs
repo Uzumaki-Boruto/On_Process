@@ -5,6 +5,7 @@ using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Enumerations;
+using EloBuddy.SDK.Rendering;
 using EloBuddy.SDK.Events;
 using SharpDX;
 
@@ -104,7 +105,7 @@ namespace UBGnar
         }
         public static void QMegaCast(Menu Mode)
         {
-            if (Mode.Checked("Q") && Spells.QMega.IsReady())
+            if (Mode.Checked("Qbig") && Spells.QMega.IsReady())
             {
                 var Target = Spells.QMega.GetTarget();
                 if (Target != null)
@@ -116,7 +117,7 @@ namespace UBGnar
         }
         public static void WMegaCast(Menu Mode)
         {
-            if (Mode.Checked("W") && Spells.WMega.IsReady())
+            if (Mode.Checked("Wbig") && Spells.WMega.IsReady())
             {
                 var Target = Spells.WMega.GetTarget();
                 if (Target != null)
@@ -153,12 +154,23 @@ namespace UBGnar
             }
             if (WhereWall.Count != 0)
             {
+                if (Config.DrawMenu.Checked("rpos"))
+                {
+                    Circle.Draw(Color.Green, 40, WhereWall.ToArray());
+                }
                 var Wall = WhereWall.OrderBy(x => x.Distance(Target)).FirstOrDefault();
                 WhereCastR = Target.Position.To2D().Parallel(Wall.To2D(), Player.Instance.Position.To2D());
             }
-            if (WhereCastR != new Vector3() && Spells.R.IsInRange(WhereCastR))
+            if (WhereCastR != new Vector3() && Player.Instance.CountEnemyHeroesInRangeWithPrediction((int)Spells.R.Range, 500) >= Config.ComboMenu.GetValue("unit"))
             {
-                Spells.R.Cast(WhereCastR);
+                if (Spells.R.IsInRange(WhereCastR))
+                {
+                    Spells.R.Cast(WhereCastR);
+                }
+                else
+                {
+                    Spells.R.Cast(Player.Instance.Position.Extend(WhereCastR, Spells.R.Range).To3DWorld());
+                }
             }
 
         }
@@ -218,6 +230,7 @@ namespace UBGnar
                         {
                             case true:
                                 {
+                                    WMegaCast(Config.ComboMenu);
                                     EMegaCast(Config.ComboMenu);
                                     RCast();
                                 }
@@ -255,6 +268,7 @@ namespace UBGnar
                         {
                             case true:
                                 {
+                                    WMegaCast(Config.HarassMenu);
                                     EMegaCast(Config.HarassMenu);
                                 }
                                 break;
@@ -471,6 +485,7 @@ namespace UBGnar
                         {
                             case true:
                                 {
+                                    WMegaCast(Config.HarassMenu);
                                     EMegaCast(Config.HarassMenu);
                                 }
                                 break;

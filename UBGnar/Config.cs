@@ -39,7 +39,18 @@ namespace UBGnar
                 ComboMenu.AddGroupLabel("R Settings");
                 ComboMenu.Add("R", new CheckBox("Use R"));
                 ComboMenu.Add("unit", new Slider("R only hit", 1, 1, 5));
-                ComboMenu.Add("Rstun", new CheckBox("Stun Only"));
+                var stun = ComboMenu.Add("Rstun", new CheckBox("Stun Only"));
+                var label = ComboMenu.Add("label", new Label("Contact me to ask for your suggestion about this addon"));
+                label.IsVisible = false;               
+                stun.OnValueChange += delegate(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
+                {
+                    if (args.NewValue)
+                    {
+                        stun.DisplayName = "You can't untick it kappa";
+                        stun.CurrentValue = false;
+                        label.IsVisible = true;
+                    }
+                };
                 //var all = ComboMenu.Add("Rally", new CheckBox("R Ally"));
                 //stun.OnValueChange += delegate(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
                 //{
@@ -142,6 +153,7 @@ namespace UBGnar
                 DrawMenu.Add("Wdr", new CheckBox("Draw W"));
                 DrawMenu.Add("Edr", new CheckBox("Draw E"));
                 DrawMenu.Add("Rdr", new CheckBox("Draw R"));
+                DrawMenu.Add("rpos", new CheckBox("Draw Wall"));
                 DrawMenu.Add("timer", new CheckBox("Draw Timer Passive"));
                 DrawMenu.Add("dmg", new CheckBox("Draw Damage Indicator"));
                 var ColorPick = DrawMenu.Add("Color", new ColorPicker("Damage Indicator Color", SaveColor.Load()));

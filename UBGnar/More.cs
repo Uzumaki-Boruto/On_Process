@@ -90,13 +90,13 @@ namespace UBGnar
                 {
                     var Fury = Player.Instance.Mana;
                     var Color = Fury > 95 ? Colour.Red : Fury > 80 ? Colour.OrangeRed : Fury > 25? Colour.Orange : Colour.Yellow;
-                    VectorHelp.DrawArc(Player.Instance.Position.To2D(), 100, Color, 0, Player.Instance.Mana / 15.5f, 3.5f);
+                    VectorHelp.DrawArc(Player.Instance.Position.To2D(), 100, Color, 0, - Player.Instance.Mana / 15.5f, 3.5f);
 
                 }
                 else
                 {
                     var EndTime = Buff1 != null ? Buff1.EndTime : Buff2.StartTime + 15f;
-                    var PercentRemaining = Math.Abs(EndTime - Game.Time) / 15f * 100;
+                    var PercentRemaining = (Game.Time - EndTime) / 15f * 100;
                     var Fury = Player.Instance.Mana;
                     var Color = Buff1 != null ? Colour.White : Fury > 95 ? Colour.Red : Fury > 80 ? Colour.OrangeRed : Fury > 25 ? Colour.Orange : Colour.Yellow;
                     VectorHelp.DrawArc(Player.Instance.Position.To2D(), 100, Color, 0, PercentRemaining / 15.5f, 3.5f);
