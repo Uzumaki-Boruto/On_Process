@@ -140,12 +140,13 @@ namespace UBGnar
         }
         public static void RCast()
         {
+            if (!Config.ComboMenu.Checked("R")) return;
             var Target = Spells.R.GetTarget();
             var WhereWall = new List<Vector3>();
             var WhereCastR = new Vector3();
             if (Target != null && Spells.R.IsReady())
             {
-                for (var i = 0; i <= 646; i++)
+                for (var i = 0; i <= 640; i++)
                 {
                     WhereWall = VectorHelp.GetWallAroundMe(Spells.R.Range, i / 100f);
                 }

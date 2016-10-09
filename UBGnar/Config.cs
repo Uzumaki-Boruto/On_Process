@@ -38,8 +38,33 @@ namespace UBGnar
                 ComboMenu.Add("Ebig1", new CheckBox("Don't E to Turret", false));
                 ComboMenu.AddGroupLabel("R Settings");
                 ComboMenu.Add("R", new CheckBox("Use R"));
+                ComboMenu.Add("unit", new Slider("R only hit", 1, 1, 5));
                 ComboMenu.Add("Rstun", new CheckBox("Stun Only"));
-                ComboMenu.Add("Rally", new CheckBox("R Ally"));
+                //var all = ComboMenu.Add("Rally", new CheckBox("R Ally"));
+                //stun.OnValueChange += delegate(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
+                //{
+                //    if (args.NewValue)
+                //    {
+                //        all.CurrentValue = false;
+                //        return;
+                //    }
+                //    if (!all.CurrentValue)
+                //    {
+                //        stun.CurrentValue = true;
+                //    }
+                //};
+                //all.OnValueChange += delegate(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
+                //{
+                //    if (args.NewValue)
+                //    {
+                //        stun.CurrentValue = false;
+                //        return;
+                //    }
+                //    if (!stun.CurrentValue)
+                //    {
+                //        all.CurrentValue = true;
+                //    }
+                //};
                 ComboMenu.AddGroupLabel("Orb Take Q");
                 ComboMenu.Add("takeQ", new CheckBox("Take Q [BETA]", false));
             }
