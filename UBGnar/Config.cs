@@ -41,7 +41,7 @@ namespace UBGnar
                 ComboMenu.Add("Rstun", new CheckBox("Stun Only"));
                 ComboMenu.Add("Rally", new CheckBox("R Ally"));
                 ComboMenu.AddGroupLabel("Orb Take Q");
-                ComboMenu.Add("takeQ", new CheckBox("Take Q [BETA]"));
+                ComboMenu.Add("takeQ", new CheckBox("Take Q [BETA]", false));
             }
 
             HarassMenu = Menu.AddSubMenu("Harass");
@@ -117,6 +117,7 @@ namespace UBGnar
                 DrawMenu.Add("Wdr", new CheckBox("Draw W"));
                 DrawMenu.Add("Edr", new CheckBox("Draw E"));
                 DrawMenu.Add("Rdr", new CheckBox("Draw R"));
+                DrawMenu.Add("timer", new CheckBox("Draw Timer Passive"));
                 DrawMenu.Add("dmg", new CheckBox("Draw Damage Indicator"));
                 var ColorPick = DrawMenu.Add("Color", new ColorPicker("Damage Indicator Color", SaveColor.Load()));
                 ColorPick.OnLeftMouseUp += delegate(Control sender, System.EventArgs args)

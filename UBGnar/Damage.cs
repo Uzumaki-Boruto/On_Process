@@ -21,7 +21,7 @@ namespace UBGnar
         public static float WDamage(Obj_AI_Base target)
         {
             var RawDamage = target.HasWTinyBuff() ?
-                Player.Instance.CalculateDamageOnUnit(target, DamageType.Magical, new[] { 0f, 10f, 20f, 30f, 40f, 50f }[Spells.WMega.Level] + new[] { 0f, 6f, 8f, 10f, 12f, 14f }[Spells.WMega.Level]) * target.MaxHealth + Player.Instance.TotalMagicalDamage : 0;           
+                Player.Instance.CalculateDamageOnUnit(target, DamageType.Magical, new[] { 0f, 10f, 20f, 30f, 40f, 50f }[Spells.WMega.Level] + new[] { 0f, 0.06f, 0.08f, 0.10f, 0.12f, 0.14f }[Spells.WMega.Level]) * target.MaxHealth + Player.Instance.TotalMagicalDamage : 0;           
             var RawDamage2 = Player.Instance.CalculateDamageOnUnit(target, DamageType.Physical, new[] { 0f, 25f, 45f, 65f, 85f, 105f }[Spells.WMega.Level] + Player.Instance.TotalAttackDamage);
             return Extension.IsTiny ? RawDamage : Spells.WMega.IsReady() ? RawDamage2 : 0f;
         }

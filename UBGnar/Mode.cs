@@ -145,7 +145,7 @@ namespace UBGnar
             var WhereCastR = new Vector3();
             if (Target != null && Spells.R.IsReady())
             {
-                for (var i = 0; i <= 600; i++)
+                for (var i = 0; i <= 646; i++)
                 {
                     WhereWall = VectorHelp.GetWallAroundMe(Spells.R.Range, i / 100f);
                 }
@@ -179,6 +179,7 @@ namespace UBGnar
             {
                 MissileEnd = null;
                 Missile = new Vector3();
+                Orbwalker.DisableMovement = false;
             }
         }
         public static void Player_OnSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
@@ -189,12 +190,20 @@ namespace UBGnar
         }
         public static void CatchQ(EventArgs args)
         {
-            if (Missile == new Vector3() || MissileEnd == null) return;
-            var Intersection = Missile.To2D().Intersection(MissileEnd.Position.To2D(), Player.Instance.Position.Extend(Game.CursorPos, 500), Game.CursorPos.Extend(Player.Instance, 500));
-            Orbwalker.MoveTo(Intersection.Point.To3DWorld());
-            Intersection.Point.To3DWorld().DrawCircle(40, Color.HotPink);
+            if (Missile == new Vector3() || MissileEnd == null || !Config.ComboMenu.Checked("takeQ")) return;
+            var Distance = Player.Instance.Distance(Game.CursorPos);
+            var Intersection = Missile.To2D().Intersection(MissileEnd.Position.To2D(), Player.Instance.Position.Extend(Game.CursorPos, Distance + 500), Game.CursorPos.Extend(Player.Instance, Distance + 500));
+            if (Intersection.Point != new Vector2())
+            {
+                Orbwalker.DisableMovement = true;
+                Intersection.Point.To3DWorld().DrawCircle(40, Color.HotPink);
+                if (Player.Instance.Distance(Intersection.Point) > 100)
+                {
+                    Orbwalker.MoveTo(Intersection.Point.To3DWorld());
+                }                
+            }
         }
-        #endregion 
+        #endregion
 
         #region Combo
         public static void Combo()
@@ -341,7 +350,7 @@ namespace UBGnar
             }
             else
             {
-                if (Config.JungleClear.Checked("Q") && Spells.QMega.IsReady())
+                if (Config.JungleClear.Checked("Qbig") && Spells.QMega.IsReady())
                 {
                     var monster = ObjectManager.Get<Obj_AI_Minion>().Where(x => x != null && x.IsMonster && x.IsValidTarget(Spells.QMega.Range)).OrderBy(x => x.MaxHealth).LastOrDefault();
                     if (monster != null)
@@ -349,7 +358,7 @@ namespace UBGnar
                         Spells.QMega.Cast(monster);
                     }
                 }
-                if (Config.JungleClear.Checked("W") && Spells.WMega.IsReady())
+                if (Config.JungleClear.Checked("Wbig") && Spells.WMega.IsReady())
                 {
                     var monster = ObjectManager.Get<Obj_AI_Minion>().Where(x => x != null && x.IsMonster && x.IsValidTarget(Spells.WMega.Range)).OrderBy(x => x.MaxHealth).LastOrDefault();
                     if (monster != null)
@@ -357,7 +366,7 @@ namespace UBGnar
                         Spells.WMega.Cast(monster);
                     }
                 }
-                if (Config.JungleClear.Checked("E") && Spells.EMega.IsReady())
+                if (Config.JungleClear.Checked("Ebig") && Spells.EMega.IsReady())
                 {
                     var monster = ObjectManager.Get<Obj_AI_Minion>().Where(x => x != null && x.IsMonster && x.IsValidTarget(Spells.EMega.Range)).OrderBy(x => x.MaxHealth).LastOrDefault();
                     if (monster != null)

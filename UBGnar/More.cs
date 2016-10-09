@@ -7,6 +7,7 @@ using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Rendering;
 using EloBuddy.SDK.Notifications;
 using SharpDX;
+using Colour = System.Drawing.Color;
 
 namespace UBGnar
 {
@@ -30,6 +31,7 @@ namespace UBGnar
             Game.OnTick += GameOnTick;
             Game.OnUpdate += Mode.AutoHarass;
             Game.OnUpdate += Mode.Killsteal;
+            Game.OnUpdate += Mode.CatchQ;
 
             Obj_GeneralParticleEmitter.OnCreate += Mode.Obj_GeneralParticleEmitter_OnCreate;
             Obj_GeneralParticleEmitter.OnDelete += Mode.Obj_GeneralParticleEmitter_OnDelete;
@@ -74,11 +76,31 @@ namespace UBGnar
             }
             if (Config.DrawMenu.Checked("Edr"))
             {
-                Circle.Draw(Spells.ETiny.IsLearned ? Color.AliceBlue : Color.Zero, Spells.ETiny.Range, Player.Instance.Position);
+                Circle.Draw(Spells.ETiny.IsLearned ? Color.Cyan : Color.Zero, Spells.ETiny.Range, Player.Instance.Position);
             }
             if (Config.DrawMenu.Checked("Rdr"))
             {
                 Circle.Draw(Spells.R.IsLearned ? Color.Green : Color.Zero, Spells.R.Range, Player.Instance.Position);
+            }
+            if (Config.DrawMenu.Checked("timer"))
+            {
+                var Buff1 = Player.GetBuff("GnarTransformTired");
+                var Buff2 = Player.GetBuff("gnartransform");
+                if (Buff1 == null && Buff2 == null)
+                {
+                    var Fury = Player.Instance.Mana;
+                    var Color = Fury > 95 ? Colour.Red : Fury > 80 ? Colour.OrangeRed : Fury > 25? Colour.Orange : Colour.Yellow;
+                    VectorHelp.DrawArc(Player.Instance.Position.To2D(), 100, Color, 0, Player.Instance.Mana / 15.5f, 3.5f);
+
+                }
+                else
+                {
+                    var EndTime = Buff1 != null ? Buff1.EndTime : Buff2.StartTime + 15f;
+                    var PercentRemaining = Math.Abs(EndTime - Game.Time) / 15f * 100;
+                    var Fury = Player.Instance.Mana;
+                    var Color = Buff1 != null ? Colour.White : Fury > 95 ? Colour.Red : Fury > 80 ? Colour.OrangeRed : Fury > 25 ? Colour.Orange : Colour.Yellow;
+                    VectorHelp.DrawArc(Player.Instance.Position.To2D(), 100, Color, 0, PercentRemaining / 15.5f, 3.5f);
+                }
             }
         }       
     }
