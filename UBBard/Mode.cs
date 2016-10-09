@@ -190,7 +190,7 @@ namespace UBBard
         {
             if (sender.IsAlly) return;
             var target = args.Target as AIHeroClient;
-            if (sender is Obj_AI_Turret && Spells.R.IsInRange(sender) && args.Target is AIHeroClient && target != null && target.IsAlly)
+            if (sender is Obj_AI_Turret && Spells.R.IsInRange(sender) && target != null && target.IsAlly)
             {
                 if (Config.MiscMenu.Checked("R") && Spells.R.IsReady())
                 {
