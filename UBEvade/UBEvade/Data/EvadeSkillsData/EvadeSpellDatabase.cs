@@ -835,6 +835,51 @@ namespace UBEvade.Data.EvadeSkillsData
             #endregion
 
             #endregion
+
+            #region Allchampion
+
+            #region Walk
+            spell = new EvadeSpellData("Walk", 1);
+            Spells.Add(spell);
+            #endregion
+
+            #region Flash
+            spell = new Blink("Flash", SpellSlot.Summoner1, 425, 0, 5, true);
+            Spells.Add(spell);
+            #endregion
+
+            #region Zhonya
+            spell = new UnSelectable("Zhonya", SpellSlot.Unknown, 0, 0, 4)
+            {
+                Active = true,
+            };
+            Spells.Add(spell);
+            #endregion
+
+            #region FOTM
+            spell = new Shield("FOTM", SpellSlot.Unknown, 0, 2)
+            {
+                CanShieldAllies = true,
+                MaxRange = 600,
+                ValidTargets = new[] { SpellTargets.AllyChampions }
+            };
+            Spells.Add(spell);
+            #endregion
+
+            #region Yoomu
+            spell = new MovementBuff("Yoomu", SpellSlot.Unknown, 0, 2, () => Player.Instance.MoveSpeed * 1.2f)
+            {
+                Active = true,
+            };
+            Spells.Add(spell);
+            #endregion
+
+            #region Hextech 01
+            spell = new Dash("Hextech Protobelt-01", SpellSlot.Unknown, 275, false, 0, 1150, 3);
+            Spells.Add(spell);
+            #endregion
+
+            #endregion
         }
     }
 }
