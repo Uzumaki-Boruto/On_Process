@@ -35,61 +35,82 @@ namespace UBEvade.Data.EvadeSkillsData
     }
     internal class EvadeSpellData
     {
-        public delegate float MovementSpeedAmount();
+        public delegate float PercentMvmBuff();
 
-        public bool CanShieldAllies;
+        public bool Active;
+        public bool CanCastAllies;
+        public int DashSpeed;
         public int CastWidth;
+        public int DangerValue;
         public bool DefautDisable;
         public int DelayRiposte;
         public int Delay;
         public bool FixedRange;
         public bool Invert;
         public ItemId ItemId;
-
         public EvadeType Type;
         public bool IsSummonerSpell;
-
         public bool MagicShieldOnly;
         public float MaxRange;
-        public MovementSpeedAmount MovementSpeedTotalAmount;
         public string Name;
         public bool NeedUnitAround;
         public string OtherName;
         public string Object;
+        public PercentMvmBuff PercentMovementBuff;
         public bool RequiresPreMove;
-        public bool Active;
+        public string RequiresPlayerBuff;
+        public string RequiresTargetBuff;
         public SpellSlot Slot;
-
-        public int Speed;
         public SpellTargets[] ValidTargets;
-
-        public int _dangerLevel;
 
         public EvadeSpellData() { }
 
         public EvadeSpellData(string name, int dangerLevel)
         {
             Name = name;
-            _dangerLevel = dangerLevel;
+            DangerValue = dangerLevel;
         }
 
         public bool IsTargetted
         {
             get { return ValidTargets != null; }
-        }       
+        }
+        public float RawMovementSpeed
+        {
+            get { return Player.Instance.MoveSpeed + Player.Instance.MoveSpeed * PercentMovementBuff.Invoke(); }
+        }
+        public float CappedMovementSpeed
+        {
+            get
+            {
+                if (RawMovementSpeed <= 415)
+                {
+                    return RawMovementSpeed;
+                }
+                else if (RawMovementSpeed <= 490)
+                {
+                    return 415 + (RawMovementSpeed - 415) * 0.8f;
+                }
+                else
+                {
+                    return 415 + 60 + (RawMovementSpeed - 490) * 0.5f;
+                }
+            }
+        }
+
     }
 
     internal class Dash : EvadeSpellData
     {
-        public Dash(string name, SpellSlot slot, float range, bool fixedRange, int delay, int speed, int dangerLevel)
+        public Dash(string name, SpellSlot slot, float range, bool fixedRange, int delay, int speed, int dangervalue)
         {
             Name = name;
             MaxRange = range;
             Slot = slot;
             FixedRange = fixedRange;
             Delay = delay;
-            Speed = speed;
-            _dangerLevel = dangerLevel;
+            DashSpeed = speed;
+            DangerValue = dangervalue;
             Type = EvadeType.Dash;
         }
     }
@@ -100,14 +121,14 @@ namespace UBEvade.Data.EvadeSkillsData
             SpellSlot slot,
             float range,
             int delay,
-            int dangerLevel,
+            int dangervalue,
             bool isSummonerSpell = false)
         {
             Name = name;
             MaxRange = range;
             Slot = slot;
             Delay = delay;
-            _dangerLevel = dangerLevel;
+            DangerValue = dangervalue;
             IsSummonerSpell = isSummonerSpell;
             Type = EvadeType.Blink;
         }
@@ -115,50 +136,52 @@ namespace UBEvade.Data.EvadeSkillsData
 
     internal class UnSelectable : EvadeSpellData
     {
-        public UnSelectable(string name, SpellSlot slot, float range, int delay, int dangerLevel)
+        public UnSelectable(string name, SpellSlot slot, float range, int delay, int dangervalue)
         {
             Name = name;
             Slot = slot;
             MaxRange = range;
             Delay = delay;
-            _dangerLevel = dangerLevel;
+            DangerValue = dangervalue;
             Type = EvadeType.Unselectable;
         }
     }
 
     internal class Shield : EvadeSpellData
     {
-        public Shield(string name, SpellSlot slot, int delay, int dangerLevel, bool isSpellShield = false)
+        public Shield(string name, SpellSlot slot, int delay, int dangervalue, bool isSpellShield = false)
         {
             Name = name;
             Slot = slot;
             Delay = delay;
-            _dangerLevel = dangerLevel;
+            DangerValue = dangervalue;
+            Active = !CanCastAllies;
             Type = isSpellShield ? EvadeType.SpellShield : EvadeType.Shield;
         }
     }
 
     internal class MovementBuff : EvadeSpellData
     {
-        public MovementBuff(string name, SpellSlot slot, int delay, int dangerLevel, MovementSpeedAmount amount)
+        public MovementBuff(string name, SpellSlot slot, int delay, int dangervalue, PercentMvmBuff amount)
         {
             Name = name;
             Slot = slot;
             Delay = delay;
-            _dangerLevel = dangerLevel;
-            MovementSpeedTotalAmount = amount;
+            DangerValue = dangervalue;
+            PercentMovementBuff = amount;
+            Active = !CanCastAllies;
             Type = EvadeType.MovementSpeedBuff;
         }
     }
 
     internal class Wall : EvadeSpellData
     {
-        public Wall(string name, SpellSlot slot, int delay, int dangerLevel)
+        public Wall(string name, SpellSlot slot, int delay, int dangervalue)
         {
             Name = name;
             Slot = slot;
             Delay = delay;
-            _dangerLevel = dangerLevel;
+            DangerValue = dangervalue;
             Type = EvadeType.Wall;
         }
     }

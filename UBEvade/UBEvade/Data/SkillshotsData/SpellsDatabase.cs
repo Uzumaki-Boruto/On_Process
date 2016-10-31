@@ -4684,53 +4684,9 @@ public static class SpellsDatabase
                     DangerValue = 2,
                     IsDangerous = false,
                     CcOrMgDamage = true,
-                    MissileSpellName = "ZiggsQSpell",     
-                    CollisionObjects = new[] { CollisionType.YasuoWall },
-                    CanBeRemoved = false,
-                });
-
-            Spells.Add(
-                new SpellsData
-                {
-                    ChampionName = "Ziggs",
-                    SpellName = "ZiggsQBounce1",
-                    MenuName = "Ziggs Q - Bounce 1st",
-                    Slot = SpellSlot.Q,
-                    Type = SpellType.Circular,
-                    Delay = 250,
-                    Range = 850,
-                    Radius = 140,
-                    MissileSpeed = 1700,
-                    FixedRange = false,
-                    AddHitbox = true,
-                    DangerValue = 2,
-                    IsDangerous = false,
-                    CcOrMgDamage = true,
-                    MissileSpellName = "ZiggsQSpell2",
-                    ExtraMissileNames = new[] { "ZiggsQSpell2" },
-                    CollisionObjects = new[] { CollisionType.YasuoWall },
-                    CanBeRemoved = false,
-                });
-
-            Spells.Add(
-                new SpellsData
-                {
-                    ChampionName = "Ziggs",
-                    SpellName = "ZiggsQBounce2",
-                    MenuName = "Ziggs Q - Bounce 2rd",
-                    Slot = SpellSlot.Q,
-                    Type = SpellType.Circular,
-                    Delay = 250,
-                    Range = 850,
-                    Radius = 160,
-                    MissileSpeed = 1700,
-                    FixedRange = false,
-                    AddHitbox = true,
-                    DangerValue = 2,
-                    IsDangerous = false,
-                    CcOrMgDamage = true,
-                    MissileSpellName = "ZiggsQSpell3",
-                    ExtraMissileNames = new[] { "ZiggsQSpell3" },
+                    MissileSpellName = "ZiggsQSpell",
+                    ExtraMissileNames = new[] { "ZiggsQSpell2", "ZiggsQSpell3" },
+                    ExtraSpellNames = new[] { "ZiggsQBounce1", "ZiggsQBounce2" },
                     CollisionObjects = new[] { CollisionType.YasuoWall },
                     CanBeRemoved = false,
                 });

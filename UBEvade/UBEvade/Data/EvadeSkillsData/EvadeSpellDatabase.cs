@@ -8,11 +8,16 @@ namespace UBEvade.Data.EvadeSkillsData
     internal class EvadeSpellDatabase
     {
         public static List<EvadeSpellData> Spells = new List<EvadeSpellData>();
+        public static List<EvadeSpellData> Items = new List<EvadeSpellData>();
 
         static EvadeSpellDatabase()
         {
             #region Var
             EvadeSpellData spell;
+            int Q = Player.Instance.Spellbook.GetSpell(SpellSlot.Q).Level;
+            int W = Player.Instance.Spellbook.GetSpell(SpellSlot.W).Level;
+            int E = Player.Instance.Spellbook.GetSpell(SpellSlot.E).Level;
+            int R = Player.Instance.Spellbook.GetSpell(SpellSlot.R).Level;
             #endregion
 
             #region Champion SpellWall
@@ -89,11 +94,14 @@ namespace UBEvade.Data.EvadeSkillsData
             #endregion
 
             #region Ahri
-            spell = new Dash("Ahri R", SpellSlot.R, 500, true, 0, 1575, 3)
+            if (Player.Instance.ChampionName == "Ahri")
             {
-                RequiresPreMove = true,
-            };
-            Spells.Add(spell);
+                spell = new Dash("Ahri R", SpellSlot.R, 500, true, 0, 1575, 3)
+                {
+                    RequiresPreMove = true,
+                };
+                Spells.Add(spell);
+            }
             #endregion
 
             #region Akali
@@ -129,11 +137,14 @@ namespace UBEvade.Data.EvadeSkillsData
 
             //Add braum
             #region Braum
-            spell = new Dash("Braum W", SpellSlot.W, 650, false, 0, 500, 4)
+            if (Player.Instance.ChampionName == "Braum")
             {
-                ValidTargets = new[] { SpellTargets.AllyChampions, SpellTargets.AllyMinions },
-            };
-            Spells.Add(spell);
+                spell = new Dash("Braum W", SpellSlot.W, 650, false, 0, 500, 4)
+                {
+                    ValidTargets = new[] { SpellTargets.AllyChampions, SpellTargets.AllyMinions },
+                };
+                Spells.Add(spell);
+            }
             #endregion
 
             #region Caitlyn
@@ -165,8 +176,11 @@ namespace UBEvade.Data.EvadeSkillsData
 
             //Add Timer Boy
             #region Ekko
-            spell = new Dash("Ekko E", SpellSlot.E, 350, true, 0, 1150, 3);
-            Spells.Add(spell);
+            if (Player.Instance.ChampionName == "Ekko")
+            {
+                spell = new Dash("Ekko E", SpellSlot.E, 350, true, 0, 1150, 3);
+                Spells.Add(spell);
+            }
             #endregion
 
             //Add Fiora
@@ -428,7 +442,7 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Ezreal")
             {
-                spell = new Blink("Ezreal E", SpellSlot.E, 450, 350, 3);
+                spell = new Blink("Ezreal E", SpellSlot.E, 350, 350, 3);
                 Spells.Add(spell);
             }
 
@@ -478,6 +492,19 @@ namespace UBEvade.Data.EvadeSkillsData
                 spell = new Blink("Talon E", SpellSlot.E, 700, 250, 3)
                 {
                     ValidTargets = new[] { SpellTargets.EnemyChampions, SpellTargets.EnemyMinions },
+                };
+                Spells.Add(spell);
+            }
+
+            #endregion
+
+            #region Zed
+
+            if (Player.Instance.ChampionName == "Zed")
+            {
+                spell = new Blink("Zed W", SpellSlot.W, 700, 250, 3)
+                {
+                    OtherName = "",
                 };
                 Spells.Add(spell);
             }
@@ -561,11 +588,17 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Blitzcrank")
             {
-                spell = new MovementBuff(
-                    "Blitzcrank W", SpellSlot.W, 100, 3,
-                    () =>
-                        Player.Instance.MoveSpeed *
-                        (1 + 0.12f + 0.04f * Player.Instance.Spellbook.GetSpell(SpellSlot.W).Level));
+                spell = new MovementBuff("Blitzcrank W", SpellSlot.W, 100, 3, () => 65 + 5 * W);
+                Spells.Add(spell);
+            }
+
+            #endregion
+
+            #region DrMundo
+
+            if (Player.Instance.ChampionName == "DrMundo")
+            {
+                spell = new MovementBuff("Mundo R", SpellSlot.W, 100, 4, () => 5 + 10 * R);
                 Spells.Add(spell);
             }
 
@@ -575,11 +608,7 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Draven")
             {
-                spell = new MovementBuff(
-                    "Draven W", SpellSlot.W, 100, 3,
-                    () =>
-                        Player.Instance.MoveSpeed *
-                        (1 + 0.35f + 0.05f * Player.Instance.Spellbook.GetSpell(SpellSlot.W).Level));
+                spell = new MovementBuff("Draven W", SpellSlot.W, 100, 3, () => 35 + 5 * W);
                 Spells.Add(spell);
             }
 
@@ -589,11 +618,7 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Evelynn")
             {
-                spell = new MovementBuff(
-                    "Evelynn W", SpellSlot.W, 100, 3,
-                    () =>
-                        Player.Instance.MoveSpeed *
-                        (1 + 0.2f + 0.1f * Player.Instance.Spellbook.GetSpell(SpellSlot.W).Level));
+                spell = new MovementBuff("Evelynn W", SpellSlot.W, 100, 3, () => 20 + 10 * W);
                 Spells.Add(spell);
             }
 
@@ -603,7 +628,17 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Garen")
             {
-                spell = new MovementBuff("Garen Q", SpellSlot.Q, 100, 3, () => Player.Instance.MoveSpeed * (1.35f));
+                spell = new MovementBuff("Garen Q", SpellSlot.Q, 100, 3, () => 30);
+                Spells.Add(spell);
+            }
+
+            #endregion
+
+            #region Hecarim
+
+            if (Player.Instance.ChampionName == "Hecarim")
+            {
+                spell = new MovementBuff("Hecarim E", SpellSlot.E, 100, 3, () => 25);
                 Spells.Add(spell);
             }
 
@@ -613,27 +648,21 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Katarina")
             {
-                spell = new MovementBuff(
-                    "Katarina W", SpellSlot.W, 100, 3,
-                    () =>
-                        ObjectManager.Get<AIHeroClient>().Any(h => h.IsValidTarget(375))
-                            ? Player.Instance.MoveSpeed *
-                              (1 + 0.10f + 0.05f * Player.Instance.Spellbook.GetSpell(SpellSlot.W).Level)
-                            : 0);
+                spell = new MovementBuff("Katarina W", SpellSlot.W, 100, 3, () => ObjectManager.Get<AIHeroClient>().Any(x => x.IsValidTarget(375)) ? 10 + 5 * W : 0);
                 Spells.Add(spell);
             }
 
             #endregion
 
-            #region Karma
+            #region Kayle
 
-            if (Player.Instance.ChampionName == "Karma")
+            if (Player.Instance.ChampionName == "Kayle")
             {
-                spell = new MovementBuff(
-                    "Karma E", SpellSlot.E, 100, 3,
-                    () =>
-                        Player.Instance.MoveSpeed *
-                        (1 + 0.35f + 0.05f * Player.Instance.Spellbook.GetSpell(SpellSlot.E).Level));
+                spell = new MovementBuff("Kayle W", SpellSlot.W, 250, 3, () => 15 + 3 * W + 0.07f * Player.Instance.TotalMagicalDamage)
+                {
+                    CanCastAllies = true,
+                    MaxRange = 900
+                };
                 Spells.Add(spell);
             }
 
@@ -643,8 +672,7 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Kennen")
             {
-                spell = new MovementBuff("Kennen E", SpellSlot.E, 100, 3, () => 200 + Player.Instance.MoveSpeed);
-                //Actually it should be +335 but ingame you only gain +230, rito plz
+                spell = new MovementBuff("Kennen E", SpellSlot.E, 100, 3, () => 100);
                 Spells.Add(spell);
             }
 
@@ -654,7 +682,7 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Khazix")
             {
-                spell = new MovementBuff("Khazix R", SpellSlot.R, 100, 5, () => Player.Instance.MoveSpeed * 1.4f);
+                spell = new MovementBuff("Khazix R", SpellSlot.R, 100, 5, () => 40);
                 Spells.Add(spell);
             }
 
@@ -664,9 +692,21 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Lulu")
             {
-                spell = new MovementBuff(
-                    "Lulu W", SpellSlot.W, 100, 5,
-                    () => Player.Instance.MoveSpeed * (1.3f + Player.Instance.FlatMagicDamageMod / 100 * 0.1f));
+                spell = new MovementBuff("Lulu W", SpellSlot.W, 100, 5, () => 50 + Player.Instance.TotalMagicalDamage * 0.05f)
+                {
+                    CanCastAllies = true,
+                    MaxRange = 650,
+                };
+                Spells.Add(spell);
+            }
+
+            #endregion
+
+            #region MasterYi
+
+            if (Player.Instance.ChampionName == "MasterYi")
+            {
+                spell = new MovementBuff("Master Yi R", SpellSlot.R, 100, 4, () => 15 + 10 * R);
                 Spells.Add(spell);
             }
 
@@ -676,17 +716,33 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Nunu")
             {
-                spell = new MovementBuff(
-                    "Nunu W", SpellSlot.W, 100, 3,
-                    () =>
-                        Player.Instance.MoveSpeed *
-                        (1 + 0.1f + 0.01f * Player.Instance.Spellbook.GetSpell(SpellSlot.W).Level));
+                spell = new MovementBuff("Nunu W", SpellSlot.W, 100, 3,() => 7 + W);
                 Spells.Add(spell);
             }
 
             #endregion
 
-            //Correct Ryze
+            #region Poppy
+
+            if (Player.Instance.ChampionName == "Poppy")
+            {
+                spell = new MovementBuff("Poppy W", SpellSlot.W, 100, 3, () => 30 + 2 * W);
+                Spells.Add(spell);
+            }
+
+            #endregion
+
+            #region Rammus
+
+            if (Player.Instance.ChampionName == "Rammus")
+            {
+                spell = new MovementBuff("Rammus Q", SpellSlot.Q, 100, 3, () => 20);
+                Spells.Add(spell);
+            }
+
+            #endregion
+
+            //Should I add Q Ryze?
             #region Ryze
             #endregion
 
@@ -694,7 +750,7 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Sivir")
             {
-                spell = new MovementBuff("Sivir R", SpellSlot.R, 100, 5, () => Player.Instance.MoveSpeed * (1.6f));
+                spell = new MovementBuff("Sivir R", SpellSlot.R, 100, 5, () => 30 + 10 * R);
                 Spells.Add(spell);
             }
 
@@ -704,11 +760,7 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Shyvana")
             {
-                spell = new MovementBuff(
-                    "Shyvana W", SpellSlot.W, 100, 4,
-                    () =>
-                        Player.Instance.MoveSpeed *
-                        (1 + 0.25f + 0.05f * Player.Instance.Spellbook.GetSpell(SpellSlot.W).Level));
+                spell = new MovementBuff("Shyvana W", SpellSlot.W, 100, 4,() => 25 + 5 * W);
                 spell.OtherName = "ShyvanaImmolationAura";
                 Spells.Add(spell);
             }
@@ -719,13 +771,7 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Sona")
             {
-                spell = new MovementBuff(
-                    "Sona E", SpellSlot.E, 100, 3,
-                    () =>
-                        Player.Instance.MoveSpeed *
-                        (1 + 0.12f + 0.01f * Player.Instance.Spellbook.GetSpell(SpellSlot.E).Level +
-                         Player.Instance.FlatMagicDamageMod / 100 * 0.075f +
-                         0.02f * Player.Instance.Spellbook.GetSpell(SpellSlot.R).Level));
+                spell = new MovementBuff("Sona E", SpellSlot.E, 100, 3, () => 9 + E + Player.Instance.TotalMagicalDamage * 0.06f);
                 Spells.Add(spell);
             }
 
@@ -735,11 +781,17 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Teemo")
             {
-                spell = new MovementBuff(
-                    "Teemo W", SpellSlot.W, 100, 3,
-                    () =>
-                        Player.Instance.MoveSpeed *
-                        (1 + 0.06f + 0.04f * Player.Instance.Spellbook.GetSpell(SpellSlot.W).Level));
+                spell = new MovementBuff("Teemo W", SpellSlot.W, 100, 3,() => 12 + 8 * W);
+                Spells.Add(spell);
+            }
+
+            #endregion
+
+            #region Trundle
+
+            if (Player.Instance.ChampionName == "Trundle")
+            {
+                spell = new MovementBuff("Trundle W", SpellSlot.W, 100, 3, () => 15 + 5 * W);
                 Spells.Add(spell);
             }
 
@@ -749,11 +801,17 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Udyr")
             {
-                spell = new MovementBuff(
-                    "Udyr E", SpellSlot.E, 100, 3,
-                    () =>
-                        Player.Instance.MoveSpeed *
-                        (1 + 0.1f + 0.05f * Player.Instance.Spellbook.GetSpell(SpellSlot.E).Level));
+                spell = new MovementBuff("Udyr E", SpellSlot.E, 100, 3,() => 10 + 5 * E);
+                Spells.Add(spell);
+            }
+
+            #endregion
+
+            #region Volibear
+
+            if (Player.Instance.ChampionName == "Volibear")
+            {
+                spell = new MovementBuff("Volibear Q", SpellSlot.Q, 100, 3, () => 12.5f + 2.5f * Q);
                 Spells.Add(spell);
             }
 
@@ -763,7 +821,11 @@ namespace UBEvade.Data.EvadeSkillsData
 
             if (Player.Instance.ChampionName == "Zilean")
             {
-                spell = new MovementBuff("Zilean E", SpellSlot.E, 100, 3, () => Player.Instance.MoveSpeed * 1.55f);
+                spell = new MovementBuff("Zilean E", SpellSlot.E, 100, 3, () => 25 + 15 * E)
+                {
+                    CanCastAllies = true,
+                    MaxRange = 750,
+                };
                 Spells.Add(spell);
             }
 
@@ -784,54 +846,151 @@ namespace UBEvade.Data.EvadeSkillsData
             #region Diana
             if (Player.Instance.ChampionName == "Diana")
             {
-                spell = new Shield("Diana W", SpellSlot.W, 0, 1);
+                spell = new Shield("Diana W", SpellSlot.W, 0, 2);
+                Spells.Add(spell);
+            }
+            #endregion
+
+            #region Galio
+            if (Player.Instance.ChampionName == "Galio")
+            {
+                spell = new Shield("Galio E", SpellSlot.E, 0, 2)
+                {
+                    ValidTargets = new [] { SpellTargets.MySelf },
+                    //Should I add Shield ally?
+                };
                 Spells.Add(spell);
             }
             #endregion
 
             #region Janna
+            if (Player.Instance.ChampionName == "Janna")
+            {
+                spell = new Shield("Janna E", SpellSlot.E, 0, 2)
+                {
+                    CanCastAllies = true,
+                    MaxRange = 800,
+                };
+                Spells.Add(spell);
+            }
             #endregion
 
             #region Karma
+            if (Player.Instance.ChampionName == "Karma")
+            {
+                spell = new Shield("Karma E", SpellSlot.E, 0, 2)
+                {
+                    CanCastAllies = true,
+                    MaxRange = 800,
+                };
+                Spells.Add(spell);
+            }
             #endregion
 
             #region Kayle
+            //Should Kayle?
             #endregion
 
             #region Lulu
+            if (Player.Instance.ChampionName == "Lulu")
+            {
+                spell = new Shield("Lulu E", SpellSlot.E, 0, 2)
+                {
+                    CanCastAllies = true,
+                    MaxRange = 650,
+                };
+                Spells.Add(spell);
+            }
             #endregion
 
             #region Lux
+            //Should I add Lux?
             #endregion
 
             #region Morgana
+            if (Player.Instance.ChampionName == "Morgana")
+            {
+                spell = new Shield("Morgana E", SpellSlot.E, 0, 2)
+                {
+                    CanCastAllies = true,
+                    MagicShieldOnly = true,
+                    MaxRange = 800,
+                };
+                Spells.Add(spell);
+            }
+            #endregion
+
+            #region Nautilus
+            if (Player.Instance.ChampionName == "Nautilus")
+            {
+                spell = new Shield("Nautilus W", SpellSlot.W, 0, 2);
+                Spells.Add(spell);
+            }
             #endregion
 
             #region Orianna
+            if (Player.Instance.ChampionName == "Orianna")
+            {
+                spell = new Shield("Orianna E", SpellSlot.E, 0, 2)
+                {
+                    CanCastAllies = true,
+                    MaxRange = 1100,
+                };
+                Spells.Add(spell);
+            }
             #endregion
 
             #region Rumble
+            if (Player.Instance.ChampionName == "Rumble")
+            {
+                spell = new Shield("Rumble W", SpellSlot.W, 0, 2);
+                Spells.Add(spell);
+            }
+            #endregion
+
+            #region Sona
+            if (Player.Instance.ChampionName == "Sona")
+            {
+                spell = new Shield("Sona W", SpellSlot.W, 0, 2);
+                Spells.Add(spell);
+            }
             #endregion
 
             #region Taric
+            if (Player.Instance.ChampionName == "Taric")
+            {
+                spell = new Shield("Taric W", SpellSlot.W, 0, 2)
+                {
+                    CanCastAllies = true,
+                    MaxRange = 800,
+                };
+                Spells.Add(spell);
+            }
+
             #endregion
 
             #region Ryze
+            //Should I add Ryze?
             #endregion
 
-            #region TahmKench
+            #region Tahm Kench
+            //Should I add Tahm Kench?
             #endregion
 
             #region Thresh
+            //Should I add Thresh?
             #endregion
 
             #region Udyr
-            #endregion
-
-            #region Thresh
+            if (Player.Instance.ChampionName == "Udyr")
+            {
+                spell = new Shield("Udyr W", SpellSlot.W, 0, 2);
+                Spells.Add(spell);
+            }
             #endregion
 
             #region Viktor
+            //Should I add Viktor?
             #endregion
 
             #endregion
@@ -848,35 +1007,66 @@ namespace UBEvade.Data.EvadeSkillsData
             Spells.Add(spell);
             #endregion
 
+            #region Ghost
+            spell = new MovementBuff("Ghost", SpellSlot.Summoner1, 0, 4, () => 27 + Player.Instance.Level)
+            {
+                IsSummonerSpell = true,
+            };
+            Spells.Add(spell);
+            #endregion
+
+            #region Barrier
+            spell = new Shield("Barrier", SpellSlot.Summoner1, 0, 4)
+            {
+                IsSummonerSpell = true,
+            };
+            Spells.Add(spell);
+            #endregion
+
             #region Zhonya
             spell = new UnSelectable("Zhonya", SpellSlot.Unknown, 0, 0, 4)
             {
                 Active = true,
+                ItemId = ItemId.Zhonyas_Hourglass,
             };
-            Spells.Add(spell);
+            Items.Add(spell);
             #endregion
 
             #region FOTM
             spell = new Shield("FOTM", SpellSlot.Unknown, 0, 2)
             {
-                CanShieldAllies = true,
+                CanCastAllies = true,
                 MaxRange = 600,
+                ItemId = ItemId.Face_of_the_Mountain,
                 ValidTargets = new[] { SpellTargets.AllyChampions }
             };
-            Spells.Add(spell);
+            Items.Add(spell);
             #endregion
 
             #region Yoomu
-            spell = new MovementBuff("Yoomu", SpellSlot.Unknown, 0, 2, () => Player.Instance.MoveSpeed * 1.2f)
+            spell = new MovementBuff("Yomuu", SpellSlot.Unknown, 0, 2, () => 20)
             {
                 Active = true,
+                ItemId = ItemId.Youmuus_Ghostblade,
             };
-            Spells.Add(spell);
+            Items.Add(spell);
+            #endregion
+
+            #region Talisman of Ascension
+            spell = new MovementBuff("Talisman of Ascension", SpellSlot.Unknown, 0, 3, () => 40)
+            {
+                Active = true,
+                ItemId = ItemId.Youmuus_Ghostblade,
+            };
+            Items.Add(spell);
             #endregion
 
             #region Hextech 01
-            spell = new Dash("Hextech Protobelt-01", SpellSlot.Unknown, 275, false, 0, 1150, 3);
-            Spells.Add(spell);
+            spell = new Dash("Hextech Protobelt-01", SpellSlot.Unknown, 275, false, 0, 1150, 3)
+            {
+                ItemId = ItemId.Hextech_Protobelt_01,
+            };
+            Items.Add(spell);
             #endregion
 
             #endregion

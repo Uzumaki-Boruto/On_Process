@@ -1,10 +1,8 @@
-﻿using System;
+﻿using EloBuddy;
+using System;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using EloBuddy;
-using EloBuddy.SDK;
-using SharpDX;
 
 namespace UBEvade
 {
